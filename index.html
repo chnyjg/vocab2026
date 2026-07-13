@@ -870,7 +870,7 @@
             }
             var h1 = ('00000000' + (hash1 >>> 0).toString(16)).slice(-8);
             var h2 = ('00000000' + (hash2 >>> 0).toString(16)).slice(-8);
-            return h1 + '-' + h2.slice(0, 4) + '-' + h2.slice(4, 8) + '-0000-' + h1.split('').reverse().join('') + h2.split('').reverse().join('').slice(0, 12);
+            return h1 + '-' + h2.slice(0, 4) + '-' + h2.slice(4, 8) + '-0000-' + (h1 + h2).split('').reverse().join('').slice(0, 12);
         }
 
         function loadUser() {
