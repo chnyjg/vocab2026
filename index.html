@@ -1556,6 +1556,11 @@
             html += '<button class="start-btn" onclick="showScoreBoard()" style="background:var(--bg-subtle);color:var(--text-muted);border:1px solid var(--border-light);font-size:0.88rem;">📊 记分看板</button>';
             html += '<div style="height:8px;"></div>';
             html += '<button class="start-btn" onclick="showStats()" style="background:var(--bg-subtle);color:var(--text-muted);border:1px solid var(--border-light);font-size:0.88rem;">📈 学习统计</button>';
+            html += '<div style="height:8px;"></div>';
+            html += '<div style="display:flex;gap:8px;justify-content:center;">';
+            html += '<button class="start-btn" onclick="exportData()" style="flex:1;background:var(--bg-subtle);color:var(--text-muted);border:1px solid var(--border-light);font-size:0.82rem;">📥 导出数据</button>';
+            html += '<button class="start-btn" onclick="importData()" style="flex:1;background:var(--bg-subtle);color:var(--text-muted);border:1px solid var(--border-light);font-size:0.82rem;">📤 导入数据</button>';
+            html += '</div>';
             html += '</div>';
 
             document.getElementById("mainArea").innerHTML = html;
@@ -1653,6 +1658,83 @@
             } else {
                 warnEl.style.display = "none";
             }
+        }
+
+        // =============================================
+        //  [新增] 导出 / 导入学习数据
+        // =============================================
+
+        function exportData() {
+            if (!USER_ID) return;
+            var data = {
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                userName: (function () {
+                    try { var raw = localStorage.getItem("vocab_user"); if (raw) return JSON.parse(raw).name; } catch (e) { }
+                    return "";
+                })(),
+                history: cacheLoadHistory(),
+                sessions: cacheLoadSessions()
+            };
+            var json = JSON.stringify(data, null, 2);
+            var blob = new Blob([json], { type: "application/json" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "vocab_" + data.userName + "_" + new Date().toISOString().slice(0, 10) + ".json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            var input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".json";
+            input.onchange = function (e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    try {
+                        var data = JSON.parse(ev.target.result);
+                        if (!data.version || !data.history || !data.sessions) {
+                            alert("文件格式不正确，无法导入。");
+                            return;
+                        }
+                        var importUser = data.userName || "未知用户";
+                        var currentUser = "";
+                        try { var raw = localStorage.getItem("vocab_user"); if (raw) currentUser = JSON.parse(raw).name; } catch (e) { }
+                        if (importUser && currentUser && importUser !== currentUser) {
+                            if (!confirm("这个数据来自「" + importUser + "」，确定要导入到「" + currentUser + "」的记录中吗？")) return;
+                        }
+                        var localHistory = cacheLoadHistory();
+                        var mergedHistory = mergeHistory(localHistory, data.history);
+                        cacheSaveHistory(mergedHistory);
+                        var localSessions = cacheLoadSessions();
+                        var mergedSessions = mergeSessions(localSessions, data.sessions);
+                        cacheSaveSessions(mergedSessions);
+                        pushImportedSessions(data.sessions);
+                        alert("导入成功！已合并 " + Object.keys(mergedHistory).length + " 个单词的记录和 " + mergedSessions.length + " 天学习记录。");
+                        showSelector();
+                    } catch (ex) {
+                        alert("文件解析失败：" + ex.message);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        async function pushImportedSessions(sessions) {
+            if (!USER_ID || !sb) return;
+            try {
+                for (var i = 0; i < sessions.length; i++) {
+                    await sb.from("vocab_sessions")
+                        .insert({ user_id: USER_ID, date: sessions[i] });
+                }
+            } catch (e) { }
         }
 
         // =============================================
@@ -1819,7 +1901,7 @@
             if (currentPhase === "cn2en") {
                 html += '    <div class="spell-wrap" id="spellWrap">';
                 html += '      <input class="spell-input" id="spellInput" type="text"'
-                     + ' autocomplete="off" autocapitalize="off" spellcheck="false"'
+                     + ' autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"'
                      + ' placeholder="拼写英文单词"'
                      + ' onkeydown="if(event.key===\'Enter\')checkSpelling()">';
                 html += '      <button class="spell-confirm" onclick="checkSpelling()">确认</button>';
