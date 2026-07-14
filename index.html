@@ -764,6 +764,56 @@
             color: var(--text-muted);
         }
 
+        /* ===== 学习热力图 ===== */
+        .heatmap-wrap {
+            display: flex; align-items: flex-start; gap: 6px;
+            justify-content: center; padding: 4px 0;
+        }
+
+        .heatmap-labels {
+            display: flex; flex-direction: column;
+            gap: 2px; padding-top: 18px;
+        }
+
+        .heatmap-label {
+            width: 14px; height: 12px; line-height: 12px;
+            font-size: 0.6rem; color: var(--text-muted);
+            text-align: center;
+        }
+
+        .heatmap-grid-wrap { overflow-x: auto; padding-bottom: 2px; }
+
+        .heatmap-months {
+            display: flex; height: 14px; margin-bottom: 2px;
+            font-size: 0.6rem; color: var(--text-muted);
+            position: relative;
+        }
+
+        .heatmap-month {
+            position: absolute; white-space: nowrap;
+        }
+
+        .heatmap-grid { display: flex; gap: 2px; }
+
+        .heatmap-col { display: flex; flex-direction: column; gap: 2px; }
+
+        .heatmap-cell {
+            width: 12px; height: 12px; border-radius: 2px;
+            transition: transform 0.1s;
+        }
+
+        .heatmap-cell:hover { transform: scale(1.4); }
+
+        .heatmap-legend {
+            display: flex; align-items: center; justify-content: center;
+            gap: 4px; margin-top: 12px; font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .heatmap-legend-cell {
+            width: 10px; height: 10px; border-radius: 2px;
+        }
+
         .phase-card { padding: 40px 28px; }
         .phase-icon { font-size: 2.5rem; margin-bottom: 16px; }
 
@@ -1107,6 +1157,7 @@
         };
 
         var cachedNoHistUnits = [];
+        var redReviewWords = [];
 
         // =============================================
         //  自动朗读
@@ -1916,7 +1967,7 @@
                 updateStats();
                 showRoundEnd();
             } else {
-                lastAction = { word: word, status: status, spliceIndex: spliceIdx, prevLearnedRound: prevRound };
+                lastAction = { word: word, status: status, spliceIndex: spliceIdx, prevLearnedRound: prevRound, meaningShown: meaningShown, currentChoice: currentChoice };
                 renderCard();
             }
         }
@@ -1927,6 +1978,9 @@
 
         function undoLastAction() {
             if (!lastAction) return;
+
+            var savedMeaningShown = lastAction.meaningShown;
+            var savedCurrentChoice = lastAction.currentChoice;
 
             var word = lastAction.word;
             var status = lastAction.status;
@@ -1944,6 +1998,14 @@
             saveProgress();
             updateStats();
             renderCard();
+
+            // 恢复之前的视觉状态
+            if (savedMeaningShown) {
+                meaningShown = true;
+                currentChoice = savedCurrentChoice;
+                showMeaning();
+                updateHighlights();
+            }
         }
 
         var _touchStartX = 0;
@@ -1965,6 +2027,28 @@
                 undoLastAction();
             }
         }, { passive: true });
+
+        document.addEventListener('keydown', function (e) {
+            // 仅在卡片学习阶段生效
+            if (!document.getElementById('actionBtns')) return;
+            // 有弹窗时不响应
+            if (document.getElementById('deleteOverlay')) return;
+            if (document.querySelector('.report-overlay')) return;
+            // 拼写输入中不拦截
+            var spellInp = document.getElementById('spellInput');
+            if (spellInp && !spellInp.disabled && document.activeElement === spellInp) return;
+
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                handleBtn('arrow');
+            } else if (e.key === ' ') {
+                e.preventDefault();
+                handleBtn('known');
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (lastAction) undoLastAction();
+            }
+        });
 
         // =============================================
         //  轮次 / 阶段
@@ -2058,6 +2142,7 @@
             });
 
             var weak   = sorted.filter(function (w) { return wordScores[w.en] >= 5; });
+            redReviewWords = weak;
             var mid    = sorted.filter(function (w) { return wordScores[w.en] >= 3 && wordScores[w.en] <= 4; });
             var strong = sorted.filter(function (w) { return wordScores[w.en] <= 2; });
 
@@ -2095,6 +2180,8 @@
                 + sections
                 + '<div class="report-actions">'
                 + '  <button class="report-btn report-btn-primary" onclick="restartFromConfig()">🔄 再背一遍</button>'
+                + (weak.length > 0 ? '  <button class="report-btn report-btn-secondary" onclick="showRedReviewConfig()" style="background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);">🔄 重点复习红色词汇（' + weak.length + ' 词）</button>'
+                + '  <div id="redReviewConfig" style="display:none;width:100%;"></div>' : '')
                 + '  <button class="report-btn report-btn-secondary" onclick="switchUnit()">📚 选择其他单元</button>'
                 + '  <button class="report-btn report-btn-secondary" onclick="removeReportAndShowScoreBoard()">📊 查看记分看板</button>'
                 + '  <button class="report-btn report-btn-secondary" onclick="removeReportAndShowStats()">📈 学习统计</button>'
@@ -2111,9 +2198,13 @@
             }
 
             var pool = [];
-            sessionConfig.selectedUnits.forEach(function (sel) {
-                pool = pool.concat(wordBank[sel.book][sel.unit]);
-            });
+            if (sessionConfig.redWords) {
+                pool = sessionConfig.redWords.slice();
+            } else {
+                sessionConfig.selectedUnits.forEach(function (sel) {
+                    pool = pool.concat(wordBank[sel.book][sel.unit]);
+                });
+            }
 
             var count = Math.min(sessionConfig.wordCount, pool.length);
             var words;
@@ -2143,6 +2234,68 @@
             var el = document.querySelector(".report-overlay");
             if (el) el.remove();
             showStats();
+        }
+
+        // [新增] 红色词汇重点复习
+        function showRedReviewConfig() {
+            var container = document.getElementById('redReviewConfig');
+            if (!container) return;
+            if (container.style.display !== 'none') {
+                container.style.display = 'none';
+                return;
+            }
+            var total = redReviewWords.length;
+            var defaultCount = Math.min(20, total);
+            var html = '<div style="background:var(--bg-subtle);border-radius:14px;padding:16px;margin-top:10px;border:1px solid var(--border-light);">';
+            html += '<div style="font-size:0.85rem;margin-bottom:12px;">复习数量</div>';
+            html += '<div style="display:flex;align-items:center;justify-content:center;gap:8px;">';
+            html += '<div class="count-stepper">';
+            html += '<button onclick="adjustRedCount(-5)">−</button>';
+            html += '<div class="count-display" id="redCountDisplay">' + defaultCount + '</div>';
+            html += '<button onclick="adjustRedCount(5)">+</button>';
+            html += '</div>';
+            html += '<button class="btn-all" onclick="setRedCountAll()">全部</button>';
+            html += '</div>';
+            html += '<button class="start-btn" onclick="startRedReview()" style="margin-top:12px;">开始复习</button>';
+            html += '</div>';
+            container.innerHTML = html;
+            container.style.display = 'block';
+        }
+
+        function adjustRedCount(delta) {
+            var el = document.getElementById('redCountDisplay');
+            var total = redReviewWords.length;
+            var cur = parseInt(el.textContent) || 0;
+            var next;
+            if (delta > 0) {
+                if (cur < 5) { next = 5; } else { next = cur + 5; }
+                if (next > total) next = total;
+            } else {
+                if (cur <= 5) { next = 1; } else { next = cur - 5; }
+            }
+            if (next < 1) next = 1;
+            el.textContent = next;
+        }
+
+        function setRedCountAll() {
+            var el = document.getElementById('redCountDisplay');
+            if (el) el.textContent = redReviewWords.length;
+        }
+
+        function startRedReview() {
+            var el = document.querySelector('.report-overlay');
+            if (el) el.remove();
+            var count = parseInt(document.getElementById('redCountDisplay').textContent) || redReviewWords.length;
+            count = Math.min(count, redReviewWords.length);
+            if (count <= 0) return;
+            var words = pickRandom(redReviewWords, count);
+            sessionConfig = {
+                selectedUnits: [{ book: '重点复习', unit: '红色词汇' }],
+                wordCount: count,
+                strategy: 'random',
+                redWords: redReviewWords.slice()
+            };
+            startSession(words);
         }
 
         // =============================================
@@ -2400,13 +2553,97 @@
                 html += '</div>';
             }
 
-            if (uniqueDates.length > 0) {
+            if (sessions.length > 0) {
                 html += '<div class="stats-section">';
-                html += '  <div class="stats-section-title">最近学习</div>';
-                var recentDates = uniqueDates.slice(-7).reverse();
-                html += '  <div class="recent-dates">';
-                recentDates.forEach(function (d) { html += '    <span class="date-badge">' + d + '</span>'; });
+                html += '  <div class="stats-section-title">学习热力图（近90天）</div>';
+
+                // 统计每天学习次数
+                var dateCounts = {};
+                sessions.forEach(function(d) {
+                    dateCounts[d] = (dateCounts[d] || 0) + 1;
+                });
+
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                var gridStart = new Date(today);
+                gridStart.setDate(gridStart.getDate() - 89);
+
+                // 对齐到周一
+                var dow = gridStart.getDay();
+                gridStart.setDate(gridStart.getDate() - (dow + 6) % 7);
+
+                var totalDays = Math.ceil((today - gridStart) / 86400000) + 1;
+                var totalWeeks = Math.ceil(totalDays / 7);
+
+                // 月份标签
+                var monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+                var monthLabels = [];
+                var sm = gridStart.getMonth(), sy = gridStart.getFullYear();
+                var em = today.getMonth(), ey = today.getFullYear();
+                var cm = sm, cy = sy;
+                while (true) {
+                    var fm = new Date(cy, cm, 1);
+                    if (fm < gridStart) fm = new Date(gridStart);
+                    if (fm > today) break;
+                    var ci = Math.floor((fm - gridStart) / (1000 * 60 * 60 * 24 * 7));
+                    monthLabels.push({ col: ci, label: monthNames[cm] });
+                    if (cy === ey && cm === em) break;
+                    cm++;
+                    if (cm > 11) { cm = 0; cy++; }
+                }
+
+                var weekLabels = ['一','二','三','四','五','六','日'];
+
+                html += '<div class="heatmap-wrap">';
+                html += '  <div class="heatmap-labels">';
+                for (var wi = 0; wi < 7; wi++) {
+                    html += '    <div class="heatmap-label">' + (wi % 2 === 0 ? weekLabels[wi] : '') + '</div>';
+                }
                 html += '  </div>';
+                html += '  <div class="heatmap-grid-wrap">';
+
+                // 月份行
+                html += '    <div class="heatmap-months" style="width:' + (totalWeeks * 14) + 'px;">';
+                for (var mi = 0; mi < monthLabels.length; mi++) {
+                    html += '      <div class="heatmap-month" style="left:' + (monthLabels[mi].col * 14) + 'px;">' + monthLabels[mi].label + '</div>';
+                }
+                html += '    </div>';
+
+                // 格子阵
+                html += '    <div class="heatmap-grid">';
+                for (var col = 0; col < totalWeeks; col++) {
+                    html += '      <div class="heatmap-col">';
+                    for (var row = 0; row < 7; row++) {
+                        var d = new Date(gridStart);
+                        d.setDate(d.getDate() + col * 7 + row);
+                        var ds = d.toISOString().slice(0, 10);
+                        if (d > today) {
+                            html += '        <div class="heatmap-cell" style="background:transparent;"></div>';
+                        } else {
+                            var cnt = dateCounts[ds] || 0;
+                            var color = cnt === 0 ? 'rgba(0,0,0,0.06)'
+                                      : cnt === 1 ? 'rgba(90,154,110,0.25)'
+                                      : cnt === 2 ? 'rgba(90,154,110,0.55)'
+                                      : 'rgba(90,154,110,0.85)';
+                            html += '        <div class="heatmap-cell" style="background:' + color + ';" title="' + (d.getMonth()+1) + '月' + d.getDate() + '日: ' + cnt + '次"></div>';
+                        }
+                    }
+                    html += '      </div>';
+                }
+                html += '    </div>';
+                html += '  </div>';
+                html += '</div>';
+
+                // 图例
+                html += '<div class="heatmap-legend">';
+                html += '  <span>少</span>';
+                html += '  <div class="heatmap-legend-cell" style="background:rgba(0,0,0,0.06);"></div>';
+                html += '  <div class="heatmap-legend-cell" style="background:rgba(90,154,110,0.25);"></div>';
+                html += '  <div class="heatmap-legend-cell" style="background:rgba(90,154,110,0.55);"></div>';
+                html += '  <div class="heatmap-legend-cell" style="background:rgba(90,154,110,0.85);"></div>';
+                html += '  <span>多</span>';
+                html += '</div>';
+
                 html += '</div>';
             }
 
