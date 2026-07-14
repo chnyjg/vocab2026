@@ -956,6 +956,7 @@
 
         function showLogin() {
             manageMode = false;
+            lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
             document.getElementById("userBadge").style.display = "none";
@@ -1094,18 +1095,14 @@
             var mode = document.querySelector('input[name="deleteMode"]:checked').value;
             var uid = nameToUUID(name);
 
-            // 从列表中移除名字
             removeUserFromList(name);
 
-            // 删除本地进度
             try { localStorage.removeItem("vocab_progress_" + uid); } catch (e) {}
 
-            // 如果是当前登录用户，也要登出
             if (USER_NAME === name) {
                 logoutUser();
             }
 
-            // 如果选择彻底删除，清除云端数据
             if (mode === "all") {
                 try {
                     await sb.from('vocab_history').delete().eq('user_id', uid);
@@ -1115,7 +1112,6 @@
 
             closeDeleteDialog();
 
-            // 检查列表是否为空，如果删的是当前登录用户需要重新渲染
             var users = getAllUsers();
             if (users.length === 0) {
                 showLogin();
@@ -1140,6 +1136,7 @@
         var wordsLearnedRound = {};
         var currentPhase = "en2cn";
         var autoPlay = false;
+        var lastAction = null;
 
         var sessionConfig = {
             selectedUnits: [],
@@ -1337,12 +1334,29 @@
 
         function normalizeForCompare(text) {
             return text.toLowerCase()
-                .replace(/…/g, ' ')
+                .replace(/…/g, '')
                 .replace(/['']/g, "'")
                 .replace(/[""]/g, '"')
-                .replace(/—/g, ' ')
-                .replace(/\s+/g, ' ')
+                .replace(/—/g, '')
+                .replace(/-/g, '')
+                .replace(/\s+/g, '')
                 .trim();
+        }
+
+        // 指数衰减加权平均（衰减系数 0.6，越近期权重越高）
+        function calcWeightedAvg(arr) {
+            if (!arr || arr.length === 0) return 0;
+            var n = arr.length;
+            var decay = 0.6;
+            var weightedSum = 0;
+            var weightTotal = 0;
+            for (var i = n - 1; i >= 0; i--) {
+                var dist = n - 1 - i;
+                var weight = Math.pow(decay, dist);
+                weightedSum += arr[i] * weight;
+                weightTotal += weight;
+            }
+            return weightedSum / weightTotal;
         }
 
         function speakEnglish(text) {
@@ -1359,6 +1373,7 @@
 
         function showSelector() {
             clearProgress();
+            lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
             updateUserBadge();
@@ -1555,22 +1570,8 @@
                 if (arr && arr.length > 0) {
                     has = true;
                     var n = arr.length;
-
-                    // 指数衰减加权：最近一次权重为 1，每往前一次 ×0.6
-                    var decay = 0.6;
-                    var weightedSum = 0;
-                    var weightTotal = 0;
-                    for (var i = n - 1; i >= 0; i--) {
-                        var dist = n - 1 - i;
-                        var weight = Math.pow(decay, dist);
-                        weightedSum += arr[i] * weight;
-                        weightTotal += weight;
-                    }
-                    var weightedAvg = weightedSum / weightTotal;
-
-                    // 练习次数加成：练了很多次仍然低分 → 优先级更高
+                    var weightedAvg = calcWeightedAvg(arr);
                     var countBoost = 1 + Math.log(Math.max(1, n)) * 0.2;
-
                     weaknessScore = weightedAvg * countBoost;
                 }
                 return { word: w, weaknessScore: weaknessScore, hasHistory: has };
@@ -1621,6 +1622,8 @@
         }
 
         function startSession(words) {
+            lastAction = null;
+
             if (sessionConfig.selectedUnits.length === 1) {
                 bookName = sessionConfig.selectedUnits[0].book;
                 unitName = sessionConfig.selectedUnits[0].unit;
@@ -1725,7 +1728,6 @@
 
             document.getElementById("mainArea").innerHTML = html;
 
-            // 中→英模式自动聚焦输入框
             if (currentPhase === "cn2en") {
                 setTimeout(function () {
                     var inp = document.getElementById("spellInput");
@@ -1733,7 +1735,6 @@
                 }, 100);
             }
 
-            // 英→中模式自动朗读
             if (autoPlay && currentPhase === "en2cn") {
                 speakEnglish(word.en);
             }
@@ -1746,10 +1747,17 @@
                 currentChoice = (btn === "known") ? "known" : null;
                 updateHighlights();
             } else {
-                if (currentChoice === null) {
-                    advanceWord(btn === "known" ? "known" : "unknown");
+                if (currentChoice === "known") {
+                    if (btn === "known") {
+                        // 再次点已会 → 撤销，回到未选择状态
+                        currentChoice = null;
+                        updateHighlights();
+                    } else {
+                        // 点 → → 保持已会，进入下一个词
+                        advanceWord("known");
+                    }
                 } else {
-                    if (btn === "arrow") advanceWord("known");
+                    advanceWord(btn === "known" ? "known" : "unknown");
                 }
             }
         }
@@ -1827,6 +1835,8 @@
             }
 
             var word = remainingWords[currentIndex];
+            var spliceIdx = currentIndex;
+
             wordScores[word.en]++;
 
             if (status === "known") {
@@ -1837,26 +1847,74 @@
             }
 
             saveProgress();
+            updateStats();
 
             if (remainingWords.length === 0) {
-                updateStats();
+                lastAction = null;
                 if (currentPhase === "en2cn") { showPhaseTransition(); }
                 else { showReport(); }
             } else if (currentIndex >= remainingWords.length) {
+                lastAction = null;
                 currentIndex = 0;
                 updateStats();
                 showRoundEnd();
             } else {
-                updateStats();
+                lastAction = { word: word, status: status, spliceIndex: spliceIdx, prevLearnedRound: wordsLearnedRound[word.en] };
                 renderCard();
             }
         }
+
+        // =============================================
+        //  右滑撤销
+        // =============================================
+
+        function undoLastAction() {
+            if (!lastAction) return;
+
+            var word = lastAction.word;
+            var status = lastAction.status;
+            var spliceIdx = lastAction.spliceIndex;
+
+            wordScores[word.en]--;
+            wordsLearnedRound[word.en] = lastAction.prevLearnedRound;
+
+            if (status === "known") {
+                remainingWords.splice(spliceIdx, 0, word);
+            }
+            currentIndex = spliceIdx;
+
+            lastAction = null;
+            saveProgress();
+            updateStats();
+            renderCard();
+        }
+
+        var _touchStartX = 0;
+        var _touchStartY = 0;
+
+        document.addEventListener('touchstart', function (e) {
+            if (e.touches.length === 1) {
+                _touchStartX = e.touches[0].clientX;
+                _touchStartY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', function (e) {
+            if (!lastAction) return;
+            if (e.changedTouches.length !== 1) return;
+            var dx = e.changedTouches[0].clientX - _touchStartX;
+            var dy = e.changedTouches[0].clientY - _touchStartY;
+            if (dx > 50 && Math.abs(dx) > Math.abs(dy)) {
+                undoLastAction();
+            }
+        }, { passive: true });
 
         // =============================================
         //  轮次 / 阶段
         // =============================================
 
         function showRoundEnd() {
+            lastAction = null;
             var learned = allWords.length - remainingWords.length;
             var html = '<div class="card round-card">'
                 + '<div class="round-title">第 ' + currentRound + ' 轮结束</div>'
@@ -1870,6 +1928,7 @@
         }
 
         function nextRound() {
+            lastAction = null;
             currentRound++;
             currentIndex = 0;
             saveProgress();
@@ -1878,6 +1937,7 @@
         }
 
         function showPhaseTransition() {
+            lastAction = null;
             var phaseLabel = currentPhase === "en2cn" ? "英→中" : "中→英";
             var nextLabel = currentPhase === "en2cn" ? "中→英" : "英→中";
 
@@ -1896,6 +1956,7 @@
         }
 
         function startNextPhase() {
+            lastAction = null;
             currentPhase = "cn2en";
             remainingWords = allWords.slice();
             currentIndex = 0;
@@ -1910,6 +1971,8 @@
         // =============================================
 
         async function showReport() {
+            lastAction = null;
+
             var history = await cloudLoadHistory();
             allWords.forEach(function (w) {
                 if (!history[w.en]) history[w.en] = [];
@@ -2022,6 +2085,7 @@
 
         async function showScoreBoard() {
             clearProgress();
+            lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
@@ -2036,10 +2100,7 @@
                         if (arr && arr.length > 0) {
                             has = true;
                             count = arr.length;
-                            var recent = arr.slice(-2);
-                            var sum = 0;
-                            for (var i = 0; i < recent.length; i++) sum += recent[i];
-                            avg = Math.round(sum / recent.length);
+                            avg = Math.round(calcWeightedAvg(arr));
                         }
                         items.push({ word: w, book: book, unit: unit, avg: avg, count: count, hasHistory: has });
                     });
@@ -2070,7 +2131,7 @@
             }
 
             html += '<div style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">'
-                  + '分数越高代表越薄弱（取最近 2 次平均）<br>勾选后可将历史分数归零</div>';
+                  + '分数越高代表越薄弱（指数衰减加权，近期得分权重更高）<br>勾选后可将历史分数归零</div>';
 
             var unitMap = {};
             var unitOrder = [];
@@ -2173,6 +2234,7 @@
 
         async function showStats() {
             clearProgress();
+            lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
@@ -2189,10 +2251,7 @@
             for (var word in history) {
                 var arr = history[word];
                 if (arr.length === 0) continue;
-                var recent = arr.slice(-2);
-                var sum = 0;
-                for (var i = 0; i < recent.length; i++) sum += recent[i];
-                var avg = Math.round(sum / recent.length);
+                var avg = Math.round(calcWeightedAvg(arr));
                 if (avg <= 2) mastered++;
                 else if (avg <= 4) reviewing++;
                 else weak++;
@@ -2207,10 +2266,7 @@
                         var arr = history[w.en];
                         if (arr && arr.length > 0) {
                             practiced++;
-                            var recent = arr.slice(-2);
-                            var sum = 0;
-                            for (var i = 0; i < recent.length; i++) sum += recent[i];
-                            var avg = Math.round(sum / recent.length);
+                            var avg = Math.round(calcWeightedAvg(arr));
                             if (avg <= 2) unitMastered++;
                         }
                     });
