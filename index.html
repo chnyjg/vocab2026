@@ -111,7 +111,6 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* ===== 登录 ===== */
         .login-card {
             width: 100%; background: var(--surface); border-radius: 20px;
             padding: 40px 28px 36px; text-align: center;
@@ -141,7 +140,6 @@
         }
 
         .login-input:focus { border-color: var(--accent); }
-
         .login-input::placeholder { color: var(--text-muted); font-weight: 400; }
 
         .login-btn {
@@ -155,7 +153,6 @@
         .login-btn:active { transform: scale(0.97); }
         .login-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ===== 用户名字标签 ===== */
         .user-chips {
             display: flex; flex-wrap: wrap; gap: 10px;
             justify-content: center; margin-top: 8px;
@@ -191,7 +188,6 @@
         }
 
         .user-chip .chip-delete:active { transform: scale(0.9); }
-
         .manage-mode .user-chip { cursor: default; }
         .manage-mode .user-chip .chip-delete { display: block; }
 
@@ -214,7 +210,6 @@
             color: var(--danger);
         }
 
-        /* ===== 删除确认弹窗 ===== */
         .delete-overlay {
             position: fixed; inset: 0;
             background: rgba(42, 32, 24, 0.4);
@@ -266,9 +261,7 @@
             transition: all 0.15s;
         }
 
-        .delete-option.selected .option-dot {
-            border-color: var(--accent);
-        }
+        .delete-option.selected .option-dot { border-color: var(--accent); }
 
         .delete-option.selected .option-dot::after {
             content: '';
@@ -278,16 +271,8 @@
         }
 
         .option-text { flex: 1; }
-
-        .option-title {
-            font-size: 0.88rem; font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .option-desc {
-            font-size: 0.75rem; color: var(--text-muted);
-            line-height: 1.5;
-        }
+        .option-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 2px; }
+        .option-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
 
         .delete-dialog-actions {
             display: flex; gap: 10px; margin-top: 20px;
@@ -307,14 +292,9 @@
             border: 1px solid var(--border-light);
         }
 
-        .delete-confirm {
-            background: var(--danger); color: #fff;
-            border: none;
-        }
-
+        .delete-confirm { background: var(--danger); color: #fff; border: none; }
         .delete-confirm:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* ===== 卡片 ===== */
         .card {
             width: 100%; background: var(--surface); border-radius: 20px;
             padding: 48px 28px 40px; text-align: center;
@@ -360,7 +340,6 @@
         .score-mid  { background: var(--accent-bg);    color: var(--accent);  }
         .score-high { background: var(--danger-bg);    color: var(--danger);  }
 
-        /* ===== 按钮 ===== */
         #actionBtns {
             display: flex; flex-direction: row; gap: 12px;
             width: 100%; max-width: 320px; margin-top: 20px; min-height: 52px;
@@ -398,7 +377,6 @@
         }
 
         .btn-round:active { transform: scale(0.96); }
-
         .round-card { padding: 36px 28px; }
 
         .round-title {
@@ -408,7 +386,6 @@
 
         .round-detail { color: var(--text-muted); font-size: 0.9rem; line-height: 1.8; }
 
-        /* ===== 学习报告 ===== */
         .report-overlay {
             position: fixed; inset: 0; background: rgba(248, 244, 236, 0.97);
             z-index: 100; overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -425,9 +402,7 @@
         .report-summary strong { color: var(--accent); }
 
         .report-section { width: 100%; max-width: 440px; margin-bottom: 24px; }
-
         .report-section h3 { font-size: 0.88rem; font-weight: 700; margin-bottom: 10px; }
-
         .report-table { width: 100%; border-collapse: collapse; }
 
         .report-table th {
@@ -466,7 +441,6 @@
             border: 1px solid var(--border-light);
         }
 
-        /* ===== 选择面板 ===== */
         .selector-card {
             width: 100%; background: var(--surface); border-radius: 20px;
             padding: 28px 20px 24px;
@@ -487,7 +461,6 @@
         }
 
         .book-header:hover { background: var(--bg-subtle); }
-
         .book-name { font-size: 0.88rem; font-weight: 600; }
 
         .book-arrow {
@@ -495,9 +468,7 @@
         }
 
         .book-section.collapsed .book-arrow { transform: rotate(-90deg); }
-
         .book-units { padding: 0 0 6px 0; }
-
         .book-section.collapsed .book-units { display: none; }
 
         .unit-item {
@@ -506,7 +477,6 @@
         }
 
         .unit-item:hover { background: var(--bg-subtle); }
-
         .unit-item input[type="checkbox"] { display: none; }
 
         .unit-checkmark {
@@ -522,12 +492,9 @@
         }
 
         .unit-name { flex: 1; font-size: 0.9rem; }
-
         .unit-count { font-size: 0.75rem; color: var(--text-muted); }
 
-        .selector-divider {
-            height: 1px; background: var(--border-light); margin: 16px 0;
-        }
+        .selector-divider { height: 1px; background: var(--border-light); margin: 16px 0; }
 
         .selector-info {
             text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;
@@ -606,7 +573,6 @@
         .start-btn:active { transform: scale(0.97); }
         .start-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ===== 记分看板 ===== */
         .scoreboard-scroll {
             max-height: 50vh; overflow-y: auto;
             -webkit-overflow-scrolling: touch; padding-right: 4px;
@@ -621,7 +587,6 @@
         }
 
         .scoreboard-row:hover { background: var(--bg-subtle); }
-
         .scoreboard-word { flex: 1; font-size: 0.88rem; font-weight: 600; }
 
         .scoreboard-meta {
@@ -667,7 +632,6 @@
             background: var(--accent); color: #fff; border-color: var(--accent);
         }
 
-        /* ===== 动画 ===== */
         @keyframes meaningReveal {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
@@ -675,7 +639,6 @@
 
         .meaning-animate { animation: meaningReveal 0.35s ease forwards; }
 
-        /* ===== 拼写输入 ===== */
         .spell-wrap {
             display: flex; gap: 8px;
             align-items: center; justify-content: center;
@@ -720,7 +683,6 @@
             animation: meaningReveal 0.3s ease forwards;
         }
 
-        /* ===== 学习统计 ===== */
         .stats-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 10px; margin-bottom: 24px;
@@ -802,9 +764,7 @@
             color: var(--text-muted);
         }
 
-        /* ===== 阶段过渡 ===== */
         .phase-card { padding: 40px 28px; }
-
         .phase-icon { font-size: 2.5rem; margin-bottom: 16px; }
 
         .phase-title {
@@ -1031,7 +991,9 @@
             enterApp();
         }
 
+        // [改动] enterApp: 读本地缓存立即渲染，后台同步云端
         function enterApp() {
+            syncFromCloud();
             if (loadProgress()) {
                 document.getElementById("progressBar").style.display = "";
                 updateStats();
@@ -1091,19 +1053,23 @@
             if (el) el.remove();
         }
 
+        // [改动] 彻底删除时同时清理本地缓存
         async function confirmDeleteUser(name) {
             var mode = document.querySelector('input[name="deleteMode"]:checked').value;
             var uid = nameToUUID(name);
 
             removeUserFromList(name);
-
             try { localStorage.removeItem("vocab_progress_" + uid); } catch (e) {}
 
-            if (USER_NAME === name) {
-                logoutUser();
-            }
+            if (USER_NAME === name) { logoutUser(); }
 
             if (mode === "all") {
+                // 清理本地缓存
+                try {
+                    localStorage.removeItem("vocab_history_" + uid);
+                    localStorage.removeItem("vocab_sessions_" + uid);
+                } catch (e) {}
+                // 清理云端数据
                 try {
                     await sb.from('vocab_history').delete().eq('user_id', uid);
                     await sb.from('vocab_sessions').delete().eq('user_id', uid);
@@ -1111,13 +1077,9 @@
             }
 
             closeDeleteDialog();
-
             var users = getAllUsers();
-            if (users.length === 0) {
-                showLogin();
-            } else {
-                renderLoginCard();
-            }
+            if (users.length === 0) { showLogin(); }
+            else { renderLoginCard(); }
         }
 
         // =============================================
@@ -1181,10 +1143,66 @@
         }
 
         // =============================================
-        //  云存储层
+        //  [新增] 本地缓存层
         // =============================================
 
-        async function cloudLoadHistory() {
+        function cacheLoadHistory() {
+            if (!USER_ID) return {};
+            try {
+                var raw = localStorage.getItem("vocab_history_" + USER_ID);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return {};
+        }
+
+        function cacheSaveHistory(map) {
+            if (!USER_ID) return;
+            try {
+                localStorage.setItem("vocab_history_" + USER_ID, JSON.stringify(map));
+            } catch (e) {}
+        }
+
+        function cacheLoadSessions() {
+            if (!USER_ID) return [];
+            try {
+                var raw = localStorage.getItem("vocab_sessions_" + USER_ID);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return [];
+        }
+
+        function cacheSaveSessions(dates) {
+            if (!USER_ID) return;
+            try {
+                localStorage.setItem("vocab_sessions_" + USER_ID, JSON.stringify(dates));
+            } catch (e) {}
+        }
+
+        function mergeHistory(local, cloud) {
+            var merged = {};
+            var allKeys = {};
+            for (var k in local) allKeys[k] = true;
+            for (var k in cloud) allKeys[k] = true;
+            for (var k in allKeys) {
+                var lArr = local[k] || [];
+                var cArr = cloud[k] || [];
+                merged[k] = lArr.length >= cArr.length ? lArr : cArr;
+            }
+            return merged;
+        }
+
+        function mergeSessions(local, cloud) {
+            var merged = {};
+            local.forEach(function (d) { merged[d] = true; });
+            cloud.forEach(function (d) { merged[d] = true; });
+            return Object.keys(merged).sort();
+        }
+
+        // =============================================
+        //  [改动] 云端操作（仅用于同步）
+        // =============================================
+
+        async function cloudFetchHistory() {
             if (!USER_ID) return {};
             try {
                 var { data, error } = await sb.from('vocab_history')
@@ -1199,16 +1217,15 @@
             } catch (e) { return {}; }
         }
 
-        async function cloudSaveHistory(wordScoresMap) {
+        async function cloudPushHistory(historyMap) {
             if (!USER_ID) return;
             try {
-                var words = Object.keys(wordScoresMap);
+                var words = Object.keys(historyMap);
                 if (words.length === 0) return;
 
                 var { data: existing } = await sb.from('vocab_history')
                     .select('word')
-                    .eq('user_id', USER_ID)
-                    .in('word', words);
+                    .eq('user_id', USER_ID);
 
                 var existingWords = {};
                 if (existing) existing.forEach(function (r) { existingWords[r.word] = true; });
@@ -1218,33 +1235,40 @@
 
                 words.forEach(function (w) {
                     if (existingWords[w]) {
-                        toUpdate.push({ user_id: USER_ID, word: w, scores: wordScoresMap[w] });
+                        toUpdate.push({ user_id: USER_ID, word: w, scores: historyMap[w] });
                     } else {
-                        toInsert.push({ user_id: USER_ID, word: w, scores: wordScoresMap[w] });
+                        toInsert.push({ user_id: USER_ID, word: w, scores: historyMap[w] });
                     }
                 });
 
+                // 并行执行所有写入
+                var promises = [];
                 if (toInsert.length > 0) {
-                    await sb.from('vocab_history').insert(toInsert);
+                    promises.push(sb.from('vocab_history').insert(toInsert));
                 }
                 for (var i = 0; i < toUpdate.length; i++) {
-                    await sb.from('vocab_history')
-                        .update({ scores: toUpdate[i].scores })
-                        .eq('user_id', USER_ID)
-                        .eq('word', toUpdate[i].word);
+                    promises.push(
+                        sb.from('vocab_history')
+                            .update({ scores: toUpdate[i].scores })
+                            .eq('user_id', USER_ID)
+                            .eq('word', toUpdate[i].word)
+                    );
                 }
-            } catch (e) { console.warn('保存历史失败', e); }
+                if (promises.length > 0) {
+                    await Promise.all(promises);
+                }
+            } catch (e) { console.warn('同步历史到云端失败', e); }
         }
 
-        async function cloudSaveSession() {
+        async function cloudPushSession() {
             if (!USER_ID) return;
             try {
                 await sb.from('vocab_sessions')
                     .insert({ user_id: USER_ID, date: new Date().toISOString().slice(0, 10) });
-            } catch (e) { console.warn('保存会话失败', e); }
+            } catch (e) { console.warn('推送会话失败', e); }
         }
 
-        async function cloudLoadSessions() {
+        async function cloudFetchSessions() {
             if (!USER_ID) return [];
             try {
                 var { data } = await sb.from('vocab_sessions')
@@ -1254,16 +1278,45 @@
             } catch (e) { return []; }
         }
 
+        // [改动] 批量删除，单次请求
         async function cloudDeleteHistory(words) {
             if (!USER_ID) return;
             try {
-                for (var i = 0; i < words.length; i++) {
-                    await sb.from('vocab_history')
-                        .delete()
-                        .eq('user_id', USER_ID)
-                        .eq('word', words[i]);
-                }
+                await sb.from('vocab_history')
+                    .delete()
+                    .eq('user_id', USER_ID)
+                    .in('word', words);
             } catch (e) { console.warn('删除失败', e); }
+        }
+
+        // =============================================
+        //  [新增] 同步逻辑
+        // =============================================
+
+        async function syncFromCloud() {
+            if (!USER_ID) return;
+            try {
+                var results = await Promise.all([
+                    cloudFetchHistory(),
+                    cloudFetchSessions()
+                ]);
+                var cloudHistory = results[0];
+                var cloudSessions = results[1];
+
+                var localHistory = cacheLoadHistory();
+                var localSessions = cacheLoadSessions();
+
+                cacheSaveHistory(mergeHistory(localHistory, cloudHistory));
+                cacheSaveSessions(mergeSessions(localSessions, cloudSessions));
+            } catch (e) { console.warn('从云端同步失败', e); }
+        }
+
+        async function syncToCloud() {
+            if (!USER_ID) return;
+            try {
+                var history = cacheLoadHistory();
+                await cloudPushHistory(history);
+            } catch (e) { console.warn('推送到云端失败', e); }
         }
 
         // =============================================
@@ -1332,6 +1385,7 @@
             return text.replace(/…/g, ' ').replace(/\s+/g, ' ').trim();
         }
 
+        // [改动] 去掉 -、…、— 和所有空格，容忍用户少打连接符
         function normalizeForCompare(text) {
             return text.toLowerCase()
                 .replace(/…/g, '')
@@ -1343,7 +1397,7 @@
                 .trim();
         }
 
-        // 指数衰减加权平均（衰减系数 0.6，越近期权重越高）
+        // [改动] 统一指数衰减加权
         function calcWeightedAvg(arr) {
             if (!arr || arr.length === 0) return 0;
             var n = arr.length;
@@ -1462,12 +1516,13 @@
             if (el) el.classList.toggle("collapsed");
         }
 
-        async function updateSelectedCount() {
+        // [改动] 读本地缓存
+        function updateSelectedCount() {
             var cbs = document.querySelectorAll(".unit-checkbox");
             var total = 0;
             var noHistUnits = [];
 
-            var history = await cloudLoadHistory();
+            var history = cacheLoadHistory();
 
             cbs.forEach(function (cb) {
                 if (cb.checked) {
@@ -1562,8 +1617,9 @@
             return arr.slice(0, count);
         }
 
-        async function pickWeakest(pool, count) {
-            var history = await cloudLoadHistory();
+        // [改动] 读本地缓存
+        function pickWeakest(pool, count) {
+            var history = cacheLoadHistory();
             var items = pool.map(function (w) {
                 var arr = history[w.en];
                 var weaknessScore = 0, has = false;
@@ -1607,7 +1663,7 @@
 
             var words;
             if (currentStrategy === "weakest") {
-                words = await pickWeakest(pool, count);
+                words = pickWeakest(pool, count);
             } else {
                 words = pickRandom(pool, count);
             }
@@ -1740,6 +1796,7 @@
             }
         }
 
+        // [改动] 已会按钮可切换回浅绿
         function handleBtn(btn) {
             if (!meaningShown) {
                 meaningShown = true;
@@ -1749,11 +1806,9 @@
             } else {
                 if (currentChoice === "known") {
                     if (btn === "known") {
-                        // 再次点已会 → 撤销，回到未选择状态
                         currentChoice = null;
                         updateHighlights();
                     } else {
-                        // 点 → → 保持已会，进入下一个词
                         advanceWord("known");
                     }
                 } else {
@@ -1823,6 +1878,7 @@
             el.className = "action-btn btn-known" + (currentChoice === "known" ? " active" : "");
         }
 
+        // [改动] 推进时记录 lastAction，用于右滑撤销
         function advanceWord(status) {
             if (currentIndex >= remainingWords.length) {
                 if (remainingWords.length === 0) {
@@ -1836,6 +1892,7 @@
 
             var word = remainingWords[currentIndex];
             var spliceIdx = currentIndex;
+            var prevRound = wordsLearnedRound[word.en];
 
             wordScores[word.en]++;
 
@@ -1859,13 +1916,13 @@
                 updateStats();
                 showRoundEnd();
             } else {
-                lastAction = { word: word, status: status, spliceIndex: spliceIdx, prevLearnedRound: wordsLearnedRound[word.en] };
+                lastAction = { word: word, status: status, spliceIndex: spliceIdx, prevLearnedRound: prevRound };
                 renderCard();
             }
         }
 
         // =============================================
-        //  右滑撤销
+        //  [新增] 右滑撤销
         // =============================================
 
         function undoLastAction() {
@@ -1970,16 +2027,25 @@
         //  学习报告
         // =============================================
 
-        async function showReport() {
+        // [改动] 读写本地缓存，瞬间渲染，后台同步云端
+        function showReport() {
             lastAction = null;
 
-            var history = await cloudLoadHistory();
+            var history = cacheLoadHistory();
             allWords.forEach(function (w) {
                 if (!history[w.en]) history[w.en] = [];
                 history[w.en].push(wordScores[w.en]);
             });
-            await cloudSaveHistory(history);
-            await cloudSaveSession();
+            cacheSaveHistory(history);
+
+            var sessions = cacheLoadSessions();
+            var today = new Date().toISOString().slice(0, 10);
+            if (sessions.indexOf(today) === -1) sessions.push(today);
+            cacheSaveSessions(sessions);
+
+            // 后台同步，不阻塞 UI
+            syncToCloud();
+            cloudPushSession();
 
             clearProgress();
 
@@ -2052,7 +2118,7 @@
             var count = Math.min(sessionConfig.wordCount, pool.length);
             var words;
             if (sessionConfig.strategy === "weakest") {
-                words = await pickWeakest(pool, count);
+                words = pickWeakest(pool, count);
             } else {
                 words = pickRandom(pool, count);
             }
@@ -2083,13 +2149,14 @@
         //  记分看板
         // =============================================
 
-        async function showScoreBoard() {
+        // [改动] 读本地缓存
+        function showScoreBoard() {
             clearProgress();
             lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
-            var history = await cloudLoadHistory();
+            var history = cacheLoadHistory();
             var items = [];
 
             for (var book in wordBank) {
@@ -2208,6 +2275,7 @@
             });
         }
 
+        // [改动] 立即写本地 + 立即同步云端（批量单次请求）
         async function resetScoreboardSelected() {
             var cbs = document.querySelectorAll('.scoreboard-checkbox:checked');
             if (cbs.length === 0) { alert('请先勾选要归零的单词'); return; }
@@ -2222,6 +2290,12 @@
 
             if (!confirm(msg)) return;
 
+            // 立即更新本地缓存
+            var localHistory = cacheLoadHistory();
+            words.forEach(function (w) { delete localHistory[w]; });
+            cacheSaveHistory(localHistory);
+
+            // 立即同步云端
             await cloudDeleteHistory(words);
 
             alert('已清除 ' + words.length + ' 个单词的历史分数');
@@ -2232,14 +2306,15 @@
         //  学习统计
         // =============================================
 
-        async function showStats() {
+        // [改动] 读本地缓存
+        function showStats() {
             clearProgress();
             lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
-            var history = await cloudLoadHistory();
-            var sessions = await cloudLoadSessions();
+            var history = cacheLoadHistory();
+            var sessions = cacheLoadSessions();
 
             var uniqueDates = [];
             sessions.forEach(function (d) { if (uniqueDates.indexOf(d) === -1) uniqueDates.push(d); });
@@ -2347,11 +2422,18 @@
         }
 
         // =============================================
-        //  启动（始终显示登录页）
+        //  启动
         // =============================================
 
         loadAutoPlayPref();
         showLogin();
+
+        // [新增] 页面离开时同步云端
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden' && USER_ID) {
+                syncToCloud();
+            }
+        });
     </script>
 
 </body>
