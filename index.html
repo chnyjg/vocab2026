@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="vocab_think_starter.js"></script>
     <script src="vocab_waiyan_1.js"></script>
+    <script src="vocab_detail.js"></script>
 
     <style>
         :root {
@@ -368,6 +369,12 @@
         .btn-arrow {
             background: var(--bg-subtle); color: var(--text-muted);
             border: 1px solid var(--border-light); font-size: 1.2rem;
+        }
+
+        .btn-detail {
+            background: var(--accent-bg); color: var(--accent);
+            border: 1px solid var(--accent);
+            font-size: 0.85rem;
         }
 
         .btn-round {
@@ -826,6 +833,83 @@
         .phase-detail {
             color: var(--text-muted); font-size: 0.88rem; line-height: 1.8; margin-bottom: 4px;
         }
+
+        /* ===== 拓展浮层 ===== */
+        .detail-overlay {
+            position: fixed; inset: 0;
+            background: rgba(248, 244, 236, 0.97);
+            z-index: 110; overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 36px 16px 60px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .detail-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem; font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .detail-phonetic {
+            color: var(--text-muted); font-size: 0.88rem;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 24px;
+        }
+
+        .detail-section {
+            width: 100%; max-width: 440px;
+            margin-bottom: 22px;
+        }
+
+        .detail-section h3 {
+            font-size: 0.88rem; font-weight: 700;
+            margin-bottom: 10px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .detail-section ul {
+            list-style: none; padding: 0;
+        }
+
+        .detail-section li {
+            padding: 8px 12px; font-size: 0.88rem;
+            line-height: 1.6; border-radius: 10px;
+            margin-bottom: 4px;
+        }
+
+        .detail-section li:nth-child(odd) {
+            background: var(--bg-subtle);
+        }
+
+        .detail-comparison {
+            padding: 14px 16px;
+            background: var(--accent-bg);
+            border-radius: 12px;
+            font-size: 0.85rem; line-height: 1.7;
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .detail-example-en {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600; font-size: 0.92rem;
+            margin-bottom: 4px;
+        }
+
+        .detail-example-cn {
+            color: var(--text-muted); font-size: 0.82rem;
+        }
+
+        .detail-close {
+            margin-top: 12px; padding: 14px 48px;
+            background: var(--accent); color: #fff;
+            border: none; border-radius: 14px;
+            font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; font-family: 'Noto Sans SC', sans-serif;
+            transition: transform 0.15s;
+        }
+
+        .detail-close:active { transform: scale(0.96); }
     </style>
 </head>
 
@@ -1933,8 +2017,13 @@
             }
             html += '  </div>';
             html += '</div>';
+            var hasDetail = wordDetail && wordDetail[word.en];
+
             html += '<div id="actionBtns">';
             html += '  <button class="action-btn btn-known" id="btnKnown" onclick="handleBtn(\'known\')">已会</button>';
+            if (hasDetail) {
+                html += '  <button class="action-btn btn-detail" onclick="showDetail(allWords[currentIndex])">拓展</button>';
+            }
             html += '  <button class="action-btn btn-arrow" onclick="handleBtn(\'arrow\')">→</button>';
             html += '</div>';
 
@@ -2152,6 +2241,12 @@
             } else if (e.key === 'ArrowLeft') {
                 e.preventDefault();
                 if (lastAction) undoLastAction();
+            } else if (e.key === 'd' || e.key === 'D') {
+                var word = allWords[currentIndex];
+                if (wordDetail && wordDetail[word.en]) {
+                    e.preventDefault();
+                    showDetail(word);
+                }
             }
         });
 
@@ -2807,6 +2902,63 @@
 
         loadAutoPlayPref();
         showLogin();
+
+        // =============================================
+        //  拓展知识点浮层
+        // =============================================
+
+        function showDetail(word) {
+            var d = wordDetail[word.en];
+            if (!d) return;
+
+            var html = '<div class="detail-overlay" id="detailOverlay">';
+            html += '<div class="detail-title">' + normalizeForDisplay(word.en) + '</div>';
+            html += '<div class="detail-phonetic">' + word.phonetic + '</div>';
+
+            if (d.family && d.family.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>📖 词族</h3><ul>';
+                d.family.forEach(function (item) {
+                    html += '<li>' + item + '</li>';
+                });
+                html += '</ul></div>';
+            }
+
+            if (d.phrases && d.phrases.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>📝 常用短语</h3><ul>';
+                d.phrases.forEach(function (item) {
+                    html += '<li>' + item + '</li>';
+                });
+                html += '</ul></div>';
+            }
+
+            if (d.examples && d.examples.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>💬 例句</h3><ul>';
+                d.examples.forEach(function (item) {
+                    html += '<li><div class="detail-example-en">' + item + '</div></li>';
+                });
+                html += '</ul></div>';
+            }
+
+            if (d.comparison && d.comparison.length > 0) {
+                html += '<div class="detail-section">';
+                html += '<h3>🔍 词义辨析</h3>';
+                html += '<div class="detail-comparison">' + d.comparison + '</div>';
+                html += '</div>';
+            }
+
+            html += '<button class="detail-close" onclick="closeDetail()">返回</button>';
+            html += '</div>';
+
+            document.body.appendChild(html);
+        }
+
+        function closeDetail() {
+            var el = document.getElementById("detailOverlay");
+            if (el) el.remove();
+        }
 
         // [新增] 页面离开时同步云端
         document.addEventListener('visibilitychange', function () {
