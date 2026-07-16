@@ -925,6 +925,21 @@
         }
 
         function handleUserBadge() {
+            var hasProgress = false;
+            if (USER_ID) {
+                try {
+                    var raw = localStorage.getItem(progressKey());
+                    hasProgress = !!raw;
+                } catch (e) {}
+            }
+
+            if (hasProgress) {
+                if (!confirm("确定要中断当前学习吗？\n进行中的进度将不会保留。")) {
+                    return;
+                }
+                clearProgress();
+            }
+
             logoutUser();
             showLogin();
         }
