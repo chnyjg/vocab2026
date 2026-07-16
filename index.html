@@ -2952,7 +2952,7 @@
             html += '<button class="detail-close" onclick="closeDetail()">返回</button>';
             html += '</div>';
 
-            document.body.appendChild(html);
+            document.body.insertAdjacentHTML('beforeend', html);
         }
 
         function closeDetail() {
