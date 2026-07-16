@@ -2022,7 +2022,7 @@
             html += '<div id="actionBtns">';
             html += '  <button class="action-btn btn-known" id="btnKnown" onclick="handleBtn(\'known\')">已会</button>';
             if (hasDetail) {
-                html += '  <button class="action-btn btn-detail" onclick="showDetail(allWords[currentIndex])">拓展</button>';
+                html += '  <button class="action-btn btn-detail" onclick="showDetail(remainingWords[currentIndex])">拓展</button>';
             }
             html += '  <button class="action-btn btn-arrow" onclick="handleBtn(\'arrow\')">→</button>';
             html += '</div>';
@@ -2242,7 +2242,7 @@
                 e.preventDefault();
                 if (lastAction) undoLastAction();
             } else if (e.key === 'd' || e.key === 'D') {
-                var word = allWords[currentIndex];
+                var word = remainingWords[currentIndex];
                 if (wordDetail && wordDetail[word.en]) {
                     e.preventDefault();
                     showDetail(word);
