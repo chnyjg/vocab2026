@@ -81,7 +81,7 @@ wordBank["外研版 必修一"] = {
         { en: "performance", phonetic: "/pəˈfɔːməns/", cn: "n.表现" },
         { en: "exchange", phonetic: "/ɪksˈtʃeɪndʒ/", cn: "v.交流" },
         // 短语
-        { en: "senior high", phonetic: "", cn: "高中" },
+        { en: "senior high school", phonetic: "", cn: "高中" },
         { en: "one by one", phonetic: "", cn: "依次地，一个接一个地" },
         { en: "butterflies in one's stomach", phonetic: "", cn: "情绪紧张，心里发慌" },
         { en: "in panic", phonetic: "", cn: "惊慌地" },

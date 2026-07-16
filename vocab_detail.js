@@ -4,7 +4,7 @@ function D(f, p, e, c) { return { family: f, phrases: p, examples: e, comparison
 var wordDetail = {
 
 // ===== Unit 1 =====
-"senior": D(["seniority n.资历","junior adj.低年级的"],["senior high","senior student"],["He is a senior student in our school."],"近义词：advanced；反义词：junior；senior侧重年级/级别高，advanced侧重水平先进"),
+"senior": D(["seniority n.资历","junior adj.低年级的"],["senior high school","senior student"],["He is a senior student in our school."],"近义词：advanced；反义词：junior；senior侧重年级/级别高，advanced侧重水平先进"),
 "curious": D(["curiosity n.好奇心","curiously adv.好奇地"],["be curious about","be curious to do"],["All kids are curious about new things."],"近义词：interested；反义词：uninterested；curious带探寻未知的好奇，interested泛指感兴趣"),
 "impression": D(["impress v.使印象深刻","impressive adj.令人印象深刻的"],["make an impression","first impression"],["Her smile left a good impression on me."],"近义词：feeling；无反义词；impression侧重外界带来的观感"),
 "campus": D([],["on campus","campus life"],["We take a walk around the campus after class."],"近义词：schoolyard；无反义词；campus专指大/高中校园，schoolyard多指小学操场"),
@@ -55,8 +55,8 @@ var wordDetail = {
 "hint": D(["hint v.暗示"],["give a hint","take a hint"],["The teacher gives us a hint to memorise new words."],"近义词：suggestion；无反义词；hint间接提示，suggestion直接建议"),
 "subscribe": D(["subscription n.订阅","subscriber n.订阅者"],["subscribe to a magazine","subscribe to journal"],["I subscribe to an English journal to improve reading."],"近义词：order；无反义词；subscribe长期订阅刊物，order单次订购"),
 "view": D(["view v.看待","viewer n.观看者"],["a good view","one's view of school"],["We have a great view of the campus from the window."],"近义词：sight；无反义词；view远景视野，sight眼前所见事物"),
-"former": D(["formerly adv.从前"],["former classmate","former teacher"],["My former teacher comes to visit our senior high today."],"近义词：past；反义词：current；former指前任/过去的人，past泛指过去时间"),
-"graduate": D(["graduate n.毕业生","graduation n.毕业"],["graduate from senior high","graduate this year"],["We will graduate from this school in three years."],"近义词：finish；无反义词；graduate特指完成学业毕业"),
+"former": D(["formerly adv.从前"],["former classmate","former teacher"],["My former teacher comes to visit our senior high school today."],"近义词：past；反义词：current；former指前任/过去的人，past泛指过去时间"),
+"graduate": D(["graduate n.毕业生","graduation n.毕业"],["graduate from senior high school","graduate this year"],["We will graduate from this school in three years."],"近义词：finish；无反义词；graduate特指完成学业毕业"),
 "orientation": D(["orient v.熟悉","oriented adj.导向的"],["Orientation Day","school orientation"],["All freshmen take part in school orientation on Monday."],""),
 "frightened": D(["frighten v.使害怕","frightening adj.令人害怕的"],["feel frightened","frightened of insects"],["I feel frightened when I see big insects in the garden."],"近义词：scared；反义词：brave；frightened人感到害怕，frightening事物吓人"),
 "sight": D(["sightsee v.观光","sightseeing n.游览"],["catch sight of","at first sight"],["I catch sight of a beautiful rainbow after class."],"近义词：view；无反义词；sight侧重偶然看见，view开阔视野"),
@@ -78,7 +78,7 @@ var wordDetail = {
 "rate": D(["rate n.速度","rating n.评分"],["rate performance","rate carefully"],["Teachers rate our club performance every month."],"近义词：judge；无反义词；rate打分评估，judge主观判断"),
 "performance": D(["perform v.表演","performer n.表演者"],["good performance","stage performance"],["The band's performance on stage is very impressive."],"近义词：show；无反义词；performance综合表现/正式演出，show小型展示"),
 "exchange": D(["exchange n.交换","exchangeable adj.可交换的"],["exchange ideas","exchange thoughts"],["We exchange study ideas with new classmates after class."],"近义词：share；无反义词；exchange互相交换，share分享共用"),
-"senior high": D([],["attend senior high","senior high life"],["I enjoy my new senior high life very much."],""),
+"senior high school": D([],["attend senior high school","senior high school life"],["I enjoy my new senior high school life very much."],""),
 "one by one": D([],["check one by one","select one by one"],["We go onto the stage one by one to give speeches."],""),
 "butterflies in one's stomach": D([],["have butterflies in one's stomach"],["I have butterflies in my stomach before speaking on stage."],""),
 "in panic": D([],["run in panic","act in panic"],["Don't act in panic when you meet new challenges."],""),
