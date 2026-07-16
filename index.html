@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="vocab.js"></script>
+    <script src="vocab_think_starter.js"></script>
+    <script src="vocab_waiyan_1.js"></script>
 
     <style>
         :root {
@@ -1521,7 +1522,7 @@
 
             if (!hasAnyUnit) {
                 html += '<div style="text-align:center;color:var(--text-muted);padding:20px 0;">'
-                      + 'vocab.js 中还没有单词数据</div>';
+                      + '还没有单词数据</div>';
             }
 
             html += '<div class="selector-divider"></div>';
@@ -1850,7 +1851,14 @@
         }
 
         function updateStats() {
+            // 中→英阶段只计算需要默写的词
             var total = allWords.length;
+            if (currentPhase === "cn2en") {
+                total = 0;
+                for (var i = 0; i < allWords.length; i++) {
+                    if (allWords[i].spell !== false) total++;
+                }
+            }
             var left = remainingWords.length;
             var done = total - left;
             var pct = total > 0 ? Math.round(done / total * 100) : 0;
@@ -2164,11 +2172,37 @@
             var phaseLabel = currentPhase === "en2cn" ? "英→中" : "中→英";
             var nextLabel = currentPhase === "en2cn" ? "中→英" : "英→中";
 
+            var spellingWords = allWords.filter(function(w) { return w.spell !== false; });
+            var readingOnlyCount = allWords.length - spellingWords.length;
+
+            // 英→中完成，但所有词都只需认读，跳过中→英
+            if (currentPhase === "en2cn" && spellingWords.length === 0) {
+                var html = '<div class="card phase-card">'
+                    + '<div class="phase-icon">✅</div>'
+                    + '<div class="phase-title">全部完成</div>'
+                    + '<div class="phase-detail">共 ' + currentRound + ' 轮 · ' + allWords.length + ' 词全部通过</div>'
+                    + '<div class="phase-detail" style="margin-top:12px;">'
+                    + '本批词汇只需认读，无需默写</div>'
+                    + '</div>'
+                    + '<button class="btn-round" onclick="showReport()">'
+                    + '查看学习报告</button>';
+                document.getElementById("mainArea").innerHTML = html;
+                saveProgress();
+                return;
+            }
+
             var html = '<div class="card phase-card">'
                 + '<div class="phase-icon">✅</div>'
                 + '<div class="phase-title">' + phaseLabel + ' 阶段完成</div>'
-                + '<div class="phase-detail">共 ' + currentRound + ' 轮 · ' + allWords.length + ' 词全部通过</div>'
-                + '<div class="phase-detail" style="margin-top:12px;">'
+                + '<div class="phase-detail">共 ' + currentRound + ' 轮 · ' + allWords.length + ' 词全部通过</div>';
+
+            // 英→中完成，混合词类时显示分类信息
+            if (currentPhase === "en2cn" && readingOnlyCount > 0) {
+                html += '<div class="phase-detail" style="margin-top:8px;">'
+                    + spellingWords.length + ' 词需默写，' + readingOnlyCount + ' 词只需认读</div>';
+            }
+
+            html += '<div class="phase-detail" style="margin-top:12px;">'
                 + '接下来进行 <strong style="color:var(--accent)">' + nextLabel + '</strong></div>'
                 + '</div>'
                 + '<button class="btn-round" onclick="startNextPhase()">'
@@ -2181,7 +2215,8 @@
         function startNextPhase() {
             lastAction = null;
             currentPhase = "cn2en";
-            remainingWords = allWords.slice();
+            // 只保留需要默写的词
+            remainingWords = allWords.filter(function(w) { return w.spell !== false; });
             currentIndex = 0;
             currentRound = 1;
             saveProgress();
@@ -2230,10 +2265,11 @@
 
             function makeRows(list, bg, tc) {
                 return list.map(function (w) {
+                    var roundText = w.spell === false ? '认读' : '第' + wordsLearnedRound[w.en] + '轮';
                     return '<tr><td>' + w.en + '</td>'
                         + '<td><span class="report-score-badge" style="background:' + bg + ';color:' + tc + '">'
                         + wordScores[w.en] + '</span></td>'
-                        + '<td style="color:var(--text-muted);">第' + wordsLearnedRound[w.en] + '轮</td></tr>';
+                        + '<td style="color:var(--text-muted);">' + roundText + '</td></tr>';
                 }).join('');
             }
 
@@ -2258,7 +2294,17 @@
             overlay.className = "report-overlay";
             overlay.innerHTML = '<h2>📊 学习报告</h2>'
                 + '<div class="report-summary">' + displayName
-                + '<br>共 ' + allWords.length + ' 词 · 英→中 + 中→英 · 平均得分 <strong>' + avg + '</strong></div>'
+                + '<br>共 ' + allWords.length + ' 词'
+                + (function() {
+                    var sp = allWords.filter(function(w) { return w.spell !== false; }).length;
+                    var ro = allWords.length - sp;
+                    if (sp > 0 && ro > 0) return '（' + sp + ' 词默写 + ' + ro + ' 词认读）';
+                    if (ro > 0) return '（全部认读）';
+                    return '';
+                })()
+                + ' · '
+                + (allWords.filter(function(w) { return w.spell !== false; }).length > 0 ? '英→中 + 中→英' : '英→中')
+                + ' · 平均得分 <strong>' + avg + '</strong></div>'
                 + sections
                 + '<div class="report-actions">'
                 + '  <button class="report-btn report-btn-primary" onclick="restartFromConfig()">🔄 再背一遍</button>'
