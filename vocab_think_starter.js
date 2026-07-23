@@ -331,6 +331,29 @@ wordBank["Think Starter"] = {
         { en: "castle", cn: "城堡", phonetic: "/ˈkɑːsl/", spell: false },
         { en: "bridge", cn: "桥", phonetic: "/brɪdʒ/", spell: false },
         { en: "cable car", cn: "缆车", phonetic: "/ˈkeɪbl kɑː(r)/", spell: false }
+    ],
+
+    "Unit 5": [
+        // ---- 需掌握 ----
+        { en: "club", cn: "俱乐部", phonetic: "/klʌb/" },
+        { en: "activity", cn: "活动", phonetic: "/ækˈtɪvəti/" },
+        { en: "build robots", cn: "制造机器人", phonetic: "/bɪld ˈrəʊbɒts/" },
+        { en: "listen to music", cn: "听音乐", phonetic: "/ˈlɪsn tuː ˈmjuːzɪk/" },
+        { en: "play computer games", cn: "玩电脑游戏", phonetic: "/pleɪ kəmˈpjuːtə ɡeɪmz/" },
+        { en: "go shopping", cn: "去购物", phonetic: "/ɡəʊ ˈʃɒpɪŋ/" },
+        { en: "do homework", cn: "做作业", phonetic: "/duː ˈhəʊmwɜːk/" },
+        { en: "chat with friends online", cn: "线上和朋友聊天", phonetic: "/tʃæt wɪð frendz ˈɒnlaɪn/" },
+        { en: "hang out with friends", cn: "和朋友出去玩", phonetic: "/hæŋ aʊt wɪð frendz/" },
+        { en: "always", cn: "总是", phonetic: "/ˈɔːlweɪz/" },
+        { en: "usually", cn: "通常", phonetic: "/ˈjuːʒuəli/" },
+        { en: "often", cn: "经常", phonetic: "/ˈɒfn/" },
+        { en: "sometimes", cn: "有时", phonetic: "/ˈsʌmtaɪmz/" },
+        { en: "never", cn: "从不", phonetic: "/ˈnevə(r)/" },
+        // ---- 只认读 ----
+        { en: "leader", cn: "领导者", phonetic: "/ˈliːdə(r)/", spell: false },
+        { en: "on the internet", cn: "在网上", phonetic: "/ɒn ðə ˈɪntənet/", spell: false },
+        { en: "make friends", cn: "交朋友", phonetic: "/meɪk frendz/", spell: false },
+        { en: "competition", cn: "比赛", phonetic: "/ˌkɒmpəˈtɪʃn/", spell: false }
     ]
 
 };
