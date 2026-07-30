@@ -652,8 +652,13 @@
                 }
                 if (!hasWords) continue;
 
-                html += '<div class="book-section" id="book_' + book + '">';
+                html += '<div class="book-section collapsed" id="book_' + book + '">';
                 html += '<div class="book-header" onclick="toggleBook(\'' + escapeStr(book) + '\')">';
+                html += '  <input type="checkbox" class="book-checkbox" title="选择整本词书"'
+                     + ' onclick="event.stopPropagation()"'
+                     + ' onchange="toggleBookAll(\'' + escapeAttr(book) + '\', this)">';
+                html += '  <span class="unit-checkmark" title="选择整本词书"'
+                     + ' onclick="event.stopPropagation(); this.previousElementSibling.click();"></span>';
                 html += '  <span class="book-name">' + book + '</span>';
                 html += '  <span class="book-arrow">▾</span>';
                 html += '</div>';
@@ -729,6 +734,13 @@
             if (el) el.classList.toggle("collapsed");
         }
 
+        function toggleBookAll(book, box) {
+            var check = box.checked;
+            var cbs = document.querySelectorAll('.unit-checkbox[data-book="' + escapeAttr(book) + '"]');
+            cbs.forEach(function (cb) { cb.checked = check; });
+            updateSelectedCount();
+        }
+
         // [改动] 读本地缓存
         function updateSelectedCount() {
             var cbs = document.querySelectorAll(".unit-checkbox");
@@ -754,6 +766,23 @@
             });
 
             cachedNoHistUnits = noHistUnits;
+
+            // 同步各词书标题上的“全选”复选框状态
+            var bookState = {};
+            cbs.forEach(function (cb) {
+                var b = cb.getAttribute("data-book");
+                if (!bookState[b]) bookState[b] = { total: 0, checked: 0 };
+                bookState[b].total++;
+                if (cb.checked) bookState[b].checked++;
+            });
+            for (var b in bookState) {
+                var sec = document.getElementById("book_" + b);
+                if (!sec) continue;
+                var box = sec.querySelector(".book-checkbox");
+                if (!box) continue;
+                box.checked = (bookState[b].total > 0 && bookState[b].checked === bookState[b].total);
+                box.indeterminate = (bookState[b].checked > 0 && bookState[b].checked < bookState[b].total);
+            }
 
             document.getElementById("selectedCount").textContent = total;
 

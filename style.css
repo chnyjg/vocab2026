@@ -457,12 +457,17 @@
         .book-name { font-size: 0.88rem; font-weight: 600; }
 
         .book-arrow {
-            font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s ease;
+            font-size: 1.2rem; color: var(--text-primary); line-height: 1; transition: transform 0.2s ease;
         }
 
         .book-section.collapsed .book-arrow { transform: rotate(-90deg); }
         .book-units { padding: 0 0 6px 0; }
         .book-section.collapsed .book-units { display: none; }
+
+        .book-header { justify-content: flex-start; gap: 8px; }
+        .book-arrow { margin-left: auto; }
+
+        .book-checkbox { display: none; }
 
         .unit-item {
             display: flex; align-items: center; padding: 10px 12px 10px 16px;
@@ -472,16 +477,25 @@
         .unit-item:hover { background: var(--bg-subtle); }
         .unit-item input[type="checkbox"] { display: none; }
 
+        /* 统一的自定义复选框（全选框与单元项共用） */
         .unit-checkmark {
             width: 20px; height: 20px; flex-shrink: 0;
-            border: 2px solid rgba(0,0,0,0.15); border-radius: 5px;
+            border: 2px solid var(--text-muted); border-radius: 5px;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.15s; font-size: 0.7rem;
+            transition: all 0.15s; color: #fff; font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; position: relative;
         }
+        .unit-checkmark::after { content: '✓'; opacity: 0; transition: opacity 0.15s; }
 
-        .unit-item input:checked ~ .unit-checkmark {
+        .unit-item input[type="checkbox"]:checked ~ .unit-checkmark,
+        .book-checkbox:checked ~ .unit-checkmark {
             background: var(--accent); border-color: var(--accent);
-            color: #fff; font-weight: 700;
+        }
+        .unit-item input[type="checkbox"]:checked ~ .unit-checkmark::after,
+        .book-checkbox:checked ~ .unit-checkmark::after { opacity: 1; }
+
+        .book-checkbox:indeterminate ~ .unit-checkmark {
+            background: var(--accent); border-color: var(--accent); opacity: 0.55;
         }
 
         .unit-name { flex: 1; font-size: 0.9rem; }
