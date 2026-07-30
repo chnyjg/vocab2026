@@ -349,11 +349,34 @@ wordBank["Think Starter"] = {
         { en: "often", cn: "经常", phonetic: "/ˈɒfn/" },
         { en: "sometimes", cn: "有时", phonetic: "/ˈsʌmtaɪmz/" },
         { en: "never", cn: "从不", phonetic: "/ˈnevə(r)/" },
+        { en: "hour", cn: "小时", phonetic: "/ˈaʊə(r)/" },
+        { en: "more", cn: "更多的", phonetic: "/mɔː(r)/" },
+        { en: "less", cn: "更少的", phonetic: "/les/" },
+        { en: "between", cn: "在……之间", phonetic: "/bɪˈtwiːn/" },
+        { en: "check", cn: "查看", phonetic: "/tʃek/" },
+        { en: "before", cn: "在……（时间）之前", phonetic: "/bɪˈfɔː(r)/" },
+        { en: "after", cn: "在……（时间）之后", phonetic: "/ˈɑːftə(r)/" },
+        { en: "be careful", cn: "小心", phonetic: "/biː ˈkeəfl/" },
+        { en: "laptop", cn: "笔记本电脑", phonetic: "/ˈlæptɒp/" },
+        { en: "headphones", cn: "耳机", phonetic: "/ˈhedfəʊnz/" },
+        { en: "phone", cn: "手机", phonetic: "/fəʊn/" },
+        { en: "tablet", cn: "平板电脑", phonetic: "/ˈtæblət/" },
+        { en: "on the internet", cn: "在网上", phonetic: "/ɒn ðə ˈɪntənet/" },
+        { en: "competition", cn: "比赛", phonetic: "/ˌkɒmpəˈtɪʃn/" },
         // ---- 只认读 ----
         { en: "leader", cn: "领导者", phonetic: "/ˈliːdə(r)/", spell: false },
-        { en: "on the internet", cn: "在网上", phonetic: "/ɒn ðə ˈɪntənet/", spell: false },
         { en: "make friends", cn: "交朋友", phonetic: "/meɪk frendz/", spell: false },
-        { en: "competition", cn: "比赛", phonetic: "/ˌkɒmpəˈtɪʃn/", spell: false }
+        { en: "e-reader", cn: "电子书", phonetic: "/iː ˈriːdə(r)/", spell: false },
+        { en: "games console", cn: "游戏机", phonetic: "/ɡeɪmz ˈkɒnsl/", spell: false },
+        { en: "GPS", cn: "导航", phonetic: "/ˌdʒiː piː ˈes/", spell: false },
+        { en: "VR headset", cn: "VR显示器", phonetic: "/ˌviː ˈɑː(r) ˈhedset/", spell: false },
+        { en: "Monday", cn: "周一", phonetic: "/ˈmʌndeɪ/", spell: false },
+        { en: "Tuesday", cn: "周二", phonetic: "/ˈtjuːzdeɪ/", spell: false },
+        { en: "Wednesday", cn: "周三", phonetic: "/ˈwenzdeɪ/", spell: false },
+        { en: "Thursday", cn: "周四", phonetic: "/ˈθɜːzdeɪ/", spell: false },
+        { en: "Friday", cn: "周五", phonetic: "/ˈfraɪdeɪ/", spell: false },
+        { en: "Saturday", cn: "周六", phonetic: "/ˈsætədeɪ/", spell: false },
+        { en: "Sunday", cn: "周日", phonetic: "/ˈsʌndeɪ/", spell: false }
     ]
 
 };
