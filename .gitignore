@@ -1,0 +1,5 @@
+# 私钥（SSH 推送用，绝不提交）
+.keys/
+
+# macOS
+.DS_Store

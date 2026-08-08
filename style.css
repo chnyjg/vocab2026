@@ -761,6 +761,18 @@
 
         .unit-progress-detail { font-size: 0.7rem; color: var(--text-muted); }
 
+        .book-summary {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin: 18px 0 10px; padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .book-summary:first-of-type { margin-top: 4px; }
+        .book-summary-name { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+        .book-summary-rate {
+            font-family: 'Inter', sans-serif; font-size: 0.76rem;
+            font-weight: 700; color: var(--accent);
+        }
+
         .recent-dates { display: flex; flex-wrap: wrap; gap: 8px; }
 
         .date-badge {

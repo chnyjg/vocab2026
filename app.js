@@ -631,7 +631,7 @@
         //  选择面板
         // =============================================
 
-        var currentStrategy = "random";
+        var currentStrategy = "smart";
 
         function showSelector() {
             clearProgress();
@@ -702,13 +702,12 @@
             html += '<div class="config-row">';
             html += '  <span class="config-label">选词策略</span>';
             html += '  <div class="strategy-btns">';
-            html += '    <button class="strat-btn active" data-strategy="random"'
+            html += '    <button class="strat-btn" data-strategy="random"'
                  + ' onclick="setStrategy(\'random\')">随机</button>';
-            html += '    <button class="strat-btn" data-strategy="weakest"'
-                 + ' onclick="setStrategy(\'weakest\')">最薄弱</button>';
+            html += '    <button class="strat-btn active" data-strategy="smart"'
+                 + ' onclick="setStrategy(\'smart\')">智能选词</button>';
             html += '  </div>';
             html += '</div>';
-            html += '<div id="strategyWarning" class="warning-text" style="display:none;"></div>';
 
             html += '<div style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin:0 0 16px 0;line-height:1.6;">'
                   + '每轮将依次进行 <strong style="color:var(--accent);">英→中</strong> 和 <strong style="color:var(--accent);">中→英</strong> 两个阶段</div>';
@@ -726,7 +725,7 @@
             html += '</div>';
 
             document.getElementById("mainArea").innerHTML = html;
-            currentStrategy = "random";
+            currentStrategy = "smart";
         }
 
         function toggleBook(book) {
@@ -791,21 +790,7 @@
             if (total > 0 && cur > total) countEl.textContent = total;
             if (total === 0) countEl.textContent = 0;
 
-            var warnEl = document.getElementById("strategyWarning");
-            var weakBtn = document.querySelector('.strat-btn[data-strategy="weakest"]');
-
-            if (noHistUnits.length > 0) {
-                weakBtn.classList.add("disabled");
-                if (currentStrategy === "weakest") {
-                    setStrategy("random");
-                } else {
-                    warnEl.style.display = "none";
-                }
-            } else {
-                warnEl.style.display = "none";
-                weakBtn.classList.remove("disabled");
-            }
-
+            // 智能选词永不灰掉：无历史单词会与最薄弱单词等权出现，无需禁用
             document.getElementById("startBtn").disabled = (total === 0);
         }
 
@@ -836,14 +821,6 @@
             document.querySelectorAll(".strat-btn").forEach(function (btn) {
                 btn.classList.toggle("active", btn.getAttribute("data-strategy") === s);
             });
-
-            var warnEl = document.getElementById("strategyWarning");
-            if (s === "weakest" && cachedNoHistUnits.length > 0) {
-                warnEl.style.display = "block";
-                warnEl.innerHTML = "⚠ 以下单元无历史记录，无法使用最薄弱策略：<br>" + cachedNoHistUnits.join("、");
-            } else {
-                warnEl.style.display = "none";
-            }
         }
 
         // =============================================
@@ -937,25 +914,46 @@
         }
 
         // [改动] 读本地缓存
+        // 智能选词：有历史词按真实薄弱度排序；无历史词与"最薄弱词"等权并列。
+        // 排序前先 shuffle，避免等权词因稳定排序总抽到同一批，导致覆盖不均。
         function pickWeakest(pool, count) {
             var history = cacheLoadHistory();
-            var items = pool.map(function (w) {
-                var arr = history[w.en];
-                var weaknessScore = 0, has = false;
-                if (arr && arr.length > 0) {
-                    has = true;
-                    var n = arr.length;
-                    var weightedAvg = calcWeightedAvg(arr);
-                    var countBoost = 1 + Math.log(Math.max(1, n)) * 0.2;
-                    weaknessScore = weightedAvg * countBoost;
+
+            // 1) 先打乱，保证等权词之间随机分布
+            var arr = pool.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            }
+
+            // 2) 算出有历史词的最高薄弱分，作为无历史词的等权基准
+            var maxScore = 0;
+            arr.forEach(function (w) {
+                var h = history[w.en];
+                if (h && h.length > 0) {
+                    var s = calcWeightedAvg(h) * (1 + Math.log(Math.max(1, h.length)) * 0.2);
+                    if (s > maxScore) maxScore = s;
                 }
-                return { word: w, weaknessScore: weaknessScore, hasHistory: has };
             });
-            items.sort(function (a, b) {
-                if (a.hasHistory && !b.hasHistory) return -1;
-                if (!a.hasHistory && b.hasHistory) return 1;
-                return b.weaknessScore - a.weaknessScore;
+            if (maxScore === 0) maxScore = 1; // 全无历史时给个基准，所有词等权
+
+            // 3) 计算每词薄弱分（不再区分有无历史）
+            var items = arr.map(function (w) {
+                var h = history[w.en];
+                var weaknessScore;
+                if (h && h.length > 0) {
+                    var weightedAvg = calcWeightedAvg(h);
+                    var countBoost = 1 + Math.log(Math.max(1, h.length)) * 0.2;
+                    weaknessScore = weightedAvg * countBoost;
+                } else {
+                    // 无历史词：与最薄弱词等权并列
+                    weaknessScore = maxScore;
+                }
+                return { word: w, weaknessScore: weaknessScore };
             });
+
+            // 4) 纯按薄弱度降序取前 count
+            items.sort(function (a, b) { return b.weaknessScore - a.weaknessScore; });
             return items.slice(0, count).map(function (it) { return it.word; });
         }
 
@@ -981,7 +979,7 @@
             if (count <= 0) return;
 
             var words;
-            if (currentStrategy === "weakest") {
+            if (currentStrategy === "smart") {
                 words = pickWeakest(pool, count);
             } else {
                 words = pickRandom(pool, count);
@@ -1532,7 +1530,7 @@
 
             var count = Math.min(sessionConfig.wordCount, pool.length);
             var words;
-            if (sessionConfig.strategy === "weakest") {
+            if (sessionConfig.strategy === "smart") {
                 words = pickWeakest(pool, count);
             } else {
                 words = pickRandom(pool, count);
@@ -1809,8 +1807,10 @@
                 else weak++;
             }
 
-            var unitStats = [];
+            // [改动] 按词书分组统计单元进度：主指标=已背比例，副行=掌握数，顶部加词书级汇总
+            var bookMap = {};
             for (var book in wordBank) {
+                var bk = { total: 0, practiced: 0, units: [] };
                 for (var unit in wordBank[book]) {
                     var words = wordBank[book][unit];
                     var practiced = 0, unitMastered = 0, unitTotal = words.length;
@@ -1822,14 +1822,17 @@
                             if (avg <= 2) unitMastered++;
                         }
                     });
+                    bk.total += unitTotal;
+                    bk.practiced += practiced;
                     if (practiced > 0) {
-                        unitStats.push({
-                            label: book + ' · ' + unit, total: unitTotal,
+                        bk.units.push({
+                            label: unit, total: unitTotal,
                             practiced: practiced, mastered: unitMastered,
-                            rate: Math.round(unitMastered / unitTotal * 100)
+                            rate: Math.round(practiced / unitTotal * 100)
                         });
                     }
                 }
+                if (bk.units.length > 0) bookMap[book] = bk;
             }
 
             var html = '<div class="selector-card">';
@@ -1861,19 +1864,27 @@
                 html += '</div>';
             }
 
-            if (unitStats.length > 0) {
+            if (Object.keys(bookMap).length > 0) {
                 html += '<div class="stats-section">';
                 html += '  <div class="stats-section-title">单元进度</div>';
-                unitStats.forEach(function (s) {
-                    html += '  <div class="unit-progress">';
-                    html += '    <div class="unit-progress-header">';
-                    html += '      <span class="unit-progress-name">' + s.label + '</span>';
-                    html += '      <span class="unit-progress-rate">' + s.rate + '%</span>';
-                    html += '    </div>';
-                    html += '    <div class="unit-progress-track"><div class="unit-progress-fill" style="width:' + s.rate + '%;"></div></div>';
-                    html += '    <div class="unit-progress-detail">' + s.mastered + ' / ' + s.total + ' 词掌握</div>';
+                for (var book in bookMap) {
+                    var bk = bookMap[book];
+                    var bookRate = bk.total > 0 ? Math.round(bk.practiced / bk.total * 100) : 0;
+                    html += '  <div class="book-summary">';
+                    html += '    <span class="book-summary-name">' + book + '</span>';
+                    html += '    <span class="book-summary-rate">已背 ' + bk.practiced + ' / ' + bk.total + ' = ' + bookRate + '%</span>';
                     html += '  </div>';
-                });
+                    bk.units.forEach(function (s) {
+                        html += '  <div class="unit-progress">';
+                        html += '    <div class="unit-progress-header">';
+                        html += '      <span class="unit-progress-name">' + s.label + '</span>';
+                        html += '      <span class="unit-progress-rate">' + s.rate + '%</span>';
+                        html += '    </div>';
+                        html += '    <div class="unit-progress-track"><div class="unit-progress-fill" style="width:' + s.rate + '%;"></div></div>';
+                        html += '    <div class="unit-progress-detail">已背 ' + s.practiced + ' / ' + s.total + ' 词 · 掌握 ' + s.mastered + ' / ' + s.total + ' 词</div>';
+                        html += '  </div>';
+                    });
+                }
                 html += '</div>';
             }
 
