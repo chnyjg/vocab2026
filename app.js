@@ -528,6 +528,113 @@
         }
 
         // =============================================
+        //  [新增] 每用户词书订阅（隐藏 / 显示）
+        //  默认显示全部静态词书；用户可“隐藏”不想看的。
+        //  隐藏集合存云端 vocab_user_books(user_id, book_name)，跨设备同步。
+        // =============================================
+
+        var hiddenBooks = null; // null=未加载; array of hidden book names
+
+        function allStaticBookNames() {
+            var arr = [];
+            for (var b in wordBank) arr.push(b);
+            return arr;
+        }
+
+        function effectiveWordBank() {
+            if (!hiddenBooks) return wordBank; // 未加载时退化为全部
+            var eff = {};
+            for (var b in wordBank) {
+                if (hiddenBooks.indexOf(b) === -1) eff[b] = wordBank[b];
+            }
+            return eff;
+        }
+
+        function cacheHiddenBooks(arr) {
+            if (!USER_ID) return;
+            try { localStorage.setItem("vocab_books_" + USER_ID, JSON.stringify(arr)); } catch (e) {}
+        }
+
+        async function loadHiddenBooks() {
+            if (!USER_ID) { hiddenBooks = []; return; }
+            try {
+                var raw = localStorage.getItem("vocab_books_" + USER_ID);
+                if (raw) { hiddenBooks = JSON.parse(raw); return; }
+            } catch (e) {}
+            try {
+                var res = await sb.from('vocab_user_books').select('book_name').eq('user_id', USER_ID);
+                if (!res.error && res.data) {
+                    hiddenBooks = res.data.map(function (r) { return r.book_name; });
+                    cacheHiddenBooks(hiddenBooks);
+                    return;
+                }
+            } catch (e) { console.warn('读取词书订阅失败', e); }
+            hiddenBooks = []; // 云端空 = 全部显示
+            cacheHiddenBooks(hiddenBooks);
+        }
+
+        async function saveHiddenBooks(arr) {
+            hiddenBooks = arr;
+            cacheHiddenBooks(arr);
+            if (!USER_ID) return;
+            try {
+                await sb.from('vocab_user_books').delete().eq('user_id', USER_ID);
+                if (arr.length > 0) {
+                    var rows = arr.map(function (b) { return { user_id: USER_ID, book_name: b }; });
+                    await sb.from('vocab_user_books').insert(rows);
+                }
+            } catch (e) { console.warn('保存词书订阅失败', e); }
+        }
+
+        async function toggleBookHidden(book) {
+            var arr = (hiddenBooks || []).slice();
+            var i = arr.indexOf(book);
+            if (i === -1) arr.push(book); else arr.splice(i, 1);
+            await saveHiddenBooks(arr);
+        }
+
+        function showBookManager() {
+            var all = allStaticBookNames();
+            var hidden = hiddenBooks || [];
+            var html = '<div class="bookmgr-overlay" id="bookMgrOverlay" onclick="if(event.target===this)closeBookManager()">';
+            html += '  <div class="bookmgr-dialog">';
+            html += '    <div class="bookmgr-title">管理词书</div>';
+            html += '    <div class="bookmgr-sub">勾选 = 在学习中显示；取消勾选 = 从你的列表隐藏（不影响别人）</div>';
+            html += '    <div class="bookmgr-list">';
+            all.forEach(function (b) {
+                var cnt = 0;
+                for (var u in wordBank[b]) cnt += wordBank[b][u].length;
+                var isHidden = hidden.indexOf(b) !== -1;
+                html += '  <label class="bookmgr-item">';
+                html += '    <input type="checkbox" ' + (isHidden ? '' : 'checked') + ' onchange="onBookMgrToggle(\'' + escapeAttr(b) + '\', this.checked)">';
+                html += '    <span class="bookmgr-name">' + b + '</span>';
+                html += '    <span class="bookmgr-count">' + cnt + ' 词</span>';
+                html += '  </label>';
+            });
+            html += '    </div>';
+            html += '    <div class="bookmgr-actions"><button class="manage-btn active" onclick="closeBookManager()">完成</button></div>';
+            html += '  </div>';
+            html += '</div>';
+            var existing = document.getElementById("bookMgrOverlay");
+            if (existing) existing.remove();
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+
+        async function onBookMgrToggle(book, checked) {
+            var arr = (hiddenBooks || []).slice();
+            var i = arr.indexOf(book);
+            if (checked) { if (i !== -1) arr.splice(i, 1); }   // 显示
+            else { if (i === -1) arr.push(book); }             // 隐藏
+            await saveHiddenBooks(arr);
+        }
+
+        function closeBookManager() {
+            var el = document.getElementById("bookMgrOverlay");
+            if (el) el.remove();
+            showSelector();
+        }
+
+        // =============================================
         //  本地进度存储
         // =============================================
 
@@ -633,19 +740,26 @@
 
         var currentStrategy = "smart";
 
-        function showSelector() {
+        async function showSelector() {
             clearProgress();
             lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
             updateUserBadge();
 
+            await loadHiddenBooks(); // 加载本用户已隐藏的词书
+
             var html = '<div class="selector-card">';
             html += '<div class="selector-title">选择背诵内容</div>';
+            html += '<div class="selector-subbar">';
+            html += '  <span class="selector-hint">只显示你选定的词书</span>';
+            html += '  <button class="manage-books-btn" onclick="showBookManager()">⚙ 管理词书</button>';
+            html += '</div>';
 
+            var wb = effectiveWordBank();
             var hasAnyUnit = false;
-            for (var book in wordBank) {
-                var units = wordBank[book];
+            for (var book in wb) {
+                var units = wb[book];
                 var hasWords = false;
                 for (var u in units) {
                     if (units[u].length > 0) { hasWords = true; break; }
@@ -1625,18 +1739,20 @@
         // =============================================
 
         // [改动] 读本地缓存
-        function showScoreBoard() {
+        async function showScoreBoard() {
             clearProgress();
             lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
+            if (!hiddenBooks) await loadHiddenBooks();
             var history = cacheLoadHistory();
             var items = [];
 
-            for (var book in wordBank) {
-                for (var unit in wordBank[book]) {
-                    wordBank[book][unit].forEach(function (w) {
+            var wb = effectiveWordBank();
+            for (var book in wb) {
+                for (var unit in wb[book]) {
+                    wb[book][unit].forEach(function (w) {
                         var arr = history[w.en];
                         var avg = 0, count = 0, has = false;
                         if (arr && arr.length > 0) {
@@ -1782,12 +1898,13 @@
         // =============================================
 
         // [改动] 读本地缓存
-        function showStats() {
+        async function showStats() {
             clearProgress();
             lastAction = null;
             document.getElementById("progressBar").style.display = "none";
             document.getElementById("subtitle").textContent = "";
 
+            if (!hiddenBooks) await loadHiddenBooks();
             var history = cacheLoadHistory();
             var sessions = cacheLoadSessions();
 
@@ -1809,10 +1926,11 @@
 
             // [改动] 按词书分组统计单元进度：主指标=已背比例，副行=掌握数，顶部加词书级汇总
             var bookMap = {};
-            for (var book in wordBank) {
+            var wb = effectiveWordBank();
+            for (var book in wb) {
                 var bk = { total: 0, practiced: 0, units: [] };
-                for (var unit in wordBank[book]) {
-                    var words = wordBank[book][unit];
+                for (var unit in wb[book]) {
+                    var words = wb[book][unit];
                     var practiced = 0, unitMastered = 0, unitTotal = words.length;
                     words.forEach(function (w) {
                         var arr = history[w.en];

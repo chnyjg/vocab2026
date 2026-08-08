@@ -784,6 +784,41 @@
             font-weight: 700; color: var(--accent);
         }
 
+        /* [新增] 管理词书按钮 + 弹窗 */
+        .selector-subbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin: -6px 0 14px;
+        }
+        .selector-hint { font-size: 0.74rem; color: var(--text-muted); }
+        .manage-books-btn {
+            font-size: 0.76rem; padding: 6px 12px; border-radius: 16px;
+            background: var(--bg-subtle); color: var(--text-primary);
+            border: 1px solid var(--border-light); cursor: pointer; white-space: nowrap;
+        }
+        .manage-books-btn:active { transform: scale(0.97); }
+
+        .bookmgr-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+            display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px;
+        }
+        .bookmgr-dialog {
+            width: 100%; max-width: 380px; max-height: 80vh; overflow: hidden;
+            background: var(--bg-card, #fff); border-radius: 16px; padding: 20px;
+            display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        .bookmgr-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+        .bookmgr-sub { font-size: 0.74rem; color: var(--text-muted); margin: 6px 0 14px; line-height: 1.5; }
+        .bookmgr-list { overflow-y: auto; flex: 1; margin: 0 -8px; padding: 0 8px; }
+        .bookmgr-item {
+            display: flex; align-items: center; gap: 10px; padding: 12px 10px;
+            border-radius: 10px; cursor: pointer;
+        }
+        .bookmgr-item:hover { background: var(--bg-subtle); }
+        .bookmgr-item input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+        .bookmgr-name { flex: 1; font-size: 0.88rem; color: var(--text-primary); font-weight: 600; }
+        .bookmgr-count { font-size: 0.74rem; color: var(--text-muted); }
+        .bookmgr-actions { margin-top: 14px; display: flex; justify-content: flex-end; }
+
         .recent-dates { display: flex; flex-wrap: wrap; gap: 8px; }
 
         .date-badge {
