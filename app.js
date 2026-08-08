@@ -1875,13 +1875,22 @@
                     html += '    <span class="book-summary-rate">已背 ' + bk.practiced + ' / ' + bk.total + ' = ' + bookRate + '%</span>';
                     html += '  </div>';
                     bk.units.forEach(function (s) {
+                        var practicedRate = s.rate; // 已背比例（= round(practiced/total*100)）
+                        var masteredRate = s.total > 0 ? Math.round(s.mastered / s.total * 100) : 0;
                         html += '  <div class="unit-progress">';
                         html += '    <div class="unit-progress-header">';
                         html += '      <span class="unit-progress-name">' + s.label + '</span>';
-                        html += '      <span class="unit-progress-rate">' + s.rate + '%</span>';
                         html += '    </div>';
-                        html += '    <div class="unit-progress-track"><div class="unit-progress-fill" style="width:' + s.rate + '%;"></div></div>';
-                        html += '    <div class="unit-progress-detail">已背 ' + s.practiced + ' / ' + s.total + ' 词 · 掌握 ' + s.mastered + ' / ' + s.total + ' 词</div>';
+                        // 双层进度条：棕色=已背(底层)，绿色=已掌握(上层，必≤棕色，相等时覆盖为绿色)
+                        html += '    <div class="unit-progress-track">';
+                        html += '      <div class="unit-progress-fill-brown" style="width:' + practicedRate + '%;"></div>';
+                        html += '      <div class="unit-progress-fill-green" style="width:' + masteredRate + '%;"></div>';
+                        html += '    </div>';
+                        html += '    <div class="unit-progress-detail">';
+                        html += '      <span class="up-practiced">已背 ' + s.practiced + '/' + s.total + '词 ' + practicedRate + '%</span>';
+                        html += '      <span class="up-sep"> · </span>';
+                        html += '      <span class="up-mastered">掌握 ' + s.mastered + '/' + s.total + '词 ' + masteredRate + '%</span>';
+                        html += '    </div>';
                         html += '  </div>';
                     });
                 }

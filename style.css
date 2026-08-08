@@ -750,16 +750,27 @@
         }
 
         .unit-progress-track {
-            height: 6px; background: var(--border-light);
-            border-radius: 3px; overflow: hidden; margin-bottom: 4px;
+            position: relative;
+            height: 10px; background: var(--border-light);
+            border-radius: 5px; overflow: hidden; margin-bottom: 6px;
         }
 
-        .unit-progress-fill {
-            height: 100%; background: var(--accent);
-            border-radius: 3px; transition: width 0.6s ease;
+        /* 棕色=已背(底层)，绿色=已掌握(上层)。绿色必≤棕色，相等时绿色覆盖棕色 */
+        .unit-progress-fill-brown {
+            position: absolute; top: 0; left: 0; height: 100%;
+            background: var(--accent);
+            border-radius: 5px; transition: width 0.6s ease;
+        }
+        .unit-progress-fill-green {
+            position: absolute; top: 0; left: 0; height: 100%;
+            background: var(--success);
+            border-radius: 5px; transition: width 0.6s ease;
         }
 
-        .unit-progress-detail { font-size: 0.7rem; color: var(--text-muted); }
+        .unit-progress-detail { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+        .up-practiced { color: var(--accent); font-weight: 700; }
+        .up-mastered { color: var(--success); font-weight: 700; }
+        .up-sep { color: var(--text-muted); }
 
         .book-summary {
             display: flex; justify-content: space-between; align-items: baseline;
