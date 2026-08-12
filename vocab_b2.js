@@ -1,8 +1,10 @@
 var wordBank = wordBank || {};
 
-wordBank["词库 B2 级"] = {
+wordBank["外研版高中词库"] = {
 
-    "Unit 1": [
+    // ==================== B2 级 ====================
+
+    "B2级 Unit 1": [
         // 只认读（英译中）
         { en: "discussion", cn: "讨论", phonetic: "/dɪˈskʌʃn/", spell: false },
         { en: "nation", cn: "国家，民族", phonetic: "/ˈneɪʃn/", spell: false },
@@ -34,7 +36,7 @@ wordBank["词库 B2 级"] = {
         { en: "society", cn: "社会", phonetic: "/səˈsaɪəti/", spell: false }
     ],
 
-    "Unit 2": [
+    "B2级 Unit 2": [
         { en: "enemy", cn: "敌人", phonetic: "/ˈenəmi/", spell: false },
         { en: "lock", cn: "锁", phonetic: "/lɒk/", spell: false },
         { en: "corn", cn: "玉米", phonetic: "/kɔːn/", spell: false },
@@ -65,7 +67,7 @@ wordBank["词库 B2 级"] = {
         { en: "law", cn: "法律", phonetic: "/lɔː/", spell: false }
     ],
 
-    "Unit 3": [
+    "B2级 Unit 3": [
         { en: "underground", cn: "地下的；地铁", phonetic: "/ˈʌndəɡraʊnd/", spell: false },
         { en: "method", cn: "方法", phonetic: "/ˈmeθəd/", spell: false },
         { en: "attend", cn: "参加，出席", phonetic: "/əˈtend/", spell: false },
@@ -96,7 +98,7 @@ wordBank["词库 B2 级"] = {
         { en: "trust", cn: "信任", phonetic: "/trʌst/", spell: false }
     ],
 
-    "Unit 4": [
+    "B2级 Unit 4": [
         { en: "forgetful", cn: "健忘的", phonetic: "/fəˈɡetfl/", spell: false },
         { en: "citizen", cn: "公民", phonetic: "/ˈsɪtɪzn/", spell: false },
         { en: "glue", cn: "胶水；粘贴", phonetic: "/ɡluː/", spell: false },
@@ -127,7 +129,7 @@ wordBank["词库 B2 级"] = {
         { en: "re", cn: "关于，事由", phonetic: "/reɪ/", spell: false }
     ],
 
-    "Unit 5": [
+    "B2级 Unit 5": [
         { en: "sweetness", cn: "甜蜜；可爱", phonetic: "/ˈswiːtnəs/", spell: false },
         { en: "congratulate", cn: "祝贺", phonetic: "/kənˈɡrætʃuleɪt/", spell: false },
         { en: "measure", cn: "措施；测量", phonetic: "/ˈmeʒə(r)/", spell: false },
@@ -158,7 +160,7 @@ wordBank["词库 B2 级"] = {
         { en: "worry about", cn: "担心", phonetic: "/ˈwʌri əˈbaʊt/", spell: false }
     ],
 
-    "Unit 6": [
+    "B2级 Unit 6": [
         { en: "volunteer", cn: "志愿者", phonetic: "/ˌvɒlənˈtɪə(r)/", spell: false },
         { en: "overcome", cn: "克服", phonetic: "/ˌəʊvəˈkʌm/", spell: false },
         { en: "pianist", cn: "钢琴师", phonetic: "/ˈpiːənɪst/", spell: false },
@@ -189,7 +191,7 @@ wordBank["词库 B2 级"] = {
         { en: "pay", cn: "付费；工资；报答", phonetic: "/peɪ/", spell: false }
     ],
 
-    "Unit 7": [
+    "B2级 Unit 7": [
         { en: "eventually", cn: "最终，最后", phonetic: "/ɪˈventʃuəli/", spell: false },
         { en: "lecture", cn: "演讲", phonetic: "/ˈlektʃə(r)/", spell: false },
         { en: "Germany", cn: "德国", phonetic: "/ˈdʒɜːməni/", spell: false },
@@ -220,7 +222,7 @@ wordBank["词库 B2 级"] = {
         { en: "felt", cn: "感觉（feel的过去式）；毡", phonetic: "/felt/", spell: false }
     ],
 
-    "Unit 8": [
+    "B2级 Unit 8": [
         { en: "recent", cn: "最近", phonetic: "/ˈriːsnt/", spell: false },
         { en: "regular", cn: "规则的；正规的", phonetic: "/ˈreɡjələ(r)/", spell: false },
         { en: "X-ray", cn: "X射线", phonetic: "/ˈeks reɪ/", spell: false },
@@ -251,7 +253,7 @@ wordBank["词库 B2 级"] = {
         { en: "hurry up", cn: "快点", phonetic: "/ˈhʌri ʌp/", spell: false }
     ],
 
-    "Unit 9": [
+    "B2级 Unit 9": [
         { en: "harm", cn: "伤害", phonetic: "/hɑːm/", spell: false },
         { en: "gentle", cn: "温和的", phonetic: "/ˈdʒentl/", spell: false },
         { en: "request", cn: "请求", phonetic: "/rɪˈkwest/", spell: false },
@@ -282,7 +284,7 @@ wordBank["词库 B2 级"] = {
         { en: "writer", cn: "作者，作家", phonetic: "/ˈraɪtə(r)/", spell: false }
     ],
 
-    "Unit 10": [
+    "B2级 Unit 10": [
         { en: "murder", cn: "谋杀", phonetic: "/ˈmɜːdə(r)/", spell: false },
         { en: "material", cn: "材料", phonetic: "/məˈtɪəriəl/", spell: false },
         { en: "unlucky", cn: "不幸运", phonetic: "/ʌnˈlʌki/", spell: false },
@@ -313,7 +315,7 @@ wordBank["词库 B2 级"] = {
         { en: "England", cn: "英国", phonetic: "/ˈɪŋɡlənd/", spell: false }
     ],
 
-    "Unit 11": [
+    "B2级 Unit 11": [
         { en: "negative", cn: "负面的", phonetic: "/ˈneɡətɪv/", spell: false },
         { en: "poster", cn: "海报", phonetic: "/ˈpəʊstə(r)/", spell: false },
         { en: "trainer", cn: "教练员；运动鞋", phonetic: "/ˈtreɪnə(r)/", spell: false },
@@ -344,7 +346,7 @@ wordBank["词库 B2 级"] = {
         { en: "sign", cn: "符号；签名", phonetic: "/saɪn/", spell: false }
     ],
 
-    "Unit 12": [
+    "B2级 Unit 12": [
         { en: "hopefully", cn: "有希望地", phonetic: "/ˈhəʊpfəli/", spell: false },
         { en: "reflect", cn: "反射", phonetic: "/rɪˈflekt/", spell: false },
         { en: "fry", cn: "用油煎", phonetic: "/fraɪ/", spell: false },
@@ -375,7 +377,7 @@ wordBank["词库 B2 级"] = {
         { en: "smoke", cn: "烟", phonetic: "/sməʊk/", spell: false }
     ],
 
-    "Unit 13": [
+    "B2级 Unit 13": [
         { en: "recommend", cn: "推荐", phonetic: "/ˌrekəˈmend/", spell: false },
         { en: "wildlife", cn: "野生动物", phonetic: "/ˈwaɪldlaɪf/", spell: false },
         { en: "pioneer", cn: "先驱者；开拓者", phonetic: "/ˌpaɪəˈnɪə(r)/", spell: false },
@@ -406,7 +408,7 @@ wordBank["词库 B2 级"] = {
         { en: "herself", cn: "她自己", phonetic: "/hɜːˈself/", spell: false }
     ],
 
-    "Unit 14": [
+    "B2级 Unit 14": [
         { en: "ceiling", cn: "天花板", phonetic: "/ˈsiːlɪŋ/", spell: false },
         { en: "virus", cn: "病毒", phonetic: "/ˈvaɪrəs/", spell: false },
         { en: "transport", cn: "运输；交通工具", phonetic: "/ˈtrænspɔːt/", spell: false },
@@ -437,7 +439,7 @@ wordBank["词库 B2 级"] = {
         { en: "reach", cn: "到达；抵达", phonetic: "/riːtʃ/", spell: false }
     ],
 
-    "Unit 15": [
+    "B2级 Unit 15": [
         { en: "petrol", cn: "汽油", phonetic: "/ˈpetrəl/", spell: false },
         { en: "decorate", cn: "装饰", phonetic: "/ˈdekəreɪt/", spell: false },
         { en: "familiar", cn: "熟悉的；常见的", phonetic: "/fəˈmɪliə(r)/", spell: false },
@@ -468,7 +470,7 @@ wordBank["词库 B2 级"] = {
         { en: "subway", cn: "地铁；地下通道", phonetic: "/ˈsʌbweɪ/", spell: false }
     ],
 
-    "Unit 16": [
+    "B2级 Unit 16": [
         { en: "confidence", cn: "信心；自信", phonetic: "/ˈkɒnfɪdəns/", spell: false },
         { en: "swing", cn: "秋千；摇摆", phonetic: "/swɪŋ/", spell: false },
         { en: "cream", cn: "奶油", phonetic: "/kriːm/", spell: false },
@@ -499,7 +501,7 @@ wordBank["词库 B2 级"] = {
         { en: "countryside", cn: "农村；乡村", phonetic: "/ˈkʌntrisaɪd/", spell: false }
     ],
 
-    "Unit 17": [
+    "B2级 Unit 17": [
         { en: "feature", cn: "特征；特色", phonetic: "/ˈfiːtʃə(r)/", spell: false },
         { en: "crowded", cn: "拥挤的", phonetic: "/ˈkraʊdɪd/", spell: false },
         { en: "otherwise", cn: "否则；不然", phonetic: "/ˈʌðəwaɪz/", spell: false },
@@ -530,7 +532,7 @@ wordBank["词库 B2 级"] = {
         { en: "visitor", cn: "访客；参观者", phonetic: "/ˈvɪzɪtə(r)/", spell: false }
     ],
 
-    "Unit 18": [
+    "B2级 Unit 18": [
         { en: "kilometre", cn: "千米", phonetic: "/ˈkɪləmiːtə(r)/", spell: false },
         { en: "enjoyable", cn: "令人享受的", phonetic: "/ɪnˈdʒɔɪəbl/", spell: false },
         { en: "furniture", cn: "家具", phonetic: "/ˈfɜːnɪtʃə(r)/", spell: false },
@@ -561,7 +563,7 @@ wordBank["词库 B2 级"] = {
         { en: "lamp", cn: "灯", phonetic: "/læmp/", spell: false }
     ],
 
-    "Unit 19": [
+    "B2级 Unit 19": [
         { en: "donate", cn: "捐献；捐赠", phonetic: "/dəʊˈneɪt/", spell: false },
         { en: "dessert", cn: "甜点", phonetic: "/dɪˈzɜːt/", spell: false },
         { en: "battery", cn: "电池", phonetic: "/ˈbætəri/", spell: false },
@@ -592,7 +594,7 @@ wordBank["词库 B2 级"] = {
         { en: "twentieth", cn: "第二十", phonetic: "/ˈtwentiəθ/", spell: false }
     ],
 
-    "Unit 20": [
+    "B2级 Unit 20": [
         { en: "goodness", cn: "善良；美德", phonetic: "/ˈɡʊdnəs/", spell: false },
         { en: "throat", cn: "喉咙", phonetic: "/θrəʊt/", spell: false },
         { en: "appearance", cn: "外貌；出现", phonetic: "/əˈpɪərəns/", spell: false },
@@ -623,7 +625,7 @@ wordBank["词库 B2 级"] = {
         { en: "schoolwork", cn: "学校作业；功课", phonetic: "/ˈskuːlwɜːk/", spell: false }
     ],
 
-    "Unit 21": [
+    "B2级 Unit 21": [
         { en: "outgoing", cn: "外向的", phonetic: "/ˈaʊtɡəʊɪŋ/", spell: false },
         { en: "cruel", cn: "残忍的", phonetic: "/ˈkruːəl/", spell: false },
         { en: "pressure", cn: "压力", phonetic: "/ˈpreʃə(r)/", spell: false },
@@ -654,7 +656,7 @@ wordBank["词库 B2 级"] = {
         { en: "business", cn: "生意；商业", phonetic: "/ˈbɪznəs/", spell: false }
     ],
 
-    "Unit 22": [
+    "B2级 Unit 22": [
         { en: "recognise", cn: "认出；识别", phonetic: "/ˈrekəɡnaɪz/", spell: false },
         { en: "click", cn: "点击", phonetic: "/klɪk/", spell: false },
         { en: "schedule", cn: "时间表；日程", phonetic: "/ˈʃedjuːl/", spell: false },
@@ -685,7 +687,7 @@ wordBank["词库 B2 级"] = {
         { en: "interested", cn: "感兴趣的", phonetic: "/ˈɪntrəstɪd/", spell: false }
     ],
 
-    "Unit 23": [
+    "B2级 Unit 23": [
         { en: "packet", cn: "包；小包", phonetic: "/ˈpækɪt/", spell: false },
         { en: "bored", cn: "无聊的；厌倦的", phonetic: "/bɔːd/", spell: false },
         { en: "typical", cn: "典型的", phonetic: "/ˈtɪpɪkl/", spell: false },
@@ -716,7 +718,7 @@ wordBank["词库 B2 级"] = {
         { en: "thousand", cn: "千", phonetic: "/ˈθaʊznd/", spell: false }
     ],
 
-    "Unit 24": [
+    "B2级 Unit 24": [
         { en: "absolutely", cn: "绝对地", phonetic: "/ˈæbsəluːtli/", spell: false },
         { en: "steam", cn: "水蒸气", phonetic: "/stiːm/", spell: false },
         { en: "compete", cn: "竞争", phonetic: "/kəmˈpiːt/", spell: false },
@@ -747,7 +749,7 @@ wordBank["词库 B2 级"] = {
         { en: "slowly", cn: "缓慢地", phonetic: "/ˈsləʊli/", spell: false }
     ],
 
-    "Unit 28": [
+    "B2级 Unit 28": [
         { en: "naturally", cn: "自然地；天生地；当然", phonetic: "/ˈnætʃrəli/", spell: false },
         { en: "scare", cn: "惊吓；使害怕；恐慌", phonetic: "/skeə(r)/", spell: false },
         { en: "digital", cn: "数字的；数码的", phonetic: "/ˈdɪdʒɪtl/", spell: false },
@@ -778,7 +780,7 @@ wordBank["词库 B2 级"] = {
         { en: "wheel", cn: "轮子；车轮", phonetic: "/wiːl/", spell: false }
     ],
 
-    "Unit 29": [
+    "B2级 Unit 29": [
         { en: "Scotland", cn: "苏格兰", phonetic: "/ˈskɒtlənd/", spell: false },
         { en: "zebra", cn: "斑马", phonetic: "/ˈzebrə/", spell: false },
         { en: "highway", cn: "公路；高速公路", phonetic: "/ˈhaɪweɪ/", spell: false },
@@ -809,7 +811,7 @@ wordBank["词库 B2 级"] = {
         { en: "think about", cn: "考虑；思考", phonetic: "/ˈθɪŋk əˈbaʊt/", spell: false }
     ],
 
-    "Unit 30": [
+    "B2级 Unit 30": [
         { en: "upstairs", cn: "在楼上；向楼上；楼上的", phonetic: "/ˌʌpˈsteəz/", spell: false },
         { en: "survive", cn: "幸存；存活；生还", phonetic: "/səˈvaɪv/", spell: false },
         { en: "characteristic", cn: "特征；特点；典型的", phonetic: "/ˌkærəktəˈrɪstɪk/", spell: false },
@@ -840,7 +842,7 @@ wordBank["词库 B2 级"] = {
         { en: "in one's opinion", cn: "在某人看来", phonetic: "/ɪn wʌnz əˈpɪnjən/", spell: false }
     ],
 
-    "Unit 31": [
+    "B2级 Unit 31": [
         { en: "benefit", cn: "利益；好处；益处", phonetic: "/ˈbenɪfɪt/", spell: false },
         { en: "path", cn: "小路；道路；路径", phonetic: "/pɑːθ/", spell: false },
         { en: "therefore", cn: "因此；所以", phonetic: "/ˈðeəfɔː(r)/", spell: false },
@@ -871,7 +873,7 @@ wordBank["词库 B2 级"] = {
         { en: "as soon as", cn: "一……就……", phonetic: "/əz suːn əz/", spell: false }
     ],
 
-    "Unit 32": [
+    "B2级 Unit 32": [
         { en: "chemical", cn: "化学的；化学制品；化学品", phonetic: "/ˈkemɪkl/", spell: false },
         { en: "exchange", cn: "交换；交流；兑换", phonetic: "/ɪksˈtʃeɪndʒ/", spell: false },
         { en: "illness", cn: "疾病；病", phonetic: "/ˈɪlnəs/", spell: false },
@@ -881,6 +883,289 @@ wordBank["词库 B2 级"] = {
         { en: "author", cn: "作者；作家", phonetic: "/ˈɔːθə(r)/", spell: false },
         { en: "make up one's mind", cn: "下决心；下定决心", phonetic: "/meɪk ʌp wʌnz maɪnd/", spell: false },
         { en: "laboratory", cn: "实验室", phonetic: "/ləˈbɒrətri/", spell: false }
+    ],
+
+    // ==================== 1 级 ====================
+    // 来源：《外研版高中词库1(R版v2)》Units 1-9
+    // 中文释义经 AI 校正为高中考纲标准释义
+
+    "1级 Unit 1": [
+        { en: "lately", cn: "最近；近来", phonetic: "/ˈleɪtli/", spell: false },
+        { en: "evolution", cn: "进化；演变；发展", phonetic: "/ˌiːvəˈlu˃n/", spell: false },
+        { en: "export", cn: "出口；输出品", phonetic: "/ɪkˈspɔːt/", spell: false },
+        { en: "ancestor", cn: "祖先；祖宗", phonetic: "/ˈænsestə(r)/", spell: false },
+        { en: "discourage", cn: "使气馁；阻止；劝阻", phonetic: "/dɪsˈkʌrɪdʒ/", spell: false },
+        { en: "expedition", cn: "远征；探险队", phonetic: "/ˌekspɪˈdɪʃn/", spell: false },
+        { en: "mixture", cn: "混合物", phonetic: "/ˈmɪkstʃə(r)/", spell: false },
+        { en: "bargain", cn: "便宜货；讨价还价", phonetic: "/ˈbɑːɡɪn/", spell: false },
+        { en: "skilled", cn: "熟练的；有技能的", phonetic: "/skɪld/", spell: false },
+        { en: "leather", cn: "皮革", phonetic: "/ˈleðə(r)/", spell: false },
+        { en: "approximately", cn: "大约；近似地", phonetic: "/əˈprɒksɪmətli/", spell: false },
+        { en: "personally", cn: "亲自地；就个人而言", phonetic: "/ˈpɜːsənəli/", spell: false },
+        { en: "stadium", cn: "体育场；运动场", phonetic: "/ˈsteɪdiəm/", spell: false },
+        { en: "suitcase", cn: "手提箱；行李箱", phonetic: "/ˈsuːtkeɪs/", spell: false },
+        { en: "newcomer", cn: "新来的人；新手", phonetic: "/ˈnjuːkʌmə(r)/", spell: false },
+        { en: "helpless", cn: "无助的；无能为力的", phonetic: "/ˈhelpləs/", spell: false },
+        { en: "energetic", cn: "精力充沛的", phonetic: "/ˌenəˈdʒetɪk/", spell: false },
+        { en: "chart", cn: "图表；海图", phonetic: "/tʃɑːt/", spell: false },
+        { en: "republic", cn: "共和国", phonetic: "/rɪˈpʌblɪk/", spell: false },
+        { en: "version", cn: "版本；说法", phonetic: "/ˈvɜːʃn/", spell: false },
+        { en: "generous", cn: "慷慨的；大方的", phonetic: "/ˈdʒenərəs/", spell: false },
+        { en: "burn up", cn: "烧毁；烧尽", phonetic: "/bɜːn ʌp/", spell: false },
+        { en: "spoonful", cn: "一匙（的量）", phonetic: "/ˈspuːnfʊl/", spell: false },
+        { en: "entrance", cn: "入口", phonetic: "/ˈentrəns/", spell: false },
+        { en: "unlikely", cn: "不大可能的", phonetic: "/ʌnˈlaɪkli/", spell: false },
+        { en: "click", cn: "点击；咔嗒声", phonetic: "/klɪk/", spell: false },
+        { en: "philosophy", cn: "哲学", phonetic: "/fɪˈlɒsəfi/", spell: false },
+        { en: "regardless", cn: "不管；不顾", phonetic: "/rɪˈɡɑːdləs/", spell: false }
+    ],
+
+    "1级 Unit 2": [
+        { en: "bowling", cn: "保龄球运动", phonetic: "/ˈbəʊlɪŋ/", spell: false },
+        { en: "motor", cn: "发动机；马达", phonetic: "/ˈməʊtə(r)/", spell: false },
+        { en: "lung", cn: "肺", phonetic: "/lʌŋ/", spell: false },
+        { en: "lightning", cn: "闪电", phonetic: "/ˈlaɪtnɪŋ/", spell: false },
+        { en: "garbage", cn: "垃圾", phonetic: "/ˈɡɑːbɪdʒ/", spell: false },
+        { en: "destination", cn: "目的地；终点", phonetic: "/ˌdestɪˈneɪʃn/", spell: false },
+        { en: "aspect", cn: "方面；外观", phonetic: "/ˈæspekt/", spell: false },
+        { en: "daylight", cn: "日光；白昼", phonetic: "/ˈdeɪlaɪt/", spell: false },
+        { en: "factor", cn: "因素；要素", phonetic: "/ˈfæktə(r)/", spell: false },
+        { en: "scenery", cn: "风景；景色", phonetic: "/ˈsiːnəri/", spell: false },
+        { en: "equal", cn: "相等的；平等的；等于", phonetic: "/ˈiːkwəl/", spell: false },
+        { en: "attach", cn: "依附；附上；连接", phonetic: "/əˈtætʃ/", spell: false },
+        { en: "court", cn: "球场；法庭；宫廷", phonetic: "/kɔːt/", spell: false },
+        { en: "altogether", cn: "总共；总而言之", phonetic: "/ˌɔːltəˈɡeðə(r)/", spell: false },
+        { en: "footprint", cn: "脚印；足迹", phonetic: "/ˈfʊtprɪnt/", spell: false },
+        { en: "gain", cn: "获得；赢得；收益", phonetic: "/ɡeɪn/", spell: false },
+        { en: "puzzled", cn: "困惑的；迷惑的", phonetic: "/ˈpʌzld/", spell: false },
+        { en: "minor", cn: "较少的；次要的", phonetic: "/ˈmaɪnə(r)/", spell: false },
+        { en: "monthly", cn: "每月的；月刊的；月刊", phonetic: "/ˈmʌnθli/", spell: false },
+        { en: "injure", cn: "伤害；损害", phonetic: "/ɪnˈdʒə(r)/", spell: false },
+        { en: "campaign", cn: "战役；活动；发起运动", phonetic: "/kæmˈpeɪn/", spell: false },
+        { en: "performer", cn: "表演者；演出者", phonetic: "/pəˈfɔːmə(r)/", spell: false },
+        { en: "sharp", cn: "锋利的；敏锐的", phonetic: "/ʃɑːp/", spell: false },
+        { en: "shortly", cn: "不久；立刻", phonetic: "/ˈʃɔːtli/", spell: false },
+        { en: "quantity", cn: "数量", phonetic: "/ˈkwɒntəti/", spell: false },
+        { en: "image", cn: "形象；图像；影像", phonetic: "/ˈɪmɪdʒ/", spell: false },
+        { en: "sailor", cn: "水手；海员", phonetic: "/ˈseɪlə(r)/", spell: false },
+        { en: "steady", cn: "稳定的；平稳的", phonetic: "/ˈstedi/", spell: false }
+    ],
+
+    "1级 Unit 3": [
+        { en: "flame", cn: "火焰；火苗", phonetic: "/fleɪm/", spell: false },
+        { en: "headmaster", cn: "（中小学）校长", phonetic: "/ˈhedmɑːstə(r)/", spell: false },
+        { en: "embarrassed", cn: "尴尬的；窘迫的", phonetic: "/ɪmˈbærəst/", spell: false },
+        { en: "officially", cn: "官方地；正式地", phonetic: "/əˈfɪʃli/", spell: false },
+        { en: "pumpkin", cn: "南瓜", phonetic: "/ˈpʌmpkɪn/", spell: false },
+        { en: "permission", cn: "允许；许可", phonetic: "/pəˈmɪʃn/", spell: false },
+        { en: "performance", cn: "表演；表现；业绩", phonetic: "/pəˈfɔːməns/", spell: false },
+        { en: "bent", cn: "弯曲的；（bend过去式）弯曲", phonetic: "/bent/", spell: false },
+        { en: "detective", cn: "侦探", phonetic: "/dɪˈtektɪv/", spell: false },
+        { en: "anyhow", cn: "无论如何；不管怎样", phonetic: "/ˈenihaʊ/", spell: false },
+        { en: "curtain", cn: "窗帘；幕布", phonetic: "/ˈkɜːtn/", spell: false },
+        { en: "disadvantage", cn: "不利因素；缺点", phonetic: "/ˌdɪsədˈvɑːntɪdʒ/", spell: false },
+        { en: "exit", cn: "出口；通道；离开", phonetic: "/ˈeɡzɪt/", spell: false },
+        { en: "timetable", cn: "时间表；课程表", phonetic: "/ˈtaɪmteɪbl/", spell: false },
+        { en: "brief", cn: "简短的；简洁的", phonetic: "/briːf/", spell: false },
+        { en: "salty", cn: "含盐的；咸的", phonetic: "/ˈsɔːlti/", spell: false },
+        { en: "fare", cn: "车费；票价；费用", phonetic: "/feə(r)/", spell: false },
+        { en: "incident", cn: "事件；事变", phonetic: "/ˈɪnsɪdənt/", spell: false },
+        { en: "branch", cn: "分支；树枝；分部", phonetic: "/brɑːntʃ/", spell: false },
+        { en: "neighbour", cn: "邻居（美式neighbor）", phonetic: "/ˈneɪbə(r)/", spell: false },
+        { en: "frightened", cn: "受惊的；害怕的", phonetic: "/ˈfraɪtnd/", spell: false },
+        { en: "fortunate", cn: "幸运的", phonetic: "/ˈfɔːtʃənət/", spell: false },
+        { en: "outer", cn: "外部的；外表的", phonetic: "/ˈaʊtə(r)/", spell: false },
+        { en: "forecast", cn: "预报；预测", phonetic: "/ˈfɔːkɑːst/", spell: false },
+        { en: "phrase", cn: "短语；词组", phonetic: "/freɪz/", spell: false },
+        { en: "committee", cn: "委员会", phonetic: "/kəˈmɪti/", spell: false },
+        { en: "rapid", cn: "快速的；迅速的", phonetic: "/ˈræpɪd/", spell: false },
+        { en: "revolution", cn: "革命；变革", phonetic: "/ˌrevəˈluːʃn/", spell: false }
+    ],
+
+    "1级 Unit 4": [
+        { en: "observatory", cn: "天文台；观测台", phonetic: "/əbˈzɜːvətri/", spell: false },
+        { en: "recommendation", cn: "推荐；建议", phonetic: "/ˌrekəmenˈdeɪʃn/", spell: false },
+        { en: "hunger", cn: "饥饿；渴望", phonetic: "/ˈhʌŋɡə(r)/", spell: false },
+        { en: "critical", cn: "批评的；关键的；危急的", phonetic: "/ˈkrɪtɪkl/", spell: false },
+        { en: "agent", cn: "代理人；代理商", phonetic: "/ˈeɪdʒənt/", spell: false },
+        { en: "movement", cn: "动作；移动；运动", phonetic: "/ˈmuːvmənt/", spell: false },
+        { en: "have an effect on", cn: "对……有影响", phonetic: "/hæv ən ɪˈfekt ɒn/", spell: false },
+        { en: "curve", cn: "曲线；弯曲；弯曲", phonetic: "/kɜːv/", spell: false },
+        { en: "troublesome", cn: "令人烦恼的；麻烦的", phonetic: "/ˈtrʌblsm/", spell: false },
+        { en: "origin", cn: "来源；起源；出身", phonetic: "/ˈɒrɪdʒɪn/", spell: false },
+        { en: "requirement", cn: "需要；必需品；要求", phonetic: "/rɪˈkwaɪəmənt/", spell: false },
+        { en: "advertise", cn: "做广告；宣传", phonetic: "/ˈædvətaɪz/", spell: false },
+        { en: "laboratory", cn: "实验室（简写lab）", phonetic: "/ləˈbɒrətri/", spell: false },
+        { en: "comrade", cn: "同志；伙伴", phonetic: "/ˈkɒmreɪd/", spell: false },
+        { en: "convert", cn: "转换；转变", phonetic: "/kənˈvɜːt/", spell: false },
+        { en: "tutor", cn: "导师；家庭教师", phonetic: "/ˈtjuːtə(r)/", spell: false },
+        { en: "chapter", cn: "章；篇；回", phonetic: "/ˈtʃæptə(r)/", spell: false },
+        { en: "climate", cn: "气候", phonetic: "/ˈklaɪmət/", spell: false },
+        { en: "narrow", cn: "狭窄的；（使）变窄", phonetic: "/ˈnærəʊ/", spell: false },
+        { en: "issue", cn: "议题；问题；发布；发行", phonetic: "/ˈɪʃuː/", spell: false },
+        { en: "pole", cn: "杆；极地；极点", phonetic: "/pəʊl/", spell: false },
+        { en: "overtake", cn: "赶上；超过", phonetic: "/ˌəʊvəˈteɪk/", spell: false },
+        { en: "dormitory", cn: "宿舍（简写dorm）", phonetic: "/ˈdɔːmətri/", spell: false },
+        { en: "cautious", cn: "谨慎的；小心的", phonetic: "/ˈkɔːʃəs/", spell: false },
+        { en: "attempt", cn: "尝试；试图", phonetic: "/əˈtempt/", spell: false },
+        { en: "react", cn: "反应；作出回应", phonetic: "/riˈækt/", spell: false },
+        { en: "apply", cn: "申请；应用", phonetic: "/əˈplaɪ/", spell: false },
+        { en: "adorable", cn: "可爱的；讨人喜爱的", phonetic: "/əˈdɔːrəbl/", spell: false }
+    ],
+
+    "1级 Unit 5": [
+        { en: "collective", cn: "集体的；共同的；集体", phonetic: "/kəˈlektɪv/", spell: false },
+        { en: "canteen", cn: "食堂；餐厅", phonetic: "/kænˈtiːn/", spell: false },
+        { en: "ashamed", cn: "感到羞愧的；惭愧的", phonetic: "/əˈʃeɪmd/", spell: false },
+        { en: "application", cn: "申请；应用", phonetic: "/ˌæplɪˈkeɪʃn/", spell: false },
+        { en: "identity", cn: "身份；特征", phonetic: "/aɪˈdentəti/", spell: false },
+        { en: "failure", cn: "失败；故障", phonetic: "/ˈfeɪljə(r)/", spell: false },
+        { en: "harmless", cn: "无害的", phonetic: "/ˈhɑːmləs/", spell: false },
+        { en: "informative", cn: "提供信息的；增长见闻的", phonetic: "/ɪnˈfɔːmətɪv/", spell: false },
+        { en: "broom", cn: "扫帚", phonetic: "/bruːm/", spell: false },
+        { en: "oppose", cn: "反对；反抗", phonetic: "/əˈpəʊz/", spell: false },
+        { en: "unable", cn: "不能的；无法的", phonetic: "/ʌnˈeɪbl/", spell: false },
+        { en: "contribute", cn: "贡献；捐献；投稿", phonetic: "/kənˈtrɪbjuːt/", spell: false },
+        { en: "escalator", cn: "自动扶梯", phonetic: "/ˈeskəleɪtə(r)/", spell: false },
+        { en: "get across", cn: "传达；使理解", phonetic: "/ɡet əˈkrɒs/", spell: false },
+        { en: "essential", cn: "必要的；极其重要的", phonetic: "/ɪˈsenʃl/", spell: false },
+        { en: "microscope", cn: "显微镜", phonetic: "/ˈmaɪkrəskəʊp/", spell: false },
+        { en: "ban", cn: "禁止；禁令", phonetic: "/bæn/", spell: false },
+        { en: "decade", cn: "十年；十年期", phonetic: "/ˈdekeɪd/", spell: false },
+        { en: "comedy", cn: "喜剧；喜剧片", phonetic: "/ˈkɒmədi/", spell: false },
+        { en: "resource", cn: "资源；财力", phonetic: "/rɪˈsɔːs/", spell: false },
+        { en: "disqualify", cn: "取消……资格；使不合格", phonetic: "/dɪsˈkwɒlɪfaɪ/", spell: false },
+        { en: "sincerity", cn: "真诚；诚挚", phonetic: "/sɪnˈserəti/", spell: false },
+        { en: "archaeology", cn: "考古学", phonetic: "/ˌɑːkiˈɒlədʒi/", spell: false },
+        { en: "complex", cn: "复杂的；综合体", phonetic: "/ˈkɒmpleks/", spell: false },
+        { en: "survival", cn: "生存；幸存", phonetic: "/səˈvaɪvl/", spell: false },
+        { en: "properly", cn: "适当地；正确地", phonetic: "/ˈprɒpəli/", spell: false },
+        { en: "earn", cn: "赚得；挣得；赢得", phonetic: "/ɜːn/", spell: false },
+        { en: "best-seller", cn: "畅销书；畅销品", phonetic: "/ˌbest ˈselə(r)/", spell: false }
+    ],
+
+    "1级 Unit 6": [
+        { en: "parade", cn: "游行；阅兵；列队行进", phonetic: "/pəˈreɪd/", spell: false },
+        { en: "shuttle", cn: "穿梭班车；航天飞机", phonetic: "/ˈʃʌtl/", spell: false },
+        { en: "legal", cn: "法律的；合法的", phonetic: "/ˈliːɡl/", spell: false },
+        { en: "switch", cn: "切换；转换；开关", phonetic: "/swɪtʃ/", spell: false },
+        { en: "parent", cn: "父母；亲本", phonetic: "/ˈpeərənt/", spell: false },
+        { en: "reality", cn: "现实；真实", phonetic: "/riˈæləti/", spell: false },
+        { en: "wedding", cn: "婚礼", phonetic: "/ˈwedɪŋ/", spell: false },
+        { en: "marine", cn: "海洋的；海生的", phonetic: "/məˈriːn/", spell: false },
+        { en: "preview", cn: "预习；预告；预览", phonetic: "/ˈpriːvjuː/", spell: false },
+        { en: "emergency", cn: "紧急情况；突发事件", phonetic: "/ɪˈmɜːdʒənsi/", spell: false },
+        { en: "violence", cn: "暴力；猛烈", phonetic: "/ˈvaɪələns/", spell: false },
+        { en: "persuade", cn: "说服；劝说", phonetic: "/pəˈsweɪd/", spell: false },
+        { en: "literature", cn: "文学；文献", phonetic: "/ˈlɪtrətʃə(r)/", spell: false },
+        { en: "let down", cn: "使失望；放下", phonetic: "/let daʊn/", spell: false },
+        { en: "recover", cn: "恢复；康复；找回", phonetic: "/rɪˈkʌvə(r)/", spell: false },
+        { en: "troop", cn: "部队；一群人", phonetic: "/truːp/", spell: false },
+        { en: "arrangement", cn: "安排；筹备", phonetic: "/əˈreɪndʒmənt/", spell: false },
+        { en: "promote", cn: "促进；提升；推广", phonetic: "/prəˈməʊt/", spell: false },
+        { en: "pause", cn: "暂停；中止", phonetic: "/pɔːz/", spell: false },
+        { en: "adventure", cn: "冒险；奇遇", phonetic: "/ədˈventʃə(r)/", spell: false },
+        { en: "defect", cn: "缺陷；缺点", phonetic: "/ˈdiːfekt/", spell: false },
+        { en: "disguise", cn: "伪装；掩饰", phonetic: "/dɪsˈɡaɪz/", spell: false },
+        { en: "arithmetic", cn: "算术", phonetic: "/əˈrɪθmətɪk/", spell: false },
+        { en: "appointment", cn: "约会；预约；任命", phonetic: "/əˈpɔɪntmənt/", spell: false },
+        { en: "expectation", cn: "期待；预期", phonetic: "/ˌekspekˈteɪʃn/", spell: false },
+        { en: "businessman", cn: "商人", phonetic: "/ˈbɪznəsmæn/", spell: false },
+        { en: "explore", cn: "探索；探究；考察", phonetic: "/ɪkˈsplɔː(r)/", spell: false },
+        { en: "significantly", cn: "显著地；值得注意地", phonetic: "/sɪɡˈnɪfikəntli/", spell: false }
+    ],
+
+    "1级 Unit 7": [
+        { en: "absorb", cn: "吸收；吸引；理解", phonetic: "/əbˈsɔːb/", spell: false },
+        { en: "statesman", cn: "政治家", phonetic: "/ˈsteɪtsmən/", spell: false },
+        { en: "majority", cn: "大多数；大部分", phonetic: "/məˈdʒɒrəti/", spell: false },
+        { en: "principle", cn: "原理；原则；准则", phonetic: "/ˈprɪnsəpl/", spell: false },
+        { en: "essay", cn: "散文；短文", phonetic: "/ˈeseɪ/", spell: false },
+        { en: "lack", cn: "缺乏；缺少", phonetic: "/læk/", spell: false },
+        { en: "urban", cn: "城市的；都市的", phonetic: "/ˈɜːbən/", spell: false },
+        { en: "flourish", cn: "繁荣；蓬勃发展；茂盛生长", phonetic: "/ˈflʌrɪʃ/", spell: false },
+        { en: "frontier", cn: "边界；边境；前沿", phonetic: "/ˈfrʌntɪə(r)/", spell: false },
+        { en: "editor", cn: "编辑；编者", phonetic: "/ˈedɪtə(r)/", spell: false },
+        { en: "battle", cn: "战役；战斗；搏斗", phonetic: "/ˈbætl/", spell: false },
+        { en: "worldwide", cn: "全世界的（地）", phonetic: "/ˈwɜːldwaɪd/", spell: false },
+        { en: "attractive", cn: "迷人的；有吸引力的", phonetic: "/əˈtræktɪv/", spell: false },
+        { en: "thanks to", cn: "多亏；由于", phonetic: "/θæŋks tuː/", spell: false },
+        { en: "dock", cn: "码头；船坞", phonetic: "/dɒk/", spell: false },
+        { en: "shave", cn: "剃；刮（胡须）", phonetic: "/ʃeɪv/", spell: false },
+        { en: "percentage", cn: "百分比；百分率", phonetic: "/pəˈsentɪdʒ/", spell: false },
+        { en: "economy", cn: "经济；经济体；节约", phonetic: "/ɪˈkɒnəmi/", spell: false },
+        { en: "cure", cn: "治愈；治疗；疗法", phonetic: "/kjʊə(r)/", spell: false },
+        { en: "generally", cn: "普遍地；一般地", phonetic: "/ˈdʒenrəli/", spell: false },
+        { en: "memorise", cn: "记住；熟记（美式memorize）", phonetic: "/ˈmeməraɪz/", spell: false },
+        { en: "weave", cn: "编织；编造", phonetic: "/wiːv/", spell: false },
+        { en: "geometry", cn: "几何学", phonetic: "/dʒiˈɒmətri/", spell: false },
+        { en: "anxiety", cn: "焦虑；担忧", phonetic: "/æŋˈzaɪəti/", spell: false },
+        { en: "bacteria", cn: "细菌（复数）", phonetic: "/bækˈtɪəriə/", spell: false },
+        { en: "charity", cn: "慈善；慈善机构；施舍", phonetic: "/ˈtʃærəti/", spell: false },
+        { en: "opportunity", cn: "机会；时机", phonetic: "/ˌɒpəˈtjuːnəti/", spell: false },
+        { en: "help out", cn: "帮助（某人）摆脱困境", phonetic: "help aʊt/", spell: false }
+    ],
+
+    "1级 Unit 8": [
+        { en: "gymnastic", cn: "体操的；体育的", phonetic: "/dʒɪmˈnæstɪk/", spell: false },
+        { en: "choke", cn: "窒息；堵塞；哽住", phonetic: "/tʃəʊk/", spell: false },
+        { en: "original", cn: "最初的；原始的；原创的", phonetic: "/əˈrɪdʒənl/", spell: false },
+        { en: "ongoing", cn: "进行中的；正在发展的", phonetic: "/ˈɒnɡəʊɪŋ/", spell: false },
+        { en: "indicate", cn: "指出；表明；象征", phonetic: "/ˈɪndɪkeɪt/", spell: false },
+        { en: "surround", cn: "包围；围绕", phonetic: "/səˈraʊnd/", spell: false },
+        { en: "Confucius", cn: "孔子", phonetic: "/kənˈfjuːʃəs/", spell: false },
+        { en: "devote", cn: "奉献；致力于", phonetic: "/dɪˈvəʊt/", spell: false },
+        { en: "apron", cn: "围裙", phonetic: "/ˈeɪprən/", spell: false },
+        { en: "relate", cn: "联系；讲述", phonetic: "/rɪˈleɪt/", spell: false },
+        { en: "obstacle", cn: "障碍；阻碍", phonetic: "/ˈɒbstəkl/", spell: false },
+        { en: "pace", cn: "步伐；速度；节奏", phonetic: "/peɪs/", spell: false },
+        { en: "replace", cn: "代替；取代；更换", phonetic: "/rɪˈpleɪs/", spell: false },
+        { en: "slope", cn: "斜坡；坡度", phonetic: "/sləʊp/", spell: false },
+        { en: "arch", cn: "拱门；拱形结构", phonetic: "/ɑːtʃ/", spell: false },
+        { en: "formal", cn: "正式的；形式的", phonetic: "/ˈfɔːml/", spell: false },
+        { en: "justice", cn: "正义；公正；司法", phonetic: "/ˈdʒʌstɪs/", spell: false },
+        { en: "announce", cn: "宣布；宣告", phonetic: "/əˈnaʊns/", spell: false },
+        { en: "limit", cn: "限制；限度", phonetic: "/ˈlɪmɪt/", spell: false },
+        { en: "unfold", cn: "展开；显露；展现", phonetic: "/ʌnˈfəʊld/", spell: false },
+        { en: "despair", cn: "绝望", phonetic: "/dɪˈspeə(r)/", spell: false },
+        { en: "equipment", cn: "设备；装备（不可数名词）", phonetic: "/ɪˈkwɪpmənt/", spell: false },
+        { en: "debate", cn: "争论；辩论", phonetic: "/dɪˈbeɪt/", spell: false },
+        { en: "access", cn: "通道；机会；使用权；访问", phonetic: "/ˈækses/", spell: false },
+        { en: "dive", cn: "跳水；潜水；俯冲", phonetic: "/daɪv/", spell: false },
+        { en: "various", cn: "各种各样的", phonetic: "/ˈveəriəs/", spell: false },
+        { en: "attentively", cn: "专注地；认真地", phonetic: "/əˈtentɪvli/", spell: false },
+        { en: "in panic", cn: "惊慌地", phonetic: "ɪn ˈpænɪk/", spell: false }
+    ],
+
+    "1级 Unit 9": [
+        { en: "tender", cn: "嫩的；温柔的；脆弱的", phonetic: "/ˈtendə(r)/", spell: false },
+        { en: "premier", cn: "首要的；第一的；总理；首相", phonetic: "/ˈpremiə(r)/", spell: false },
+        { en: "tight", cn: "紧的；紧绷的", phonetic: "/taɪt/", spell: false },
+        { en: "former", cn: "以前的；从前的", phonetic: "/ˈfɔːmə(r)/", spell: false },
+        { en: "disappointed", cn: "失望的；沮丧的", phonetic: "/ˌdɪsˈpɔɪntɪd/", spell: false },
+        { en: "figure", cn: "数字；人物；身材；图形；认为", phonetic: "/ˈfɪɡə(r)/", spell: false },
+        { en: "headphones", cn: "（复数）耳机", phonetic: "/ˈhedfəʊnz/", spell: false },
+        { en: "strait", cn: "海峡", phonetic: "/streɪt/", spell: false },
+        { en: "butcher", cn: "屠夫；肉贩；屠宰", phonetic: "/ˈbʊtʃə(r)/", spell: false },
+        { en: "adjust", cn: "调整；调节；适应", phonetic: "/əˈdʒʌst/", spell: false },
+        { en: "poetry", cn: "诗歌（总称，不可数）", phonetic: "/ˈpəʊətri/", spell: false },
+        { en: "associate", cn: "联系；联想；交往", phonetic: "/əˈsəʊʃieɪt/", spell: false },
+        { en: "unique", cn: "独一无二的；独特的", phonetic: "/juːˈniːk/", spell: false },
+        { en: "gateway", cn: "大门；通道；途径", phonetic: "/ˈɡeɪtweɪ/", spell: false },
+        { en: "cable", cn: "电缆；电报；线缆", phonetic: "/ˈkeɪbl/", spell: false },
+        { en: "wrinkled", cn: "有皱纹的", phonetic: "/ˈrɪŋkld/", spell: false },
+        { en: "administration", cn: "管理；行政部门", phonetic: "/ədˌmɪnɪˈstreɪʃn/", spell: false },
+        { en: "channel", cn: "渠道；频道；海峡", phonetic: "/ˈtʃænl/", spell: false },
+        { en: "positive", cn: "正面的；积极的；阳性的", phonetic: "/ˈpɒzətɪv/", spell: false },
+        { en: "calm", cn: "镇静的；平静的；使冷静", phonetic: "/kɑːm/", spell: false },
+        { en: "unfamiliar", cn: "不熟悉的；陌生的", phonetic: "/ʌnfəˈmɪliə(r)/", spell: false },
+        { en: "humble", cn: "卑微的；谦逊的", phonetic: "/ˈhʌmbl/", spell: false },
+        { en: "improvement", cn: "改进；改善", phonetic: "/ɪmˈpruːvmənt/", spell: false },
+        { en: "gallery", cn: "画廊；美术馆", phonetic: "/ˈɡæləri/", spell: false },
+        { en: "crime", cn: "罪行；犯罪", phonetic: "/kraɪm/", spell: false },
+        { en: "potential", cn: "潜在的；潜力", phonetic: "/pəˈtenʃl/", spell: false },
+        { en: "benefit", cn: "利益，好处；有益于", phonetic: "/ˈbenɪfɪt/", spell: false },
+        { en: "live up to", cn: "符合；不辜负（期望）", phonetic: "/lɪv ʌp tuː/", spell: false }
     ]
 
 };
