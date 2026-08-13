@@ -712,20 +712,30 @@
                 .trim();
         }
 
-        // [改动] 统一指数衰减加权
+        // [改动] 掌握度加权只取最近三次，权重 1 / 0.6 / 0.36（decay=0.6）
         function calcWeightedAvg(arr) {
             if (!arr || arr.length === 0) return 0;
-            var n = arr.length;
+            var tail = arr.slice(-3);            // 仅最近三次
+            var n = tail.length;
             var decay = 0.6;
-            var weightedSum = 0;
-            var weightTotal = 0;
-            for (var i = n - 1; i >= 0; i--) {
-                var dist = n - 1 - i;
+            var weightedSum = 0, weightTotal = 0;
+            for (var i = 0; i < n; i++) {
+                var dist = n - 1 - i;            // 最后一次 dist=0 → 权重 1，往前 0.6、0.36
                 var weight = Math.pow(decay, dist);
-                weightedSum += arr[i] * weight;
+                weightedSum += tail[i] * weight;
                 weightTotal += weight;
             }
             return weightedSum / weightTotal;
+        }
+
+        // 掌握判定（两档）：最近三次（不足三次则看全部）每次答错次数均为 0 → 已掌握
+        function isMastered(arr) {
+            if (!arr || arr.length === 0) return false;
+            var tail = arr.slice(-3);
+            for (var i = 0; i < tail.length; i++) {
+                if (tail[i] !== 0) return false;
+            }
+            return true;
         }
 
         function speakEnglish(text) {
@@ -1250,9 +1260,9 @@
         //  统计
         // =============================================
 
+        // 卡片右上角得分标签：两档（本轮全对=绿，有错=红）
         function getScoreStyle(score) {
-            if (score <= 2) return "score-low";
-            if (score <= 4) return "score-mid";
+            if (score === 0) return "score-low";
             return "score-high";
         }
 
@@ -1677,11 +1687,10 @@
                 return wordScores[b.en] - wordScores[a.en];
             });
 
-            // 本轮分级阈值随新口径平移（答错次数：强 <=1，中 2~3，弱 >=4）
-            var weak   = sorted.filter(function (w) { return wordScores[w.en] >= 4; });
-            redReviewWords = weak;
-            var mid    = sorted.filter(function (w) { return wordScores[w.en] >= 2 && wordScores[w.en] <= 3; });
-            var strong = sorted.filter(function (w) { return wordScores[w.en] <= 1; });
+            // 掌握判定改为两档：已掌握 = 最近三次答错次数均为 0；否则未掌握
+            var unmasteredList = sorted.filter(function (w) { return !isMastered(history[w.en]); });
+            var masteredList   = sorted.filter(function (w) { return  isMastered(history[w.en]); });
+            redReviewWords = unmasteredList;
 
             function makeRows(list, bg, tc) {
                 return list.map(function (w) {
@@ -1694,18 +1703,14 @@
             }
 
             var sections = '';
-            if (weak.length > 0)
-                sections += '<div class="report-section"><h3 style="color:var(--danger);">🔴 需重点复习（' + weak.length + ' 词）</h3>'
-                    + '<table class="report-table"><thead><tr><th>单词</th><th>总分</th><th>中→英轮次</th></tr></thead>'
-                    + '<tbody>' + makeRows(weak, 'var(--danger-bg)', 'var(--danger)') + '</tbody></table></div>';
-            if (mid.length > 0)
-                sections += '<div class="report-section"><h3 style="color:var(--accent);">🟡 还需巩固（' + mid.length + ' 词）</h3>'
-                    + '<table class="report-table"><thead><tr><th>单词</th><th>总分</th><th>中→英轮次</th></tr></thead>'
-                    + '<tbody>' + makeRows(mid, 'var(--accent-bg)', 'var(--accent)') + '</tbody></table></div>';
-            if (strong.length > 0)
-                sections += '<div class="report-section"><h3 style="color:var(--success);">🟢 掌握良好（' + strong.length + ' 词）</h3>'
-                    + '<table class="report-table"><thead><tr><th>单词</th><th>总分</th><th>中→英轮次</th></tr></thead>'
-                    + '<tbody>' + makeRows(strong, 'var(--success-bg)', 'var(--success)') + '</tbody></table></div>';
+            if (unmasteredList.length > 0)
+                sections += '<div class="report-section"><h3 style="color:var(--danger);">🔴 未掌握（' + unmasteredList.length + ' 词）</h3>'
+                    + '<table class="report-table"><thead><tr><th>单词</th><th>本轮得分</th><th>中→英轮次</th></tr></thead>'
+                    + '<tbody>' + makeRows(unmasteredList, 'var(--danger-bg)', 'var(--danger)') + '</tbody></table></div>';
+            if (masteredList.length > 0)
+                sections += '<div class="report-section"><h3 style="color:var(--success);">🟢 已掌握（' + masteredList.length + ' 词）</h3>'
+                    + '<table class="report-table"><thead><tr><th>单词</th><th>本轮得分</th><th>中→英轮次</th></tr></thead>'
+                    + '<tbody>' + makeRows(masteredList, 'var(--success-bg)', 'var(--success)') + '</tbody></table></div>';
 
             var displayName = bookName;
             if (bookName !== unitName && unitName) displayName += " · " + unitName;
@@ -1728,7 +1733,7 @@
                 + sections
                 + '<div class="report-actions">'
                 + '  <button class="report-btn report-btn-primary" onclick="restartFromConfig()">🔄 再背一遍</button>'
-                + (weak.length > 0 ? '  <button class="report-btn report-btn-secondary" onclick="showRedReviewConfig()" style="background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);">🔄 重点复习红色词汇（' + weak.length + ' 词）</button>'
+                + (unmasteredList.length > 0 ? '  <button class="report-btn report-btn-secondary" onclick="showRedReviewConfig()" style="background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);">🔄 复习未掌握词汇（' + unmasteredList.length + ' 词）</button>'
                 + '  <div id="redReviewConfig" style="display:none;width:100%;"></div>' : '')
                 + '  <button class="report-btn report-btn-secondary" onclick="switchUnit()">📚 选择其他单元</button>'
                 + '  <button class="report-btn report-btn-secondary" onclick="removeReportAndShowScoreBoard()">📊 查看记分看板</button>'
@@ -1872,7 +1877,7 @@
                             count = arr.length;
                             avg = Math.round(calcWeightedAvg(arr));
                         }
-                        items.push({ word: w, book: book, unit: unit, avg: avg, count: count, hasHistory: has });
+                        items.push({ word: w, book: book, unit: unit, avg: avg, count: count, hasHistory: has, arr: arr });
                     });
                 }
             }
@@ -1927,9 +1932,7 @@
             items.forEach(function (item) {
                 var cls = '', badgeHtml = '';
                 if (item.hasHistory) {
-                    if (item.avg <= 2) cls = 'score-low';
-                    else if (item.avg <= 4) cls = 'score-mid';
-                    else cls = 'score-high';
+                    cls = isMastered(item.arr) ? 'score-low' : 'score-high';
                     badgeHtml = '<span class="scoreboard-badge ' + cls + '">' + item.avg + '</span>';
                 } else {
                     badgeHtml = '<span class="scoreboard-badge-empty">无记录</span>';
@@ -2025,15 +2028,13 @@
             uniqueDates.sort();
 
             var totalWords = Object.keys(history).length;
-            var mastered = 0, reviewing = 0, weak = 0;
+            var mastered = 0, unmastered = 0;
 
             for (var word in history) {
                 var arr = history[word];
                 if (arr.length === 0) continue;
-                var avg = Math.round(calcWeightedAvg(arr));
-                if (avg <= 2) mastered++;
-                else if (avg <= 4) reviewing++;
-                else weak++;
+                if (isMastered(arr)) mastered++;
+                else unmastered++;
             }
 
             // [改动] 按词书分组统计单元进度：主指标=已背比例，副行=掌握数，顶部加词书级汇总
@@ -2048,8 +2049,7 @@
                         var arr = history[w.en];
                         if (arr && arr.length > 0) {
                             practiced++;
-                            var avg = Math.round(calcWeightedAvg(arr));
-                            if (avg <= 2) unitMastered++;
+                            if (isMastered(arr)) unitMastered++;
                         }
                     });
                     bk.total += unitTotal;
@@ -2076,20 +2076,17 @@
 
             if (totalWords > 0) {
                 var mPct = Math.round(mastered / totalWords * 100);
-                var rPct = Math.round(reviewing / totalWords * 100);
-                var wPct = 100 - mPct - rPct;
+                var uPct = 100 - mPct;
 
                 html += '<div class="stats-section">';
                 html += '  <div class="stats-section-title">掌握情况</div>';
                 html += '  <div class="mastery-bar">';
                 html += '    <div class="mastery-segment mastery-green" style="width:' + mPct + '%;"></div>';
-                html += '    <div class="mastery-segment mastery-yellow" style="width:' + rPct + '%;"></div>';
-                html += '    <div class="mastery-segment mastery-red" style="width:' + wPct + '%;"></div>';
+                html += '    <div class="mastery-segment mastery-gray" style="width:' + uPct + '%;"></div>';
                 html += '  </div>';
                 html += '  <div class="mastery-legend">';
-                html += '    <span class="legend-item"><span class="legend-dot" style="background:var(--success);"></span>掌握良好 ' + mastered + ' 词</span>';
-                html += '    <span class="legend-item"><span class="legend-dot" style="background:var(--accent);"></span>还需巩固 ' + reviewing + ' 词</span>';
-                html += '    <span class="legend-item"><span class="legend-dot" style="background:var(--danger);"></span>需重点复习 ' + weak + ' 词</span>';
+                html += '    <span class="legend-item"><span class="legend-dot" style="background:var(--success);"></span>已掌握 ' + mastered + ' 词</span>';
+                html += '    <span class="legend-item"><span class="legend-dot" style="background:var(--border-light);"></span>未掌握 ' + unmastered + ' 词</span>';
                 html += '  </div>';
                 html += '</div>';
             }

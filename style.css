@@ -744,6 +744,7 @@
         .mastery-green { background: var(--success); }
         .mastery-yellow { background: var(--accent); }
         .mastery-red { background: var(--danger); }
+        .mastery-gray { background: var(--border-light); }
 
         .mastery-legend {
             display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
