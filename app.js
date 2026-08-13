@@ -1897,7 +1897,8 @@
             html += '  <button class="strat-btn" onclick="resetScoreboardSelected()" style="background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);">🗑 归零选中</button>';
             html += '</div>';
 
-            html += '<div class="scoreboard-scroll">';
+            // 顶部：词书/级别可收缩的「单元选择区」（点单元名即选中下方该单元单词）
+            html += '<div class="scoreboard-unitselect">';
             for (var book in bookData) {
                 var unitsMap = bookData[book].units;
                 var orderedUnits = sortUnitsByLevel(unitsMap);
@@ -1930,20 +1931,58 @@
                         html += '    </div>';
                         html += '    <div class="level-units">';
                         grp.units.forEach(function (unit) {
-                            html += renderScoreboardUnitWords(book, unit, unitsMap[unit]);
+                            var list = unitsMap[unit];
+                            var hasHist = list.some(function (it) { return it.hasHistory; });
+                            if (!hasHist) return;
+                            var unitKey = book + ' · ' + unit;
+                            html += '<div class="unit-tag" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + unitKey + '</div>';
                         });
                         html += '    </div>';
                         html += '  </div>';
                     });
                 } else {
                     levelGroups[0].units.forEach(function (unit) {
-                        html += renderScoreboardUnitWords(book, unit, unitsMap[unit]);
+                        var list = unitsMap[unit];
+                        var hasHist = list.some(function (it) { return it.hasHistory; });
+                        if (!hasHist) return;
+                        var unitKey = book + ' · ' + unit;
+                        html += '<div class="unit-tag" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + unitKey + '</div>';
                     });
                 }
 
                 html += '  </div>';
                 html += '</div>';
             }
+            html += '</div>';
+
+            // 底部：扁平单词列表（带得分徽章、「背了几次」、归零勾选框）
+            html += '<div class="scoreboard-scroll">';
+            items.forEach(function (item) {
+                var cls = '', badgeHtml = '';
+                if (item.hasHistory) {
+                    cls = isMastered(item.arr) ? 'score-low' : 'score-high';
+                    badgeHtml = '<span class="scoreboard-badge ' + cls + '">' + item.avg + '</span>';
+                } else {
+                    badgeHtml = '<span class="scoreboard-badge-empty">无记录</span>';
+                }
+                var unitKey = item.book + ' · ' + item.unit;
+                html += '<label class="scoreboard-row" data-unit="' + escapeAttr(unitKey) + '">';
+                html += '  <input type="checkbox" class="scoreboard-checkbox"'
+                     + ' data-word="' + escapeAttr(item.word.en) + '"'
+                     + ' data-book="' + escapeAttr(item.book) + '"'
+                     + ' data-uname="' + escapeAttr(item.unit) + '"'
+                     + ' data-unit="' + escapeAttr(unitKey) + '"'
+                     + (item.hasHistory ? '' : ' disabled') + '>';
+                html += '  <span class="unit-checkmark"></span>';
+                html += '  <span class="scoreboard-word">' + item.word.en + '</span>';
+                if (item.hasHistory) {
+                    html += '  <span class="scoreboard-meta">' + item.unit + '<br>' + item.count + ' 次</span>';
+                } else {
+                    html += '  <span class="scoreboard-meta">' + item.unit + '</span>';
+                }
+                html += '  ' + badgeHtml;
+                html += '</label>';
+            });
             html += '</div>';
 
             html += '<div style="height:16px;"></div>';
@@ -1953,35 +1992,14 @@
             document.getElementById("mainArea").innerHTML = html;
         }
 
-        function renderScoreboardUnitWords(book, unit, itemList) {
-            var html = '';
-            itemList.forEach(function (item) {
-                var cls = '', badgeHtml = '';
-                if (item.hasHistory) {
-                    cls = isMastered(item.arr) ? 'score-low' : 'score-high';
-                    badgeHtml = '<span class="scoreboard-badge ' + cls + '">' + item.avg + '</span>';
-                } else {
-                    badgeHtml = '<span class="scoreboard-badge-empty">无记录</span>';
-                }
-                var unitKey = book + ' · ' + unit;
-                html += '<label class="scoreboard-row" data-unit="' + escapeAttr(unitKey) + '">';
-                html += '  <input type="checkbox" class="scoreboard-checkbox"'
-                     + ' data-word="' + escapeAttr(item.word.en) + '"'
-                     + ' data-book="' + escapeAttr(book) + '"'
-                     + ' data-uname="' + escapeAttr(unit) + '"'
-                     + ' data-unit="' + escapeAttr(unitKey) + '"'
-                     + (item.hasHistory ? '' : ' disabled') + '>';
-                html += '  <span class="unit-checkmark"></span>';
-                html += '  <span class="scoreboard-word">' + item.word.en + '</span>';
-                if (item.hasHistory) {
-                    html += '  <span class="scoreboard-meta">' + unit + '<br>' + item.count + ' 次</span>';
-                } else {
-                    html += '  <span class="scoreboard-meta">' + unit + '</span>';
-                }
-                html += '  ' + badgeHtml;
-                html += '</label>';
-            });
-            return html;
+        function toggleUnitTag(el, unitKey) {
+            var cbs = document.querySelectorAll('.scoreboard-checkbox[data-unit="' + unitKey.replace(/"/g, '\\"') + '"]:not(:disabled)');
+            if (cbs.length === 0) return;
+            var allChecked = true;
+            cbs.forEach(function (cb) { if (!cb.checked) allChecked = false; });
+            cbs.forEach(function (cb) { cb.checked = !allChecked; });
+            el.classList.toggle('active', !allChecked);
+            syncScoreboardCheckboxes();
         }
 
         function toggleScoreboardBookAll(book, box) {

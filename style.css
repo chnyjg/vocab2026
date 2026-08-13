@@ -621,6 +621,12 @@
             max-width: 100px; text-align: right; line-height: 1.4;
         }
 
+        .scoreboard-unitselect {
+            max-height: 38vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border-light); border-radius: 12px;
+            padding: 6px 8px; margin-bottom: 14px; background: var(--bg-subtle);
+        }
+
         .scoreboard-actions {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 12px; gap: 10px;
