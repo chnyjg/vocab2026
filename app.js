@@ -1446,7 +1446,8 @@
             var spliceIdx = currentIndex;
             var prevRound = wordsLearnedRound[word.en];
 
-            wordScores[word.en]++;
+            // 薄弱度 = 本轮答错次数（known 不计数，最低 0 = 全对 = 掌握）
+            if (status !== "known") wordScores[word.en]++;
 
             if (status === "known") {
                 wordsLearnedRound[word.en] = currentRound;
@@ -1487,7 +1488,8 @@
             var status = lastAction.status;
             var spliceIdx = lastAction.spliceIndex;
 
-            wordScores[word.en]--;
+            // 撤销时对称：仅当上一次是答错（unknown）才回退计数
+            if (status !== "known") wordScores[word.en]--;
             wordsLearnedRound[word.en] = lastAction.prevLearnedRound;
 
             if (status === "known") {
@@ -1675,10 +1677,11 @@
                 return wordScores[b.en] - wordScores[a.en];
             });
 
-            var weak   = sorted.filter(function (w) { return wordScores[w.en] >= 5; });
+            // 本轮分级阈值随新口径平移（答错次数：强 <=1，中 2~3，弱 >=4）
+            var weak   = sorted.filter(function (w) { return wordScores[w.en] >= 4; });
             redReviewWords = weak;
-            var mid    = sorted.filter(function (w) { return wordScores[w.en] >= 3 && wordScores[w.en] <= 4; });
-            var strong = sorted.filter(function (w) { return wordScores[w.en] <= 2; });
+            var mid    = sorted.filter(function (w) { return wordScores[w.en] >= 2 && wordScores[w.en] <= 3; });
+            var strong = sorted.filter(function (w) { return wordScores[w.en] <= 1; });
 
             function makeRows(list, bg, tc) {
                 return list.map(function (w) {
