@@ -464,6 +464,23 @@
         .book-units { padding: 0 0 6px 0; }
         .book-section.collapsed .book-units { display: none; }
 
+        /* 级别分组（可折叠，默认收起） */
+        .level-section { margin: 4px 0 4px 6px; border-left: 2px solid var(--border-light); }
+        .level-header {
+            display: flex; justify-content: flex-start; gap: 8px; align-items: center;
+            padding: 7px 10px; cursor: pointer; border-radius: 8px; transition: background 0.15s;
+        }
+        .level-header:hover { background: var(--bg-subtle); }
+        .level-name { font-size: 0.82rem; font-weight: 600; }
+        .level-arrow {
+            font-size: 1.05rem; color: var(--text-primary); line-height: 1;
+            transition: transform 0.2s ease; margin-left: auto;
+        }
+        .level-section.collapsed .level-arrow { transform: rotate(-90deg); }
+        .level-units { padding: 0 0 2px 14px; }
+        .level-section.collapsed .level-units { display: none; }
+        .level-checkbox { display: none; }
+
         .book-header { justify-content: flex-start; gap: 8px; }
         .book-arrow { margin-left: auto; }
 
@@ -488,13 +505,16 @@
         .unit-checkmark::after { content: '✓'; opacity: 0; transition: opacity 0.15s; }
 
         .unit-item input[type="checkbox"]:checked ~ .unit-checkmark,
-        .book-checkbox:checked ~ .unit-checkmark {
+        .book-checkbox:checked ~ .unit-checkmark,
+        .level-checkbox:checked ~ .unit-checkmark {
             background: var(--accent); border-color: var(--accent);
         }
         .unit-item input[type="checkbox"]:checked ~ .unit-checkmark::after,
-        .book-checkbox:checked ~ .unit-checkmark::after { opacity: 1; }
+        .book-checkbox:checked ~ .unit-checkmark::after,
+        .level-checkbox:checked ~ .unit-checkmark::after { opacity: 1; }
 
-        .book-checkbox:indeterminate ~ .unit-checkmark {
+        .book-checkbox:indeterminate ~ .unit-checkmark,
+        .level-checkbox:indeterminate ~ .unit-checkmark {
             background: var(--accent); border-color: var(--accent); opacity: 0.55;
         }
 

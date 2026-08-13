@@ -771,6 +771,46 @@
             return ordered;
         }
 
+        function unitItemHtml(book, unit, units) {
+            var cnt = units[unit].length;
+            var h = '<label class="unit-item">';
+            h += '  <input type="checkbox" class="unit-checkbox"'
+               + ' data-book="' + escapeAttr(book) + '"'
+               + ' data-unit="' + escapeAttr(unit) + '"'
+               + ' onchange="updateSelectedCount()">';
+            h += '  <span class="unit-checkmark"></span>';
+            h += '  <span class="unit-name">' + unit + '</span>';
+            h += '  <span class="unit-count">' + cnt + ' 词</span>';
+            h += '</label>';
+            return h;
+        }
+
+        function groupUnitsByLevel(orderedKeys) {
+            var groups = [];
+            var index = {};
+            orderedKeys.forEach(function (k) {
+                var lvl = getLevelPrefix(k) || "";
+                if (!(lvl in index)) { index[lvl] = groups.length; groups.push({ level: lvl, units: [] }); }
+                groups[index[lvl]].units.push(k);
+            });
+            return groups;
+        }
+
+        function toggleLevel(headerEl) {
+            var sec = headerEl.parentElement;
+            if (sec && sec.classList.contains("level-section")) sec.classList.toggle("collapsed");
+        }
+
+        function toggleLevelAll(book, level, box) {
+            var check = box.checked;
+            var cbs = document.querySelectorAll('.unit-checkbox[data-book="' + escapeAttr(book) + '"]');
+            cbs.forEach(function (cb) {
+                var u = cb.getAttribute("data-unit");
+                if ((getLevelPrefix(u) || "") === level) cb.checked = check;
+            });
+            updateSelectedCount();
+        }
+
         async function showSelector() {
             clearProgress();
             lastAction = null;
@@ -810,20 +850,37 @@
                 html += '<div class="book-units">';
 
                 var orderedUnits = sortUnitsByLevel(units);
-                for (var ui = 0; ui < orderedUnits.length; ui++) {
-                    var unit = orderedUnits[ui];
-                    var cnt = units[unit].length;
-                    if (cnt === 0) continue;
-                    hasAnyUnit = true;
-                    html += '<label class="unit-item">';
-                    html += '  <input type="checkbox" class="unit-checkbox"'
-                         + ' data-book="' + escapeAttr(book) + '"'
-                         + ' data-unit="' + escapeAttr(unit) + '"'
-                         + ' onchange="updateSelectedCount()">';
-                    html += '  <span class="unit-checkmark"></span>';
-                    html += '  <span class="unit-name">' + unit + '</span>';
-                    html += '  <span class="unit-count">' + cnt + ' 词</span>';
-                    html += '</label>';
+                var levelGroups = groupUnitsByLevel(orderedUnits);
+                if (levelGroups.length > 1) {
+                    levelGroups.forEach(function (grp) {
+                        var lvl = grp.level;
+                        html += '<div class="level-section collapsed">';
+                        html += '  <div class="level-header" onclick="toggleLevel(this)">';
+                        html += '    <input type="checkbox" class="level-checkbox" data-book="' + escapeAttr(book) + '" data-level="' + escapeAttr(lvl) + '"'
+                             + ' title="选择整个级别" onclick="event.stopPropagation()"'
+                             + ' onchange="toggleLevelAll(\'' + escapeStr(book) + '\',\'' + escapeStr(lvl) + '\',this)">';
+                        html += '    <span class="unit-checkmark" title="选择整个级别"'
+                             + ' onclick="event.stopPropagation(); this.previousElementSibling.click();"></span>';
+                        html += '    <span class="level-name">' + lvl + '</span>';
+                        html += '    <span class="level-arrow">▾</span>';
+                        html += '  </div>';
+                        html += '  <div class="level-units">';
+                        grp.units.forEach(function (unit) {
+                            var cnt = units[unit].length;
+                            if (cnt === 0) return;
+                            hasAnyUnit = true;
+                            html += unitItemHtml(book, unit, units);
+                        });
+                        html += '  </div>';
+                        html += '</div>';
+                    });
+                } else {
+                    orderedUnits.forEach(function (unit) {
+                        var cnt = units[unit].length;
+                        if (cnt === 0) return;
+                        hasAnyUnit = true;
+                        html += unitItemHtml(book, unit, units);
+                    });
                 }
                 html += '</div></div>';
             }
@@ -928,6 +985,25 @@
                 if (!box) continue;
                 box.checked = (bookState[b].total > 0 && bookState[b].checked === bookState[b].total);
                 box.indeterminate = (bookState[b].checked > 0 && bookState[b].checked < bookState[b].total);
+            }
+
+            // 同步各级别标题上的“全选”复选框状态
+            var levelState = {};
+            cbs.forEach(function (cb) {
+                var b = cb.getAttribute("data-book");
+                var u = cb.getAttribute("data-unit");
+                var lvl = getLevelPrefix(u) || "";
+                var key = b + "\u0000" + lvl;
+                if (!levelState[key]) levelState[key] = { total: 0, checked: 0 };
+                levelState[key].total++;
+                if (cb.checked) levelState[key].checked++;
+            });
+            for (var lk in levelState) {
+                var parts = lk.split("\u0000");
+                var lcb = document.querySelector('.level-checkbox[data-book="' + escapeAttr(parts[0]) + '"][data-level="' + escapeAttr(parts[1]) + '"]');
+                if (!lcb) continue;
+                lcb.checked = (levelState[lk].total > 0 && levelState[lk].checked === levelState[lk].total);
+                lcb.indeterminate = (levelState[lk].checked > 0 && levelState[lk].checked < levelState[lk].total);
             }
 
             document.getElementById("selectedCount").textContent = total;
