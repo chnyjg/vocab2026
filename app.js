@@ -302,6 +302,8 @@
         var meaningShown = false;
         var currentChoice = null;
         var wordScores = {};
+        var en2cnScores = {};
+        var cn2enScores = {};
         var wordsLearnedRound = {};
         var currentPhase = "en2cn";
         var autoPlay = false;
@@ -368,6 +370,21 @@
             try {
                 localStorage.setItem("vocab_history_" + USER_ID, JSON.stringify(map));
             } catch (e) {}
+        }
+
+        // [新增] 分相历史：英→中 / 中→英 各自一条时间线，仅供进步卡对比使用
+        function cacheLoadPhaseHistory() {
+            if (!USER_ID) return {};
+            try {
+                var raw = localStorage.getItem("vocab_phase_history_" + USER_ID);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return {};
+        }
+
+        function cacheSavePhaseHistory(map) {
+            if (!USER_ID) return;
+            try { localStorage.setItem("vocab_phase_history_" + USER_ID, JSON.stringify(map)); } catch (e) {}
         }
 
         function cacheLoadSessions() {
@@ -1287,9 +1304,13 @@
             currentRound = 1;
             currentPhase = "en2cn";
             wordScores = {};
+            en2cnScores = {};
+            cn2enScores = {};
             wordsLearnedRound = {};
             allWords.forEach(function (w) {
                 wordScores[w.en] = 0;
+                en2cnScores[w.en] = 0;
+                cn2enScores[w.en] = 0;
                 wordsLearnedRound[w.en] = 0;
             });
 
@@ -1506,7 +1527,11 @@
             var prevRound = wordsLearnedRound[word.en];
 
             // 薄弱度 = 本轮答错次数（known 不计数，最低 0 = 全对 = 掌握）
-            if (status !== "known") wordScores[word.en]++;
+            if (status !== "known") {
+                wordScores[word.en]++;
+                if (currentPhase === "en2cn") en2cnScores[word.en] = (en2cnScores[word.en] || 0) + 1;
+                else cn2enScores[word.en] = (cn2enScores[word.en] || 0) + 1;
+            }
 
             if (status === "known") {
                 wordsLearnedRound[word.en] = currentRound;
@@ -1711,15 +1736,31 @@
             lastAction = null;
 
             var history = cacheLoadHistory();
+            var phaseHistory = cacheLoadPhaseHistory();
             var snapWords = [];
             allWords.forEach(function (w) {
                 if (!history[w.en]) history[w.en] = [];
                 var prev = history[w.en].length > 0 ? history[w.en][history[w.en].length - 1] : null;
                 history[w.en].push(wordScores[w.en]);
+
+                var ec = en2cnScores[w.en] || 0;
+                var ce = cn2enScores[w.en] || 0;
+                if (!phaseHistory[w.en]) phaseHistory[w.en] = { en2cn: [], cn2en: [] };
+                var prevEC = phaseHistory[w.en].en2cn.length > 0 ? phaseHistory[w.en].en2cn[phaseHistory[w.en].en2cn.length - 1] : null;
+                var prevCE = phaseHistory[w.en].cn2en.length > 0 ? phaseHistory[w.en].cn2en[phaseHistory[w.en].cn2en.length - 1] : null;
+                phaseHistory[w.en].en2cn.push(ec);
+                phaseHistory[w.en].cn2en.push(ce);
+
                 var loc = wordLocationMap[w.en] || { book: '', unit: '' };
-                snapWords.push({ en: w.en, prev: prev, latest: wordScores[w.en], book: loc.book, unit: loc.unit });
+                snapWords.push({
+                    en: w.en, prev: prev, latest: wordScores[w.en],
+                    prev_en2cn: prevEC, latest_en2cn: ec,
+                    prev_cn2en: prevCE, latest_cn2en: ce,
+                    book: loc.book, unit: loc.unit
+                });
             });
             cacheSaveHistory(history);
+            cacheSavePhaseHistory(phaseHistory);
 
             // [新增] 记录“上次会话快照”用于记分看板进步对比（本地 + 云端）
             saveLastSession({ time: Date.now(), words: snapWords });
@@ -1787,22 +1828,49 @@
                 + (allWords.filter(function(w) { return w.spell !== false; }).length > 0 ? '英→中 + 中→英' : '英→中')
                 + ' · 平均得分 <strong>' + avg + '</strong></div>'
                 + (function () {
-                    var lp = 0, ll = 0, imp = 0, reg = 0, sm = 0, nw = 0;
-                    snapWords.forEach(function (s) {
-                        if (s.prev === null) { nw++; ll += s.latest; return; }
-                        lp += s.prev; ll += s.latest;
-                        if (s.latest < s.prev) imp++;
-                        else if (s.latest > s.prev) reg++;
-                        else sm++;
-                    });
-                    if (nw === snapWords.length) {
-                        return '<div class="report-progress">本次 ' + nw + ' 词均为新词，共答错 ' + ll + ' 次（暂无历史对比）</div>';
+                    function agg(pk, lk) {
+                        var prev = 0, latest = 0, imp = 0, reg = 0, sm = 0, nw = 0, n = 0;
+                        snapWords.forEach(function (s) {
+                            var p = s[pk], l = s[lk];
+                            if (p === null || p === undefined) {
+                                if (l > 0) { nw++; latest += l; n++; }
+                                return;
+                            }
+                            prev += p; latest += l; n++;
+                            if (l < p) imp++; else if (l > p) reg++; else sm++;
+                        });
+                        return { prev: prev, latest: latest, imp: imp, reg: reg, sm: sm, nw: nw, n: n };
                     }
-                    var tr = (lp - ll) > 0 ? ('减少 <strong style="color:var(--success)">' + (lp - ll) + '</strong> 次答错')
-                              : (lp - ll) < 0 ? ('增加 <strong style="color:var(--danger)">' + (ll - lp) + '</strong> 次答错')
-                              : '答错次数持平';
-                    return '<div class="report-progress">相比上一次：总答错 ' + lp + ' → ' + ll + '，' + tr
-                        + '；' + imp + ' 词进步 / ' + reg + ' 词退步 / ' + sm + ' 词持平' + (nw > 0 ? (' / ' + nw + ' 词新') : '') + '</div>';
+                    function trendLine(a, label) {
+                        if (a.n === 0) return label + '：本次未练习';
+                        if (a.prev === 0) {
+                            if (a.latest === 0) return label + '：0 次（保持全对）';
+                            return label + '：0 → ' + a.latest + '，增加 <strong style="color:var(--danger)">' + a.latest + '</strong> 次（↑ 100%）';
+                        }
+                        var reduce = a.prev - a.latest;
+                        var pct = Math.round(reduce / a.prev * 100);
+                        var t;
+                        if (reduce > 0) t = '减少 <strong style="color:var(--success)">' + reduce + '</strong> 次（↓ ' + pct + '%）';
+                        else if (reduce < 0) t = '增加 <strong style="color:var(--danger)">' + (-reduce) + '</strong> 次（↑ ' + (-pct) + '%）';
+                        else t = '持平';
+                        return label + '：' + a.prev + ' → ' + a.latest + '，' + t;
+                    }
+                    var all = agg('prev', 'latest');
+                    if (all.n === 0) {
+                        return '<div class="report-progress">本次 ' + all.nw + ' 词均为新词，共答错 ' + all.latest + ' 次（暂无历史对比）</div>';
+                    }
+                    var hasPhase = snapWords.some(function (s) { return 'prev_en2cn' in s; });
+                    var html = '<div class="report-progress">';
+                    if (hasPhase) {
+                        html += trendLine(all, '总答错');
+                        html += '<br>· ' + trendLine(agg('prev_en2cn', 'latest_en2cn'), '英→中');
+                        html += '<br>· ' + trendLine(agg('prev_cn2en', 'latest_cn2en'), '中→英');
+                    } else {
+                        html += trendLine(all, '总答错');
+                    }
+                    html += '<br>' + all.imp + ' 词进步 / ' + all.reg + ' 词退步 / ' + all.sm + ' 词持平' + (all.nw > 0 ? (' / ' + all.nw + ' 词新') : '');
+                    html += '</div>';
+                    return html;
                 })()
                 + sections
                 + '<div class="report-actions">'
@@ -2096,50 +2164,137 @@
         // 记分看板顶部“最近一次学习进步”卡（不受单元筛选影响）
         function renderProgressCard(ls) {
             var words = ls.words || [];
-            var prevSum = 0, latestSum = 0, improved = 0, regressed = 0, same = 0, isNew = 0;
-            words.forEach(function (s) {
-                if (s.prev === null || s.prev === undefined) { isNew++; latestSum += s.latest; return; }
-                prevSum += s.prev; latestSum += s.latest;
-                if (s.latest < s.prev) improved++;
-                else if (s.latest > s.prev) regressed++;
-                else same++;
-            });
-            var reduce = prevSum - latestSum;
+            var hasPhase = words.some(function (s) { return 'prev_en2cn' in s; });
 
-            var summaryHtml;
-            if (isNew === words.length) {
-                summaryHtml = '本次 <strong>' + words.length + '</strong> 词均为新词，共答错 <strong>' + latestSum + '</strong> 次（暂无历史对比）';
-            } else {
-                var trend;
-                if (reduce > 0) trend = '减少 <strong style="color:var(--success)">' + reduce + '</strong> 次答错';
-                else if (reduce < 0) trend = '增加 <strong style="color:var(--danger)">' + (-reduce) + '</strong> 次答错';
-                else trend = '答错次数持平';
-                summaryHtml = '总答错 <strong>' + prevSum + '</strong> → <strong>' + latestSum + '</strong>，' + trend
-                    + '；<span style="color:var(--success)">' + improved + ' 词进步</span> / <span style="color:var(--danger)">' + regressed + ' 词退步</span> / ' + same + ' 词持平'
-                    + (isNew > 0 ? (' / ' + isNew + ' 词新') : '');
+            // 旧快照（升级前）只有组合 prev/latest，按原样式渲染，保证向后兼容
+            if (!hasPhase) {
+                var prevSum = 0, latestSum = 0, improved = 0, regressed = 0, same = 0, isNew = 0;
+                words.forEach(function (s) {
+                    if (s.prev === null || s.prev === undefined) { isNew++; latestSum += s.latest; return; }
+                    prevSum += s.prev; latestSum += s.latest;
+                    if (s.latest < s.prev) improved++;
+                    else if (s.latest > s.prev) regressed++;
+                    else same++;
+                });
+                var reduce = prevSum - latestSum;
+                var summaryHtml;
+                if (isNew === words.length) {
+                    summaryHtml = '本次 <strong>' + words.length + '</strong> 词均为新词，共答错 <strong>' + latestSum + '</strong> 次（暂无历史对比）';
+                } else {
+                    var trend;
+                    if (reduce > 0) trend = '减少 <strong style="color:var(--success)">' + reduce + '</strong> 次答错';
+                    else if (reduce < 0) trend = '增加 <strong style="color:var(--danger)">' + (-reduce) + '</strong> 次答错';
+                    else trend = '答错次数持平';
+                    summaryHtml = '总答错 <strong>' + prevSum + '</strong> → <strong>' + latestSum + '</strong>，' + trend
+                        + '；<span style="color:var(--success)">' + improved + ' 词进步</span> / <span style="color:var(--danger)">' + regressed + ' 词退步</span> / ' + same + ' 词持平'
+                        + (isNew > 0 ? (' / ' + isNew + ' 词新') : '');
+                }
+                var rows = words.map(function (s) {
+                    var dcls, dtext;
+                    if (s.prev === null || s.prev === undefined) { dcls = 'prog-new'; dtext = '新 → ' + s.latest; }
+                    else {
+                        var d = s.prev - s.latest;
+                        if (d > 0) { dcls = 'prog-up'; dtext = '−' + d + ' ▲'; }
+                        else if (d < 0) { dcls = 'prog-down'; dtext = '+' + (-d) + ' ▼'; }
+                        else { dcls = 'prog-same'; dtext = '0 —'; }
+                    }
+                    return '<div class="progress-row">'
+                        + '<span class="progress-word">' + escapeHtml(s.en) + '</span>'
+                        + '<span class="progress-unit">' + escapeHtml(s.unit || '') + '</span>'
+                        + '<span class="progress-prev">' + (s.prev === null || s.prev === undefined ? '—' : s.prev) + ' → ' + s.latest + '</span>'
+                        + '<span class="progress-delta ' + dcls + '">' + dtext + '</span>'
+                        + '</div>';
+                }).join('');
+                return '<div class="progress-card">'
+                    + '<div class="progress-card-title">📈 最近一次学习进步 · ' + formatAgo(ls.time) + '</div>'
+                    + '<div class="progress-summary">' + summaryHtml + '</div>'
+                    + '<div class="progress-list">' + rows + '</div>'
+                    + '</div>';
             }
 
-            var rows = words.map(function (s) {
-                var dcls, dtext;
-                if (s.prev === null || s.prev === undefined) {
-                    dcls = 'prog-new'; dtext = '新 → ' + s.latest;
+            // 新快照：区分英→中 / 中→英 两轮
+            function agg(pk, lk) {
+                var prev = 0, latest = 0, imp = 0, reg = 0, sm = 0, nw = 0, n = 0;
+                words.forEach(function (s) {
+                    var p = s[pk], l = s[lk];
+                    if (p === null || p === undefined) {
+                        if (l > 0) { nw++; latest += l; n++; }
+                        return;
+                    }
+                    prev += p; latest += l; n++;
+                    if (l < p) imp++; else if (l > p) reg++; else sm++;
+                });
+                return { prev: prev, latest: latest, imp: imp, reg: reg, sm: sm, nw: nw, n: n };
+            }
+
+            function statBox(label, a) {
+                var num, trendCls, trendTxt;
+                if (a.n === 0 && a.nw === 0) { num = '—'; trendTxt = '未练习'; trendCls = 'prog-same'; }
+                else if (a.prev === 0) {
+                    if (a.latest === 0) { num = '0 → 0'; trendTxt = '全对'; trendCls = 'prog-up'; }
+                    else { num = '0 → ' + a.latest; trendTxt = '↑100%'; trendCls = 'prog-down'; }
                 } else {
-                    var d = s.prev - s.latest;
-                    if (d > 0) { dcls = 'prog-up'; dtext = '−' + d + ' ▲'; }
-                    else if (d < 0) { dcls = 'prog-down'; dtext = '+' + (-d) + ' ▼'; }
-                    else { dcls = 'prog-same'; dtext = '0 —'; }
+                    var reduce = a.prev - a.latest;
+                    var pct = Math.round(reduce / a.prev * 100);
+                    num = a.prev + ' → ' + a.latest;
+                    if (reduce > 0) { trendTxt = '↓' + pct + '%'; trendCls = 'prog-up'; }
+                    else if (reduce < 0) { trendTxt = '↑' + (-pct) + '%'; trendCls = 'prog-down'; }
+                    else { trendTxt = '0%'; trendCls = 'prog-same'; }
                 }
+                return '<div class="pphase"><div class="pphase-label">' + label + '</div>'
+                    + '<div class="pphase-num">' + num + '</div>'
+                    + '<div class="pphase-trend ' + trendCls + '">' + trendTxt + '</div></div>';
+            }
+
+            function phaseCell(p, l) {
+                if (p === null || p === undefined) {
+                    if (l > 0) return '<span class="pp-num">新→' + l + '</span><span class="pp-delta prog-new">新</span>';
+                    return '<span class="pp-num pp-none">—</span>';
+                }
+                var d = p - l, dcls, dtext;
+                if (d > 0) { dcls = 'prog-up'; dtext = '−' + d + ' ▲'; }
+                else if (d < 0) { dcls = 'prog-down'; dtext = '+' + (-d) + ' ▼'; }
+                else { dcls = 'prog-same'; dtext = '0'; }
+                return '<span class="pp-num">' + p + '→' + l + '</span><span class="pp-delta ' + dcls + '">' + dtext + '</span>';
+            }
+
+            function wordRow(s) {
                 return '<div class="progress-row">'
                     + '<span class="progress-word">' + escapeHtml(s.en) + '</span>'
                     + '<span class="progress-unit">' + escapeHtml(s.unit || '') + '</span>'
-                    + '<span class="progress-prev">' + (s.prev === null || s.prev === undefined ? '—' : s.prev) + ' → ' + s.latest + '</span>'
-                    + '<span class="progress-delta ' + dcls + '">' + dtext + '</span>'
+                    + '<span class="progress-pair"><span class="pp-tag">英</span>' + phaseCell(s.prev_en2cn, s.latest_en2cn) + '</span>'
+                    + '<span class="progress-pair"><span class="pp-tag">中</span>' + phaseCell(s.prev_cn2en, s.latest_cn2en) + '</span>'
                     + '</div>';
-            }).join('');
+            }
+
+            var ec = agg('prev_en2cn', 'latest_en2cn');
+            var ce = agg('prev_cn2en', 'latest_cn2en');
+            var all = agg('prev', 'latest');
+
+            var summaryHtml;
+            if (all.n === 0) {
+                summaryHtml = '本次 <strong>' + words.length + '</strong> 词均为新词，共答错 <strong>' + all.latest + '</strong> 次（暂无历史对比）';
+            } else {
+                var atxt;
+                if (all.prev === 0) atxt = (all.latest === 0 ? '保持全对' : '首次，共 ' + all.latest + ' 次');
+                else {
+                    var r = all.prev - all.latest, pct = Math.round(r / all.prev * 100);
+                    if (r > 0) atxt = '总答错减少 <strong style="color:var(--success)">' + r + '</strong> 次（↓ ' + pct + '%）';
+                    else if (r < 0) atxt = '总答错增加 <strong style="color:var(--danger)">' + (-r) + '</strong> 次（↑ ' + (-pct) + '%）';
+                    else atxt = '总答错持平';
+                }
+                summaryHtml = atxt + '；<span style="color:var(--success)">' + all.imp + ' 词进步</span> / <span style="color:var(--danger)">' + all.reg + ' 词退步</span> / ' + all.sm + ' 词持平'
+                    + (all.nw > 0 ? (' / ' + all.nw + ' 词新') : '');
+            }
+
+            var boxes = statBox('英→中', ec) + statBox('中→英', ce) + statBox('合计', all);
+            var rows = words.map(wordRow).join('');
 
             return '<div class="progress-card">'
                 + '<div class="progress-card-title">📈 最近一次学习进步 · ' + formatAgo(ls.time) + '</div>'
+                + '<div class="progress-phases">' + boxes + '</div>'
                 + '<div class="progress-summary">' + summaryHtml + '</div>'
+                + '<div class="progress-legend"><span class="pp-leg">英</span>英→中　<span class="pp-leg">中</span>中→英　（数值=答错次数，▲减少 ▼增加）</div>'
                 + '<div class="progress-list">' + rows + '</div>'
                 + '</div>';
         }

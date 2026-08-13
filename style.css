@@ -713,6 +713,44 @@
         .prog-same { color: var(--text-muted); }
         .prog-new { color: var(--text-muted); }
 
+        /* [新增] 分相进步卡：英→中 / 中→英 两个 stat 盒 */
+        .progress-phases {
+            display: flex; gap: 8px; margin-bottom: 10px;
+        }
+        .pphase {
+            flex: 1; background: var(--bg-subtle); border: 1px solid var(--border-light);
+            border-radius: 12px; padding: 8px 6px; text-align: center;
+        }
+        .pphase-label { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
+        .pphase-num {
+            font-size: 0.92rem; font-weight: 800; color: var(--text-primary);
+            font-family: 'Inter', sans-serif; margin: 3px 0 2px;
+        }
+        .pphase-trend { font-size: 0.78rem; font-weight: 700; font-family: 'Inter', sans-serif; }
+        .progress-legend {
+            font-size: 0.68rem; color: var(--text-muted); margin: -2px 0 8px;
+            display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+        }
+        .pp-leg {
+            display: inline-block; width: 16px; text-align: center; font-size: 0.66rem;
+            background: var(--bg-subtle); border: 1px solid var(--border-light);
+            border-radius: 4px; color: var(--text-muted); margin-right: 2px;
+        }
+        /* 逐词行的两轮明细 */
+        .progress-pair {
+            display: flex; align-items: center; gap: 4px;
+            width: 116px; font-family: 'Inter', sans-serif; font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+        .pp-tag {
+            display: inline-block; width: 18px; text-align: center; font-size: 0.66rem;
+            background: var(--bg-subtle); border: 1px solid var(--border-light);
+            border-radius: 4px; color: var(--text-muted); flex: none;
+        }
+        .pp-num { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+        .pp-num.pp-none { color: var(--text-muted); font-weight: 400; }
+        .pp-delta { font-weight: 700; width: 44px; text-align: right; flex: none; }
+
         /* 学习报告 · 进步小结 */
         .report-progress {
             margin-top: 8px; font-size: 0.82rem; color: var(--text-muted);
