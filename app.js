@@ -386,6 +386,20 @@
             } catch (e) {}
         }
 
+        function cacheLoadLastSession() {
+            if (!USER_ID) return null;
+            try {
+                var raw = localStorage.getItem("vocab_last_session_" + USER_ID);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            return null;
+        }
+
+        function cacheSaveLastSession(obj) {
+            if (!USER_ID) return;
+            try { localStorage.setItem("vocab_last_session_" + USER_ID, JSON.stringify(obj)); } catch (e) {}
+        }
+
         function mergeHistory(local, cloud) {
             var merged = {};
             var allKeys = {};
@@ -497,6 +511,29 @@
             } catch (e) { console.warn('删除失败', e); }
         }
 
+        // [新增] 上次会话快照（用于记分看板进步对比），单用户一行
+        async function cloudPushLastSession(obj) {
+            if (!USER_ID || !obj) return;
+            try {
+                await sb.from('vocab_last_session').upsert({
+                    user_id: USER_ID,
+                    time: obj.time,
+                    words: obj.words
+                }, { onConflict: 'user_id' });
+            } catch (e) { console.warn('推送上次会话失败', e); }
+        }
+
+        async function cloudFetchLastSession() {
+            if (!USER_ID) return null;
+            try {
+                var { data, error } = await sb.from('vocab_last_session')
+                    .select('time, words').eq('user_id', USER_ID);
+                if (error) { console.warn(error); return null; }
+                if (data && data.length > 0) return { time: data[0].time, words: data[0].words || [] };
+            } catch (e) {}
+            return null;
+        }
+
         // =============================================
         //  [新增] 同步逻辑
         // =============================================
@@ -506,16 +543,22 @@
             try {
                 var results = await Promise.all([
                     cloudFetchHistory(),
-                    cloudFetchSessions()
+                    cloudFetchSessions(),
+                    cloudFetchLastSession()
                 ]);
                 var cloudHistory = results[0];
                 var cloudSessions = results[1];
+                var cloudLast = results[2];
 
                 var localHistory = cacheLoadHistory();
                 var localSessions = cacheLoadSessions();
 
                 cacheSaveHistory(mergeHistory(localHistory, cloudHistory));
                 cacheSaveSessions(mergeSessions(localSessions, cloudSessions));
+
+                var localLast = cacheLoadLastSession();
+                var bestLast = pickLatestLastSession(localLast, cloudLast);
+                if (bestLast) cacheSaveLastSession(bestLast);
             } catch (e) { console.warn('从云端同步失败', e); }
         }
 
@@ -524,7 +567,29 @@
             try {
                 var history = cacheLoadHistory();
                 await cloudPushHistory(history);
+                await cloudPushLastSession(cacheLoadLastSession());
             } catch (e) { console.warn('推送到云端失败', e); }
+        }
+
+        function pickLatestLastSession(a, b) {
+            if (!a && !b) return null;
+            if (!a) return b;
+            if (!b) return a;
+            return (b.time || 0) > (a.time || 0) ? b : a;
+        }
+
+        async function loadLastSession() {
+            var local = cacheLoadLastSession();
+            var cloud = null;
+            try { cloud = await cloudFetchLastSession(); } catch (e) {}
+            var best = pickLatestLastSession(local, cloud);
+            if (best && (!local || (best.time || 0) > (local.time || 0))) cacheSaveLastSession(best);
+            return best;
+        }
+
+        function saveLastSession(obj) {
+            cacheSaveLastSession(obj);
+            cloudPushLastSession(obj);
         }
 
         // =============================================
@@ -1203,6 +1268,8 @@
             startSession(words);
         }
 
+        var wordLocationMap = {};
+
         function startSession(words) {
             lastAction = null;
 
@@ -1224,6 +1291,12 @@
             allWords.forEach(function (w) {
                 wordScores[w.en] = 0;
                 wordsLearnedRound[w.en] = 0;
+            });
+
+            wordLocationMap = {};
+            sessionConfig.selectedUnits.forEach(function (sel) {
+                var arr = (wordBank[sel.book] && wordBank[sel.book][sel.unit]) || [];
+                arr.forEach(function (w) { wordLocationMap[w.en] = { book: sel.book, unit: sel.unit }; });
             });
 
             document.getElementById("progressBar").style.display = "";
@@ -1638,11 +1711,18 @@
             lastAction = null;
 
             var history = cacheLoadHistory();
+            var snapWords = [];
             allWords.forEach(function (w) {
                 if (!history[w.en]) history[w.en] = [];
+                var prev = history[w.en].length > 0 ? history[w.en][history[w.en].length - 1] : null;
                 history[w.en].push(wordScores[w.en]);
+                var loc = wordLocationMap[w.en] || { book: '', unit: '' };
+                snapWords.push({ en: w.en, prev: prev, latest: wordScores[w.en], book: loc.book, unit: loc.unit });
             });
             cacheSaveHistory(history);
+
+            // [新增] 记录“上次会话快照”用于记分看板进步对比（本地 + 云端）
+            saveLastSession({ time: Date.now(), words: snapWords });
 
             var sessions = cacheLoadSessions();
             var today = new Date().toISOString().slice(0, 10);
@@ -1706,6 +1786,24 @@
                 + ' · '
                 + (allWords.filter(function(w) { return w.spell !== false; }).length > 0 ? '英→中 + 中→英' : '英→中')
                 + ' · 平均得分 <strong>' + avg + '</strong></div>'
+                + (function () {
+                    var lp = 0, ll = 0, imp = 0, reg = 0, sm = 0, nw = 0;
+                    snapWords.forEach(function (s) {
+                        if (s.prev === null) { nw++; ll += s.latest; return; }
+                        lp += s.prev; ll += s.latest;
+                        if (s.latest < s.prev) imp++;
+                        else if (s.latest > s.prev) reg++;
+                        else sm++;
+                    });
+                    if (nw === snapWords.length) {
+                        return '<div class="report-progress">本次 ' + nw + ' 词均为新词，共答错 ' + ll + ' 次（暂无历史对比）</div>';
+                    }
+                    var tr = (lp - ll) > 0 ? ('减少 <strong style="color:var(--success)">' + (lp - ll) + '</strong> 次答错')
+                              : (lp - ll) < 0 ? ('增加 <strong style="color:var(--danger)">' + (ll - lp) + '</strong> 次答错')
+                              : '答错次数持平';
+                    return '<div class="report-progress">相比上一次：总答错 ' + lp + ' → ' + ll + '，' + tr
+                        + '；' + imp + ' 词进步 / ' + reg + ' 词退步 / ' + sm + ' 词持平' + (nw > 0 ? (' / ' + nw + ' 词新') : '') + '</div>';
+                })()
                 + sections
                 + '<div class="report-actions">'
                 + '  <button class="report-btn report-btn-primary" onclick="restartFromConfig()">🔄 再背一遍</button>'
@@ -1843,6 +1941,7 @@
             document.getElementById("subtitle").textContent = "";
 
             if (!hiddenBooks) await loadHiddenBooks();
+            var lastSession = await loadLastSession();
             var history = cacheLoadHistory();
             var items = [];
 
@@ -1885,6 +1984,10 @@
                 html += '</div>';
                 document.getElementById("mainArea").innerHTML = html;
                 return;
+            }
+
+            if (lastSession && lastSession.words && lastSession.words.length > 0) {
+                html += renderProgressCard(lastSession);
             }
 
             html += '<div style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">'
@@ -1971,6 +2074,74 @@
                 if (arr && arr.length > 0) return true;
             }
             return false;
+        }
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function formatAgo(ts) {
+            if (!ts) return '';
+            var diff = Date.now() - ts;
+            var m = Math.floor(diff / 60000);
+            if (m < 1) return '刚刚';
+            if (m < 60) return m + ' 分钟前';
+            var h = Math.floor(m / 60);
+            if (h < 24) return h + ' 小时前';
+            var d = Math.floor(h / 24);
+            return d + ' 天前';
+        }
+
+        // 记分看板顶部“最近一次学习进步”卡（不受单元筛选影响）
+        function renderProgressCard(ls) {
+            var words = ls.words || [];
+            var prevSum = 0, latestSum = 0, improved = 0, regressed = 0, same = 0, isNew = 0;
+            words.forEach(function (s) {
+                if (s.prev === null || s.prev === undefined) { isNew++; latestSum += s.latest; return; }
+                prevSum += s.prev; latestSum += s.latest;
+                if (s.latest < s.prev) improved++;
+                else if (s.latest > s.prev) regressed++;
+                else same++;
+            });
+            var reduce = prevSum - latestSum;
+
+            var summaryHtml;
+            if (isNew === words.length) {
+                summaryHtml = '本次 <strong>' + words.length + '</strong> 词均为新词，共答错 <strong>' + latestSum + '</strong> 次（暂无历史对比）';
+            } else {
+                var trend;
+                if (reduce > 0) trend = '减少 <strong style="color:var(--success)">' + reduce + '</strong> 次答错';
+                else if (reduce < 0) trend = '增加 <strong style="color:var(--danger)">' + (-reduce) + '</strong> 次答错';
+                else trend = '答错次数持平';
+                summaryHtml = '总答错 <strong>' + prevSum + '</strong> → <strong>' + latestSum + '</strong>，' + trend
+                    + '；<span style="color:var(--success)">' + improved + ' 词进步</span> / <span style="color:var(--danger)">' + regressed + ' 词退步</span> / ' + same + ' 词持平'
+                    + (isNew > 0 ? (' / ' + isNew + ' 词新') : '');
+            }
+
+            var rows = words.map(function (s) {
+                var dcls, dtext;
+                if (s.prev === null || s.prev === undefined) {
+                    dcls = 'prog-new'; dtext = '新 → ' + s.latest;
+                } else {
+                    var d = s.prev - s.latest;
+                    if (d > 0) { dcls = 'prog-up'; dtext = '−' + d + ' ▲'; }
+                    else if (d < 0) { dcls = 'prog-down'; dtext = '+' + (-d) + ' ▼'; }
+                    else { dcls = 'prog-same'; dtext = '0 —'; }
+                }
+                return '<div class="progress-row">'
+                    + '<span class="progress-word">' + escapeHtml(s.en) + '</span>'
+                    + '<span class="progress-unit">' + escapeHtml(s.unit || '') + '</span>'
+                    + '<span class="progress-prev">' + (s.prev === null || s.prev === undefined ? '—' : s.prev) + ' → ' + s.latest + '</span>'
+                    + '<span class="progress-delta ' + dcls + '">' + dtext + '</span>'
+                    + '</div>';
+            }).join('');
+
+            return '<div class="progress-card">'
+                + '<div class="progress-card-title">📈 最近一次学习进步 · ' + formatAgo(ls.time) + '</div>'
+                + '<div class="progress-summary">' + summaryHtml + '</div>'
+                + '<div class="progress-list">' + rows + '</div>'
+                + '</div>';
         }
 
         // 依据选中单元过滤，渲染底部单词行（无选中则显示全部；不再逐词勾选）
