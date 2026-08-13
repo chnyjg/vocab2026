@@ -740,6 +740,37 @@
 
         var currentStrategy = "smart";
 
+        function getLevelPrefix(unitName) {
+            var m = unitName.match(/^(.*?级)\s/);
+            return m ? m[1] : null;
+        }
+
+        function sortUnitsByLevel(unitsObj) {
+            var keys = Object.keys(unitsObj);
+            if (keys.length === 0) return keys;
+            var levelOf = {};
+            keys.forEach(function (k) { levelOf[k] = getLevelPrefix(k); });
+            var distinct = {};
+            keys.forEach(function (k) { if (levelOf[k]) distinct[levelOf[k]] = true; });
+            var levelNames = Object.keys(distinct);
+            if (levelNames.length <= 1) return keys; // 单级书（或无“级”前缀）保持原序
+            var levelFirstIdx = {};
+            keys.forEach(function (k, i) {
+                var lvl = levelOf[k];
+                if (lvl && !(lvl in levelFirstIdx)) levelFirstIdx[lvl] = i;
+            });
+            var sortedLevels = levelNames.sort(function (a, b) {
+                return levelFirstIdx[b] - levelFirstIdx[a]; // 后加的级别在最上
+            });
+            var ordered = [];
+            sortedLevels.forEach(function (lvl) {
+                keys.forEach(function (k) {
+                    if (levelOf[k] === lvl) ordered.push(k);
+                });
+            });
+            return ordered;
+        }
+
         async function showSelector() {
             clearProgress();
             lastAction = null;
@@ -778,7 +809,9 @@
                 html += '</div>';
                 html += '<div class="book-units">';
 
-                for (var unit in units) {
+                var orderedUnits = sortUnitsByLevel(units);
+                for (var ui = 0; ui < orderedUnits.length; ui++) {
+                    var unit = orderedUnits[ui];
                     var cnt = units[unit].length;
                     if (cnt === 0) continue;
                     hasAnyUnit = true;
