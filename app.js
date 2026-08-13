@@ -712,22 +712,6 @@
                 .trim();
         }
 
-        // [改动] 掌握度加权只取最近三次，权重 1 / 0.6 / 0.36（decay=0.6）
-        function calcWeightedAvg(arr) {
-            if (!arr || arr.length === 0) return 0;
-            var tail = arr.slice(-3);            // 仅最近三次
-            var n = tail.length;
-            var decay = 0.6;
-            var weightedSum = 0, weightTotal = 0;
-            for (var i = 0; i < n; i++) {
-                var dist = n - 1 - i;            // 最后一次 dist=0 → 权重 1，往前 0.6、0.36
-                var weight = Math.pow(decay, dist);
-                weightedSum += tail[i] * weight;
-                weightTotal += weight;
-            }
-            return weightedSum / weightTotal;
-        }
-
         // 掌握判定（两档）：最近三次（不足三次则看全部）每次答错次数均为 0 → 已掌握
         function isMastered(arr) {
             if (!arr || arr.length === 0) return false;
@@ -1159,29 +1143,21 @@
                 var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
             }
 
-            // 2) 算出有历史词的最高薄弱分，作为无历史词的等权基准
+            // 2) 最近一次答错次数最高的词，作为无历史词的等权基准
             var maxScore = 0;
             arr.forEach(function (w) {
                 var h = history[w.en];
                 if (h && h.length > 0) {
-                    var s = calcWeightedAvg(h) * (1 + Math.log(Math.max(1, h.length)) * 0.2);
+                    var s = h[h.length - 1]; // 最近一次答错次数
                     if (s > maxScore) maxScore = s;
                 }
             });
-            if (maxScore === 0) maxScore = 1; // 全无历史时给个基准，所有词等权
+            if (maxScore === 0) maxScore = 1; // 全掌握或无历史时，新词与最薄弱等权
 
-            // 3) 计算每词薄弱分（不再区分有无历史）
+            // 3) 计算每词薄弱分：有历史=最近一次得分；无历史=与最薄弱词等权
             var items = arr.map(function (w) {
                 var h = history[w.en];
-                var weaknessScore;
-                if (h && h.length > 0) {
-                    var weightedAvg = calcWeightedAvg(h);
-                    var countBoost = 1 + Math.log(Math.max(1, h.length)) * 0.2;
-                    weaknessScore = weightedAvg * countBoost;
-                } else {
-                    // 无历史词：与最薄弱词等权并列
-                    weaknessScore = maxScore;
-                }
+                var weaknessScore = (h && h.length > 0) ? h[h.length - 1] : maxScore;
                 return { word: w, weaknessScore: weaknessScore };
             });
 
@@ -1874,8 +1850,8 @@
                         var avg = 0, count = 0, has = false;
                         if (arr && arr.length > 0) {
                             has = true;
-                            count = arr.length;
-                            avg = Math.round(calcWeightedAvg(arr));
+                            count = arr.length;          // 背了几次（每次完整学习会话记一条）
+                            avg = arr[arr.length - 1];   // 最近一次答错次数
                         }
                         items.push({ word: w, book: book, unit: unit, avg: avg, count: count, hasHistory: has, arr: arr });
                     });
@@ -1906,7 +1882,7 @@
             }
 
             html += '<div style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">'
-                  + '分数越高代表越薄弱（指数衰减加权，近期得分权重更高）<br>勾选后可将历史分数归零</div>';
+                  + '数字=最近一次答错次数（0=已掌握，越大越薄弱）<br>勾选后可将历史分数归零</div>';
 
             var unitMap = {};
             var unitOrder = [];
