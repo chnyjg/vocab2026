@@ -1385,10 +1385,10 @@
 
             if (currentPhase === "en2cn") {
                 html += '  <div class="english" onclick="speakEnglish(\'' + escapeStr(word.en) + '\')" style="cursor:pointer;" title="点击发音">' + normalizeForDisplay(word.en) + '</div>';
-                html += '  <div class="phonetic">' + word.phonetic + '</div>';
+                html += '  <div class="phonetic">' + (word.phonetic || '') + '</div>';
             } else {
                 html += '  <div class="cn-text">' + word.cn + '</div>';
-                html += '  <div class="phonetic" style="visibility:hidden;">' + word.phonetic + '</div>';
+                html += '  <div class="phonetic" style="visibility:hidden;">' + (word.phonetic || '') + '</div>';
             }
 
             html += '  <div class="meaning" id="meaningArea">';
@@ -1460,7 +1460,7 @@
                     + ' onclick="speakEnglish(\'' + escapeStr(word.en) + '\')" title="点击发音">'
                     + normalizeForDisplay(word.en) + '</div>'
                     + '<div style="font-family:Inter,sans-serif;font-size:0.85rem;color:var(--text-muted);">'
-                    + word.phonetic + '</div>';
+                    + (word.phonetic || '') + '</div>';
 
                 if (autoPlay) {
                     speakEnglish(word.en);
@@ -2672,7 +2672,7 @@
 
             var html = '<div class="detail-overlay" id="detailOverlay">';
             html += '<div class="detail-title">' + normalizeForDisplay(word.en) + '</div>';
-            html += '<div class="detail-phonetic">' + word.phonetic + '</div>';
+            html += '<div class="detail-phonetic">' + (word.phonetic || '') + '</div>';
 
             if (d.family && d.family.length > 0) {
                 html += '<div class="detail-section">';
