@@ -377,6 +377,34 @@ wordBank["Think Starter"] = {
         { en: "Friday", cn: "周五", phonetic: "/ˈfraɪdeɪ/", spell: false },
         { en: "Saturday", cn: "周六", phonetic: "/ˈsætədeɪ/", spell: false },
         { en: "Sunday", cn: "周日", phonetic: "/ˈsʌndeɪ/", spell: false }
+    ],
+
+    "Unit 6": [
+        // ---- 需掌握 ----
+        { en: "a glass of water", cn: "一杯（玻璃杯）水", phonetic: "/ə ɡlɑːs ɒv ˈwɔːtə(r)/" },
+        { en: "a jar of coins", cn: "一罐硬币", phonetic: "/ə dʒɑːr ɒv kɔɪnz/" },
+        { en: "school canteen", cn: "学校食堂", phonetic: "/skuːl kænˈtiːn/" },
+        // 身体部位
+        { en: "eye", cn: "眼睛", phonetic: "/aɪ/" },
+        { en: "nose", cn: "鼻子", phonetic: "/nəʊz/" },
+        { en: "ear", cn: "耳朵", phonetic: "/ɪə(r)/" },
+        { en: "mouth", cn: "嘴", phonetic: "/maʊθ/" },
+        { en: "face", cn: "脸", phonetic: "/feɪs/" },
+        { en: "arm", cn: "胳膊", phonetic: "/ɑːm/" },
+        { en: "leg", cn: "腿", phonetic: "/leɡ/" },
+        { en: "body", cn: "身体", phonetic: "/ˈbɒdi/" },
+        // 动作动词
+        { en: "hug", cn: "拥抱", phonetic: "/hʌɡ/" },
+        { en: "kick", cn: "踢", phonetic: "/kɪk/" },
+        { en: "hold", cn: "握", phonetic: "/həʊld/" },
+        { en: "hear", cn: "听", phonetic: "/hɪə(r)/" },
+        { en: "smell", cn: "闻", phonetic: "/smel/" },
+        { en: "taste", cn: "尝", phonetic: "/teɪst/" },
+        { en: "touch", cn: "摸", phonetic: "/tʌtʃ/" },
+        // ---- 只认读 ----
+        { en: "electric", cn: "电动的", phonetic: "/ɪˈlektrɪk/", spell: false },
+        { en: "scooter", cn: "滑板车", phonetic: "/ˈskuːtə(r)/", spell: false },
+        { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/", spell: false }
     ]
 
 };
