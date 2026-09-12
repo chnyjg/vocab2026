@@ -404,7 +404,38 @@ wordBank["Think Starter"] = {
         // ---- 只认读 ----
         { en: "electric", cn: "电动的", phonetic: "/ɪˈlektrɪk/", spell: false },
         { en: "scooter", cn: "滑板车", phonetic: "/ˈskuːtə(r)/", spell: false },
-        { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/", spell: false }
+        { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/", spell: false },
+
+        // ==================== Lesson 2 ====================
+        // ---- 需掌握 ----
+        // 颜色
+        { en: "red", cn: "红色的", phonetic: "/red/" },
+        { en: "blue", cn: "蓝色的", phonetic: "/bluː/" },
+        { en: "brown", cn: "棕色的", phonetic: "/braʊn/" },
+        { en: "black", cn: "黑色的", phonetic: "/blæk/" },
+        { en: "blonde", cn: "金色的", phonetic: "/blɒnd/" },
+        { en: "grey", cn: "灰色的", phonetic: "/ɡreɪ/" },
+        { en: "green", cn: "绿色的", phonetic: "/ɡriːn/" },
+        { en: "yellow", cn: "黄色的", phonetic: "/ˈjeləʊ/" },
+        { en: "purple", cn: "紫色的", phonetic: "/ˈpɜːpl/" },
+        // 形容词
+        { en: "short", cn: "短的", phonetic: "/ʃɔːt/" },
+        { en: "long", cn: "长的", phonetic: "/lɒŋ/" },
+        { en: "straight", cn: "直的", phonetic: "/streɪt/" },
+        { en: "curly", cn: "卷曲的", phonetic: "/ˈkɜːli/" },
+        { en: "favourite", cn: "最爱的", phonetic: "/ˈfeɪvərɪt/" },
+        // 名词
+        { en: "glasses", cn: "眼镜", phonetic: "/ˈɡlɑːsɪz/" },
+        { en: "smile", cn: "微笑", phonetic: "/smaɪl/" },
+        { en: "science", cn: "科学", phonetic: "/ˈsaɪəns/" },
+        { en: "football match", cn: "足球比赛", phonetic: "/ˈfʊtbɔːl mætʃ/" },
+        // ---- 只认读 ----
+        { en: "wavy", cn: "大波浪的", phonetic: "/ˈweɪvi/", spell: false },
+        { en: "slim", cn: "苗条的", phonetic: "/slɪm/", spell: false },
+        { en: "understand", cn: "明白", phonetic: "/ˌʌndəˈstænd/", spell: false },
+        { en: "beard", cn: "胡子（下巴上）", phonetic: "/bɪəd/", spell: false },
+        { en: "moustache", cn: "胡子（上唇上的小胡子）", phonetic: "/məˈstɑːʃ/", spell: false },
+        { en: "You're kidding!", cn: "你开玩笑吧！", phonetic: "/jɔː(r) ˈkɪdɪŋ/", spell: false }
     ]
 
 };
