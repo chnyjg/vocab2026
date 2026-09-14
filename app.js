@@ -821,7 +821,19 @@
             return m ? m[1] : null;
         }
 
-        function sortUnitsByLevel(unitsObj) {
+        // 去掉单元名前的级别前缀，仅用于显示（如 “1级 Unit 1” → “Unit 1”）
+        function stripLevelPrefix(unit) {
+            var lvl = getLevelPrefix(unit);
+            if (lvl) return unit.slice(lvl.length).replace(/^\s+/, "");
+            return unit;
+        }
+
+        // 部分书有期望的级别顺序（如 R 版 V2 放在 B2 级之下）
+        var LEVEL_ORDER_PREF = {
+            "外研版高中词库": ["1级", "B2级", "R 版 V2"]
+        };
+
+        function sortUnitsByLevel(unitsObj, bookName) {
             var keys = Object.keys(unitsObj);
             if (keys.length === 0) return keys;
             var levelOf = {};
@@ -830,14 +842,23 @@
             keys.forEach(function (k) { if (levelOf[k]) distinct[levelOf[k]] = true; });
             var levelNames = Object.keys(distinct);
             if (levelNames.length <= 1) return keys; // 单级书（或无“级”前缀）保持原序
-            var levelFirstIdx = {};
-            keys.forEach(function (k, i) {
-                var lvl = levelOf[k];
-                if (lvl && !(lvl in levelFirstIdx)) levelFirstIdx[lvl] = i;
-            });
-            var sortedLevels = levelNames.sort(function (a, b) {
-                return levelFirstIdx[b] - levelFirstIdx[a]; // 后加的级别在最上
-            });
+            var sortedLevels;
+            var pref = (bookName && LEVEL_ORDER_PREF[bookName]) || null;
+            if (pref) {
+                sortedLevels = [];
+                pref.forEach(function (l) { if (levelNames.indexOf(l) >= 0) sortedLevels.push(l); });
+                // 兜底：偏好表未列出的级别按文件中首次出现顺序补在后面
+                levelNames.forEach(function (l) { if (sortedLevels.indexOf(l) < 0) sortedLevels.push(l); });
+            } else {
+                var levelFirstIdx = {};
+                keys.forEach(function (k, i) {
+                    var lvl = levelOf[k];
+                    if (lvl && !(lvl in levelFirstIdx)) levelFirstIdx[lvl] = i;
+                });
+                sortedLevels = levelNames.slice().sort(function (a, b) {
+                    return levelFirstIdx[a] - levelFirstIdx[b]; // 书中越靠前级别越靠上
+                });
+            }
             var ordered = [];
             sortedLevels.forEach(function (lvl) {
                 keys.forEach(function (k) {
@@ -855,7 +876,7 @@
                + ' data-unit="' + escapeAttr(unit) + '"'
                + ' onchange="updateSelectedCount()">';
             h += '  <span class="unit-checkmark"></span>';
-            h += '  <span class="unit-name">' + unit + '</span>';
+            h += '  <span class="unit-name">' + stripLevelPrefix(unit) + '</span>';
             h += '  <span class="unit-count">' + cnt + ' 词</span>';
             h += '</label>';
             return h;
@@ -925,7 +946,7 @@
                 html += '</div>';
                 html += '<div class="book-units">';
 
-                var orderedUnits = sortUnitsByLevel(units);
+                var orderedUnits = sortUnitsByLevel(units, book);
                 var levelGroups = groupUnitsByLevel(orderedUnits);
                 if (levelGroups.length > 1) {
                     levelGroups.forEach(function (grp) {
@@ -2105,7 +2126,7 @@
                         grp.units.forEach(function (unit) {
                             if (!historyOfAny(unitsMap[unit], history)) return;
                             var unitKey = book + ' · ' + unit;
-                            html += '<div class="unit-tag" data-unit="' + escapeAttr(unit) + '" data-unitkey="' + escapeAttr(unitKey) + '" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + unit + '</div>';
+                            html += '<div class="unit-tag" data-unit="' + escapeAttr(unit) + '" data-unitkey="' + escapeAttr(unitKey) + '" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + stripLevelPrefix(unit) + '</div>';
                         });
                         html += '    </div>';
                         html += '  </div>';
@@ -2114,7 +2135,7 @@
                     levelGroups[0].units.forEach(function (unit) {
                         if (!historyOfAny(unitsMap[unit], history)) return;
                         var unitKey = book + ' · ' + unit;
-                        html += '<div class="unit-tag" data-unit="' + escapeAttr(unit) + '" data-unitkey="' + escapeAttr(unitKey) + '" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + unit + '</div>';
+                        html += '<div class="unit-tag" data-unit="' + escapeAttr(unit) + '" data-unitkey="' + escapeAttr(unitKey) + '" onclick="toggleUnitTag(this,\'' + escapeStr(unitKey) + '\')">' + stripLevelPrefix(unit) + '</div>';
                     });
                 }
 
@@ -2200,7 +2221,7 @@
                     }
                     return '<div class="progress-row">'
                         + '<span class="progress-word">' + escapeHtml(s.en) + '</span>'
-                        + '<span class="progress-unit">' + escapeHtml(s.unit || '') + '</span>'
+                        + '<span class="progress-unit">' + escapeHtml(stripLevelPrefix(s.unit || '')) + '</span>'
                         + '<span class="progress-prev">' + (s.prev === null || s.prev === undefined ? '—' : s.prev) + ' → ' + s.latest + '</span>'
                         + '<span class="progress-delta ' + dcls + '">' + dtext + '</span>'
                         + '</div>';
@@ -2261,7 +2282,7 @@
             function wordRow(s) {
                 return '<div class="progress-row">'
                     + '<span class="progress-word">' + escapeHtml(s.en) + '</span>'
-                    + '<span class="progress-unit">' + escapeHtml(s.unit || '') + '</span>'
+                    + '<span class="progress-unit">' + escapeHtml(stripLevelPrefix(s.unit || '')) + '</span>'
                     + '<span class="progress-pair"><span class="pp-tag">英</span>' + phaseCell(s.prev_en2cn, s.latest_en2cn) + '</span>'
                     + '<span class="progress-pair"><span class="pp-tag">中</span>' + phaseCell(s.prev_cn2en, s.latest_cn2en) + '</span>'
                     + '</div>';
@@ -2317,9 +2338,9 @@
                 html += '<div class="scoreboard-row">';
                 html += '  <span class="scoreboard-word">' + item.word.en + '</span>';
                 if (item.hasHistory) {
-                    html += '  <span class="scoreboard-meta">' + item.unit + '<br>' + item.count + ' 次</span>';
+                    html += '  <span class="scoreboard-meta">' + stripLevelPrefix(item.unit) + '<br>' + item.count + ' 次</span>';
                 } else {
-                    html += '  <span class="scoreboard-meta">' + item.unit + '</span>';
+                    html += '  <span class="scoreboard-meta">' + stripLevelPrefix(item.unit) + '</span>';
                 }
                 html += '  ' + badgeHtml;
                 html += '</div>';
