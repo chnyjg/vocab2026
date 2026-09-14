@@ -435,7 +435,19 @@ wordBank["Think Starter"] = {
         { en: "understand", cn: "明白", phonetic: "/ˌʌndəˈstænd/", spell: false },
         { en: "beard", cn: "胡子（下巴上）", phonetic: "/bɪəd/", spell: false },
         { en: "moustache", cn: "胡子（上唇上的小胡子）", phonetic: "/məˈstɑːʃ/", spell: false },
-        { en: "You're kidding!", cn: "你开玩笑吧！", phonetic: "/jɔː(r) ˈkɪdɪŋ/", spell: false }
+        { en: "You're kidding!", cn: "你开玩笑吧！", phonetic: "/jɔː(r) ˈkɪdɪŋ/", spell: false },
+
+        // ==================== Lesson 3 ====================
+        // ---- 需掌握 ----
+        { en: "travel", cn: "旅游", phonetic: "/ˈtrævl/" },
+        { en: "traveller", cn: "游客", phonetic: "/ˈtrævələ(r)/" },
+        { en: "in different countries", cn: "在不同国家", phonetic: "/ɪn ˈdɪfrənt ˈkʌntriz/" },
+        { en: "respect", cn: "尊重", phonetic: "/rɪˈspekt/" },
+        { en: "shake hands", cn: "握手", phonetic: "/ʃeɪk hændz/" },
+        { en: "heart", cn: "心脏", phonetic: "/hɑːt/" },
+        { en: "popular", cn: "受欢迎的", phonetic: "/ˈpɒpjələ(r)/" },
+        // ---- 只认读 ----
+        { en: "Asia", cn: "亚洲", phonetic: "/ˈeɪʒə/", spell: false }
     ]
 
 };
