@@ -817,7 +817,7 @@
         var currentStrategy = "smart";
 
         function getLevelPrefix(unitName) {
-            var m = unitName.match(/^(.*?级)\s/);
+            var m = unitName.match(/^(.*?)\s+Unit\s/);
             return m ? m[1] : null;
         }
 
