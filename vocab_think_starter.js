@@ -404,7 +404,6 @@ wordBank["Think Starter"] = {
         // ---- 只认读 ----
         { en: "electric", cn: "电动的", phonetic: "/ɪˈlektrɪk/", spell: false },
         { en: "scooter", cn: "滑板车", phonetic: "/ˈskuːtə(r)/", spell: false },
-        { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/", spell: false },
 
         // ==================== Lesson 2 ====================
         // ---- 需掌握 ----
@@ -446,6 +445,7 @@ wordBank["Think Starter"] = {
         { en: "shake hands", cn: "握手", phonetic: "/ʃeɪk hændz/" },
         { en: "heart", cn: "心脏", phonetic: "/hɑːt/" },
         { en: "popular", cn: "受欢迎的", phonetic: "/ˈpɒpjələ(r)/" },
+        { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/" },
         // ---- 只认读 ----
         { en: "Asia", cn: "亚洲", phonetic: "/ˈeɪʒə/", spell: false }
     ]
