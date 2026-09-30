@@ -124,10 +124,10 @@ wordBank["Think Starter"] = {
         { en: "if", cn: "如果，是否", phonetic: "/ɪf/" },
         { en: "hour", cn: "小时", phonetic: "/ˈaʊə(r)/" },
         { en: "film star", cn: "电影明星", phonetic: "/ˈfɪlm stɑː(r)/" },
-        { en: "How's it going?", cn: "最近怎么样？", phonetic: "" },
-        { en: "See you later.", cn: "回头见。", phonetic: "" },
-        { en: "That's awesome!", cn: "太棒了！", phonetic: "" },
-        { en: "I know!", cn: "我懂！", phonetic: "" },
+        { en: "How's it going?", cn: "最近怎么样？", phonetic: "/haʊz ɪt ˈɡəʊɪŋ/" },
+        { en: "See you later.", cn: "回头见。", phonetic: "/siː juː ˈleɪtə(r)/" },
+        { en: "That's awesome!", cn: "太棒了！", phonetic: "/ðæts ˈɔːsəm/" },
+        { en: "I know!", cn: "我懂！", phonetic: "/aɪ nəʊ/" },
         // ---- 只认读 ----
         { en: "Brazil", cn: "巴西", phonetic: "/brəˈzɪl/", spell: false },
         { en: "Brazilian", cn: "巴西人", phonetic: "/brəˈzɪliən/", spell: false },
@@ -268,10 +268,10 @@ wordBank["Think Starter"] = {
         { en: "comfortable", cn: "舒服的", phonetic: "/ˈkʌmftəbl/" },
         { en: "right", cn: "对的；右边", phonetic: "/raɪt/" },
         { en: "wrong", cn: "错的", phonetic: "/rɒŋ/" },
-        { en: "Oh right.", cn: "哦，是的。", phonetic: "" },
-        { en: "Really?", cn: "真的吗？", phonetic: "" },
-        { en: "Just a minute.", cn: "稍等一下。", phonetic: "" },
-        { en: "Let's go.", cn: "我们走吧。", phonetic: "" },
+        { en: "Oh right.", cn: "哦，是的。", phonetic: "/əʊ raɪt/" },
+        { en: "Really?", cn: "真的吗？", phonetic: "/ˈriːəli/" },
+        { en: "Just a minute.", cn: "稍等一下。", phonetic: "/dʒʌst ə ˈmɪnɪt/" },
+        { en: "Let's go.", cn: "我们走吧。", phonetic: "/lets ɡəʊ/" },
         // ---- 只认读 ----
         { en: "ambassador", cn: "大使", phonetic: "/æmˈbæsədə(r)/", spell: false },
         { en: "Australia", cn: "澳大利亚", phonetic: "/ɒˈstreɪliə/", spell: false },
@@ -363,6 +363,9 @@ wordBank["Think Starter"] = {
         { en: "tablet", cn: "平板电脑", phonetic: "/ˈtæblət/" },
         { en: "on the internet", cn: "在网上", phonetic: "/ɒn ðə ˈɪntənet/" },
         { en: "competition", cn: "比赛", phonetic: "/ˌkɒmpəˈtɪʃn/" },
+        { en: "voice", cn: "声音", phonetic: "/vɔɪs/" },
+        { en: "band", cn: "乐队", phonetic: "/bænd/" },
+        { en: "crazy", cn: "疯狂的", phonetic: "/ˈkreɪzi/" },
         // ---- 只认读 ----
         { en: "leader", cn: "领导者", phonetic: "/ˈliːdə(r)/", spell: false },
         { en: "make friends", cn: "交朋友", phonetic: "/meɪk frendz/", spell: false },
@@ -376,7 +379,9 @@ wordBank["Think Starter"] = {
         { en: "Thursday", cn: "周四", phonetic: "/ˈθɜːzdeɪ/", spell: false },
         { en: "Friday", cn: "周五", phonetic: "/ˈfraɪdeɪ/", spell: false },
         { en: "Saturday", cn: "周六", phonetic: "/ˈsætədeɪ/", spell: false },
-        { en: "Sunday", cn: "周日", phonetic: "/ˈsʌndeɪ/", spell: false }
+        { en: "Sunday", cn: "周日", phonetic: "/ˈsʌndeɪ/", spell: false },
+        { en: "What's wrong?", cn: "怎么了？", phonetic: "/wɒts rɒŋ/", spell: false },
+        { en: "No way!", cn: "没门！", phonetic: "/nəʊ weɪ/", spell: false }
     ],
 
     "Unit 6": [
