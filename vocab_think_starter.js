@@ -453,6 +453,33 @@ wordBank["Think Starter"] = {
         { en: "teenager", cn: "青少年", phonetic: "/ˈtiːneɪdʒə(r)/" },
         // ---- 只认读 ----
         { en: "Asia", cn: "亚洲", phonetic: "/ˈeɪʒə/", spell: false }
+    ],
+
+    "Unit 7": [
+        // ---- 需掌握 ----
+        { en: "keep", cn: "保持", phonetic: "/kiːp/" },
+        { en: "without", cn: "没有；不", phonetic: "/wɪˈðaʊt/" },
+        { en: "world record", cn: "世界纪录", phonetic: "/ˈwɜːld ˌrekɔːd/" },
+        { en: "surprised", cn: "感到惊讶的", phonetic: "/səˈpraɪzd/" },
+        { en: "national", cn: "国家的；全国的", phonetic: "/ˈnæʃnəl/" },
+        { en: "special", cn: "特别的；专门的", phonetic: "/ˈspeʃl/" },
+        { en: "the same", cn: "相同的", phonetic: "/ðə seɪm/" },
+        { en: "wave", cn: "海浪；挥手", phonetic: "/weɪv/" },
+        { en: "play volleyball", cn: "打排球", phonetic: "/pleɪ ˈvɒlibɔːl/" },
+        { en: "play basketball", cn: "打篮球", phonetic: "/pleɪ ˈbɑːskɪtbɔːl/" },
+        { en: "skateboard", cn: "滑板", phonetic: "/ˈskeɪtbɔːd/" },
+        { en: "ski", cn: "滑雪", phonetic: "/skiː/" },
+        { en: "surf", cn: "冲浪", phonetic: "/sɜːf/" },
+        // ---- 只认读 ----
+        { en: "disabled athlete", cn: "残疾运动员", phonetic: "/dɪsˈeɪbld ˈæθliːt/", spell: false },
+        { en: "Championship", cn: "锦标赛", phonetic: "/ˈtʃæmpiənʃɪp/", spell: false },
+        { en: "do gymnastics", cn: "练体操", phonetic: "/duː ˈdʒɪmnæstɪks/", spell: false },
+        { en: "cycle", cn: "骑自行车；循环；周期", phonetic: "/ˈsaɪkl/", spell: false },
+        { en: "dive", cn: "潜水；跳水", phonetic: "/daɪv/", spell: false },
+        { en: "own", cn: "拥有", phonetic: "/əʊn/", spell: false },
+        { en: "owner", cn: "拥有的人；主人", phonetic: "/ˈəʊnə(r)/", spell: false },
+        { en: "win", cn: "赢；获胜", phonetic: "/wɪn/", spell: false },
+        { en: "winner", cn: "赢的人；赢家", phonetic: "/ˈwɪnə(r)/", spell: false }
     ]
 
 };
