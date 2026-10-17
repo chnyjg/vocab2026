@@ -479,7 +479,45 @@ wordBank["Think Starter"] = {
         { en: "own", cn: "拥有", phonetic: "/əʊn/", spell: false },
         { en: "owner", cn: "拥有的人；主人", phonetic: "/ˈəʊnə(r)/", spell: false },
         { en: "win", cn: "赢；获胜", phonetic: "/wɪn/", spell: false },
-        { en: "winner", cn: "赢的人；赢家", phonetic: "/ˈwɪnə(r)/", spell: false }
+        { en: "winner", cn: "赢的人；赢家", phonetic: "/ˈwɪnə(r)/", spell: false },
+
+        // ==================== Lesson 2 ====================
+        // ---- 需掌握 ----
+        { en: "It's half past eight.", cn: "八点半了", phonetic: "/ɪts ˌhɑːf pɑːst ˈeɪt/" },
+        { en: "It's three o'clock.", cn: "三点钟了", phonetic: "/ɪts θriː əˈklɒk/" },
+        { en: "It's quarter past ten.", cn: "十点一刻了", phonetic: "/ɪts ˈkwɔːtə pɑːst ten/" },
+        { en: "It's quarter to one.", cn: "一点差一刻（十二点四十五）", phonetic: "/ɪts ˈkwɔːtə tə wʌn/" },
+        { en: "team", cn: "队伍；团队", phonetic: "/tiːm/" },
+        { en: "practise", cn: "练习", phonetic: "/ˈpræktɪs/" },
+        { en: "crowd", cn: "人群", phonetic: "/kraʊd/" },
+        { en: "crowded", cn: "拥挤的", phonetic: "/ˈkraʊdɪd/" },
+        { en: "president", cn: "总统；主席", phonetic: "/ˈprezɪdənt/" },
+        { en: "chance", cn: "机会；可能性", phonetic: "/tʃɑːns/" },
+        { en: "coach", cn: "教练", phonetic: "/kəʊtʃ/" },
+        { en: "miss", cn: "想念；错过", phonetic: "/mɪs/" },
+        { en: "suddenly", cn: "突然地", phonetic: "/ˈsʌdənli/" },
+        { en: "season", cn: "季节", phonetic: "/ˈsiːzn/" },
+        { en: "spring", cn: "春季；春天", phonetic: "/sprɪŋ/" },
+        { en: "summer", cn: "夏季；夏天", phonetic: "/ˈsʌmə(r)/" },
+        { en: "autumn", cn: "秋季；秋天", phonetic: "/ˈɔːtəm/" },
+        { en: "winter", cn: "冬季；冬天", phonetic: "/ˈwɪntə(r)/" },
+        { en: "first", cn: "第一", phonetic: "/fɜːst/" },
+        { en: "second", cn: "第二", phonetic: "/ˈsekənd/" },
+        { en: "third", cn: "第三", phonetic: "/θɜːd/" },
+        // ---- 只认读 ----
+        { en: "month", cn: "月份", phonetic: "/mʌnθ/", spell: false },
+        { en: "January", cn: "一月", phonetic: "/ˈdʒænjuəri/", spell: false },
+        { en: "February", cn: "二月", phonetic: "/ˈfebruəri/", spell: false },
+        { en: "March", cn: "三月", phonetic: "/mɑːtʃ/", spell: false },
+        { en: "April", cn: "四月", phonetic: "/ˈeɪprəl/", spell: false },
+        { en: "May", cn: "五月", phonetic: "/meɪ/", spell: false },
+        { en: "June", cn: "六月", phonetic: "/dʒuːn/", spell: false },
+        { en: "July", cn: "七月", phonetic: "/dʒuˈlaɪ/", spell: false },
+        { en: "August", cn: "八月", phonetic: "/ˈɔːɡəst/", spell: false },
+        { en: "September", cn: "九月", phonetic: "/sepˈtembə(r)/", spell: false },
+        { en: "October", cn: "十月", phonetic: "/ɒkˈtəʊbə(r)/", spell: false },
+        { en: "November", cn: "十一月", phonetic: "/nəʊˈvembə(r)/", spell: false },
+        { en: "December", cn: "十二月", phonetic: "/dɪˈsembə(r)/", spell: false }
     ]
 
 };
