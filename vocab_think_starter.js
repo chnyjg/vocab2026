@@ -23,7 +23,7 @@ wordBank["Think Starter"] = {
         { en: "night", cn: "夜晚", phonetic: "/naɪt/" },
         { en: "man", cn: "男人", phonetic: "/mæn/" },
         { en: "woman", cn: "女人", phonetic: "/ˈwʊmən/" },
-        { en: "person", cn: "人", phonetic: "/ˈpɜːsn/" },
+        { en: "person", cn: "人；个人", phonetic: "/ˈpɜːsn/" },
         { en: "child", cn: "孩子，儿童", phonetic: "/tʃaɪld/" },
         // ---- 只认读 ----
         { en: "black", cn: "黑色，黑色的", phonetic: "/blæk/", spell: false },
@@ -517,7 +517,21 @@ wordBank["Think Starter"] = {
         { en: "September", cn: "九月", phonetic: "/sepˈtembə(r)/", spell: false },
         { en: "October", cn: "十月", phonetic: "/ɒkˈtəʊbə(r)/", spell: false },
         { en: "November", cn: "十一月", phonetic: "/nəʊˈvembə(r)/", spell: false },
-        { en: "December", cn: "十二月", phonetic: "/dɪˈsembə(r)/", spell: false }
+        { en: "December", cn: "十二月", phonetic: "/dɪˈsembə(r)/", spell: false },
+
+        // ==================== Lesson 3 ====================
+        // ---- 需掌握 ----
+        { en: "test", cn: "考试；测验", phonetic: "/test/" },
+        { en: "perhaps", cn: "或许；可能", phonetic: "/pəˈhæps/" },
+        { en: "information", cn: "信息；资料", phonetic: "/ˌɪnfəˈmeɪʃn/" },
+        { en: "be good at", cn: "擅长于；善于", phonetic: "/ˌbi ˈɡʊd æt/" },
+        { en: "It's not a big deal.", cn: "这没什么大不了的", phonetic: "/ɪts nɒt ə ˌbɪɡ ˈdiːl/" },
+        { en: "I'm sure", cn: "我确定；我肯定", phonetic: "/ˌaɪm ˈʃʊə(r)/" },
+        { en: "Now what do we do?", cn: "现在我们怎么办？", phonetic: "/ˌnaʊ ˈwɒt duː wi ˈduː/" },
+        // ---- 只认读 ----
+        { en: "stuff", cn: "东西；物品", phonetic: "/stʌf/", spell: false },
+        { en: "geography", cn: "地理", phonetic: "/dʒiˈɒɡrəfi/", spell: false },
+        { en: "stay positive", cn: "保持积极心态", phonetic: "/ˌsteɪ ˈpɒzətɪv/", spell: false }
     ]
 
 };
