@@ -1272,6 +1272,15 @@
         //  选词策略
         // =============================================
 
+        // [去重] 取词池按 en 去重（保留首次出现）：跨课重复词（如 season 同在 L2/L3）不会在同一场会话出现两次
+        function dedupePool(pool) {
+            var seen = {}, out = [];
+            pool.forEach(function (w) {
+                if (w && w.en && !seen[w.en]) { seen[w.en] = true; out.push(w); }
+            });
+            return out;
+        }
+
         function pickRandom(pool, count) {
             var arr = pool.slice();
             for (var i = arr.length - 1; i > 0; i--) {
@@ -1334,6 +1343,7 @@
                 pool = pool.concat(resolveUnitWords(b, u));
             });
 
+            pool = dedupePool(pool);
             var count = parseInt(document.getElementById("countDisplay").textContent) || 20;
             count = Math.min(count, pool.length);
             if (count <= 0) return;
@@ -1969,6 +1979,7 @@
                     pool = pool.concat(resolveUnitWords(sel.book, sel.unit));
                 });
             }
+            pool = dedupePool(pool);
 
             var count = Math.min(sessionConfig.wordCount, pool.length);
             var words;

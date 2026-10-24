@@ -534,10 +534,27 @@ wordBank["Think Starter"] = {
         { en: "It's not a big deal.", cn: "这没什么大不了的", phonetic: "/ɪts nɒt ə ˌbɪɡ ˈdiːl/" },
         { en: "I'm sure.", cn: "我确定；我肯定", phonetic: "/ˌaɪm ˈʃʊə(r)/" },
         { en: "Now what do we do?", cn: "现在我们怎么做？", phonetic: "/ˌnaʊ ˈwɒt duː wi ˈduː/" },
+        // ---- 与 Lesson 2 重复的课表词（第24课词表原文列出）----
+        { en: "season", cn: "季节", phonetic: "/ˈsiːzn/" },
+        { en: "spring", cn: "春季；春天", phonetic: "/sprɪŋ/" },
+        { en: "summer", cn: "夏季；夏天", phonetic: "/ˈsʌmə(r)/" },
+        { en: "autumn", cn: "秋季；秋天", phonetic: "/ˈɔːtəm/" },
+        { en: "winter", cn: "冬季；冬天", phonetic: "/ˈwɪntə(r)/" },
+        { en: "first", cn: "第一", phonetic: "/fɜːst/" },
+        { en: "second", cn: "第二", phonetic: "/ˈsekənd/" },
+        { en: "third", cn: "第三", phonetic: "/θɜːd/" },
         // ---- 只认读 ----
         { en: "stuff", cn: "东西；物品", phonetic: "/stʌf/", spell: false },
         { en: "geography", cn: "地理", phonetic: "/dʒiˈɒɡrəfi/", spell: false },
-        { en: "stay positive", cn: "保持积极心态", phonetic: "/ˌsteɪ ˈpɒzətɪv/", spell: false }
+        { en: "stay positive", cn: "保持积极心态", phonetic: "/ˌsteɪ ˈpɒzətɪv/", spell: false },
+        // ---- 与 Lesson 2 重复的课表词（第24课词表原文列出）----
+        { en: "month", cn: "月份", phonetic: "/mʌnθ/", spell: false },
+        { en: "January", cn: "一月", phonetic: "/ˈdʒænjuəri/", spell: false },
+        { en: "February", cn: "二月", phonetic: "/ˈfebruəri/", spell: false },
+        { en: "March", cn: "三月", phonetic: "/mɑːtʃ/", spell: false },
+        { en: "April", cn: "四月", phonetic: "/ˈeɪprəl/", spell: false },
+        { en: "May", cn: "五月", phonetic: "/meɪ/", spell: false },
+        { en: "June", cn: "六月", phonetic: "/dʒuːn/", spell: false },
     ]
 
 };
