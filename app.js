@@ -775,6 +775,20 @@
         //  辅助函数
         // =============================================
 
+        // [Lesson拆分] 取某单元全部词；兼容拆分前的旧 key（如 "Unit 6" 已拆为 Unit 6 Lesson 1/2/3）
+        function resolveUnitWords(book, unit) {
+            var b = wordBank[book];
+            if (b && b[unit]) return b[unit];
+            if (b && /^Unit \d+$/.test(unit)) {
+                var out = [];
+                for (var k in b) {
+                    if (k.indexOf(unit + " Lesson ") === 0) out = out.concat(b[k]);
+                }
+                return out;
+            }
+            return [];
+        }
+
         function escapeStr(s) { return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
         function escapeAttr(s) { return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
@@ -868,9 +882,9 @@
             return ordered;
         }
 
-        function unitItemHtml(book, unit, units) {
+        function unitItemHtml(book, unit, units, indent) {
             var cnt = units[unit].length;
-            var h = '<label class="unit-item">';
+            var h = '<label class="unit-item' + (indent ? ' lesson-item' : '') + '">';
             h += '  <input type="checkbox" class="unit-checkbox"'
                + ' data-book="' + escapeAttr(book) + '"'
                + ' data-unit="' + escapeAttr(unit) + '"'
@@ -904,6 +918,17 @@
             cbs.forEach(function (cb) {
                 var u = cb.getAttribute("data-unit");
                 if ((getLevelPrefix(u) || "") === level) cb.checked = check;
+            });
+            updateSelectedCount();
+        }
+
+        // [Lesson拆分] 全选/取消某个 Unit 下的全部 Lesson
+        function toggleUnitGroupAll(book, prefix, box) {
+            var check = box.checked;
+            var cbs = document.querySelectorAll('.unit-checkbox[data-book="' + escapeAttr(book) + '"]');
+            cbs.forEach(function (cb) {
+                var u = cb.getAttribute("data-unit");
+                if (u && u.indexOf(prefix + " Lesson ") === 0) cb.checked = check;
             });
             updateSelectedCount();
         }
@@ -972,12 +997,41 @@
                         html += '</div>';
                     });
                 } else {
+                    // [Lesson拆分] 平铺渲染：连续的 "Unit N Lesson M" 归入 Unit 分组头（带全选）
+                    var lastGroupPrefix = null, groupTotal = 0, groupUnitList = [];
+                    var flushGroup = function () {
+                        if (lastGroupPrefix === null) return;
+                        html += '<div class="unit-group-header">';
+                        html += '  <input type="checkbox" class="unit-group-checkbox" data-book="' + escapeAttr(book) + '"'
+                             + ' data-prefix="' + escapeAttr(lastGroupPrefix + " Lesson ") + '"'
+                             + ' title="选择整个 ' + escapeAttr(lastGroupPrefix) + '"'
+                             + ' onchange="toggleUnitGroupAll(\'' + escapeStr(book) + '\',\'' + escapeStr(lastGroupPrefix) + '\',this)">';
+                        html += '  <span class="unit-checkmark" title="选择整个 ' + escapeAttr(lastGroupPrefix) + '"'
+                             + ' onclick="event.stopPropagation(); this.previousElementSibling.click();"></span>';
+                        html += '  <span class="unit-group-name">' + lastGroupPrefix + '</span>';
+                        html += '  <span class="unit-count">' + groupTotal + ' 词</span>';
+                        html += '</div>';
+                        groupUnitList.forEach(function (unit) {
+                            html += unitItemHtml(book, unit, units, true);
+                        });
+                        lastGroupPrefix = null; groupTotal = 0; groupUnitList = [];
+                    };
                     orderedUnits.forEach(function (unit) {
                         var cnt = units[unit].length;
                         if (cnt === 0) return;
                         hasAnyUnit = true;
-                        html += unitItemHtml(book, unit, units);
+                        var m = unit.match(/^(Unit \d+) Lesson \d+$/);
+                        if (m) {
+                            if (m[1] !== lastGroupPrefix) flushGroup();
+                            lastGroupPrefix = m[1];
+                            groupTotal += cnt;
+                            groupUnitList.push(unit);
+                        } else {
+                            flushGroup();
+                            html += unitItemHtml(book, unit, units);
+                        }
                     });
+                    flushGroup();
                 }
                 html += '</div></div>';
             }
@@ -1283,7 +1337,7 @@
                 var b = cb.getAttribute("data-book");
                 var u = cb.getAttribute("data-unit");
                 selectedUnits.push({ book: b, unit: u });
-                pool = pool.concat(wordBank[b][u]);
+                pool = pool.concat(resolveUnitWords(b, u));
             });
 
             var count = parseInt(document.getElementById("countDisplay").textContent) || 20;
@@ -1337,7 +1391,7 @@
 
             wordLocationMap = {};
             sessionConfig.selectedUnits.forEach(function (sel) {
-                var arr = (wordBank[sel.book] && wordBank[sel.book][sel.unit]) || [];
+                var arr = resolveUnitWords(sel.book, sel.unit);
                 arr.forEach(function (w) { wordLocationMap[w.en] = { book: sel.book, unit: sel.unit }; });
             });
 
@@ -1918,7 +1972,7 @@
                 pool = sessionConfig.redWords.slice();
             } else {
                 sessionConfig.selectedUnits.forEach(function (sel) {
-                    pool = pool.concat(wordBank[sel.book][sel.unit]);
+                    pool = pool.concat(resolveUnitWords(sel.book, sel.unit));
                 });
             }
 

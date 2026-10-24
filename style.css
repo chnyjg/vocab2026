@@ -484,6 +484,16 @@
         .book-header { justify-content: flex-start; gap: 8px; }
         .book-arrow { margin-left: auto; }
 
+        /* Unit 分组头（Think Starter 的 Lesson 分组，带"整个 Unit 全选"） */
+        .unit-group-header {
+            display: flex; justify-content: flex-start; gap: 8px; align-items: center;
+            padding: 7px 10px; margin-top: 4px; border-radius: 8px;
+            background: var(--bg-subtle);
+        }
+        .unit-group-name { font-size: 0.82rem; font-weight: 600; flex: 1; }
+        .unit-group-checkbox { display: none; }
+        .unit-item.lesson-item { padding-left: 34px; }
+
         .book-checkbox { display: none; }
 
         .unit-item {

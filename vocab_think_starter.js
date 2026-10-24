@@ -384,7 +384,8 @@ wordBank["Think Starter"] = {
         { en: "No way!", cn: "没门！", phonetic: "/nəʊ weɪ/", spell: false }
     ],
 
-    "Unit 6": [
+    "Unit 6 Lesson 1": [
+
         // ---- 需掌握 ----
         { en: "a glass of water", cn: "一杯（玻璃杯）水", phonetic: "/ə ɡlɑːs ɒv ˈwɔːtə(r)/" },
         { en: "a jar of coins", cn: "一罐硬币", phonetic: "/ə dʒɑːr ɒv kɔɪnz/" },
@@ -408,9 +409,10 @@ wordBank["Think Starter"] = {
         { en: "touch", cn: "摸", phonetic: "/tʌtʃ/" },
         // ---- 只认读 ----
         { en: "electric", cn: "电动的", phonetic: "/ɪˈlektrɪk/", spell: false },
-        { en: "scooter", cn: "滑板车", phonetic: "/ˈskuːtə(r)/", spell: false },
+        { en: "scooter", cn: "滑板车", phonetic: "/ˈskuːtə(r)/", spell: false }
+    ],
 
-        // ==================== Lesson 2 ====================
+    "Unit 6 Lesson 2": [
         // ---- 需掌握 ----
         // 颜色
         { en: "red", cn: "红色的", phonetic: "/red/" },
@@ -439,9 +441,10 @@ wordBank["Think Starter"] = {
         { en: "understand", cn: "明白", phonetic: "/ˌʌndəˈstænd/", spell: false },
         { en: "beard", cn: "胡子（下巴上）", phonetic: "/bɪəd/", spell: false },
         { en: "moustache", cn: "胡子（上唇上的小胡子）", phonetic: "/məˈstɑːʃ/", spell: false },
-        { en: "You're kidding!", cn: "你开玩笑吧！", phonetic: "/jɔː(r) ˈkɪdɪŋ/", spell: false },
+        { en: "You're kidding!", cn: "你开玩笑吧！", phonetic: "/jɔː(r) ˈkɪdɪŋ/", spell: false }
+    ],
 
-        // ==================== Lesson 3 ====================
+    "Unit 6 Lesson 3": [
         // ---- 需掌握 ----
         { en: "travel", cn: "旅游", phonetic: "/ˈtrævl/" },
         { en: "traveller", cn: "游客", phonetic: "/ˈtrævələ(r)/" },
@@ -455,7 +458,8 @@ wordBank["Think Starter"] = {
         { en: "Asia", cn: "亚洲", phonetic: "/ˈeɪʒə/", spell: false }
     ],
 
-    "Unit 7": [
+    "Unit 7 Lesson 1": [
+
         // ---- 需掌握 ----
         { en: "keep", cn: "保持", phonetic: "/kiːp/" },
         { en: "without", cn: "没有；不", phonetic: "/wɪˈðaʊt/" },
@@ -479,9 +483,10 @@ wordBank["Think Starter"] = {
         { en: "own", cn: "拥有", phonetic: "/əʊn/", spell: false },
         { en: "owner", cn: "拥有的人；主人", phonetic: "/ˈəʊnə(r)/", spell: false },
         { en: "win", cn: "赢；获胜", phonetic: "/wɪn/", spell: false },
-        { en: "winner", cn: "赢的人；赢家", phonetic: "/ˈwɪnə(r)/", spell: false },
+        { en: "winner", cn: "赢的人；赢家", phonetic: "/ˈwɪnə(r)/", spell: false }
+    ],
 
-        // ==================== Lesson 2 ====================
+    "Unit 7 Lesson 2": [
         // ---- 需掌握 ----
         { en: "It's half past eight.", cn: "八点半了", phonetic: "/ɪts ˌhɑːf pɑːst ˈeɪt/" },
         { en: "It's three o'clock.", cn: "三点钟了", phonetic: "/ɪts θriː əˈklɒk/" },
@@ -517,9 +522,10 @@ wordBank["Think Starter"] = {
         { en: "September", cn: "九月", phonetic: "/sepˈtembə(r)/", spell: false },
         { en: "October", cn: "十月", phonetic: "/ɒkˈtəʊbə(r)/", spell: false },
         { en: "November", cn: "十一月", phonetic: "/nəʊˈvembə(r)/", spell: false },
-        { en: "December", cn: "十二月", phonetic: "/dɪˈsembə(r)/", spell: false },
+        { en: "December", cn: "十二月", phonetic: "/dɪˈsembə(r)/", spell: false }
+    ],
 
-        // ==================== Lesson 3 ====================
+    "Unit 7 Lesson 3": [
         // ---- 需掌握 ----
         { en: "test", cn: "考试；测验", phonetic: "/test/" },
         { en: "perhaps", cn: "或许；可能", phonetic: "/pəˈhæps/" },
