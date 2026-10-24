@@ -796,16 +796,10 @@
             return text.replace(/…/g, ' ').replace(/\s+/g, ' ').trim();
         }
 
-        // [改动] 去掉 -、…、— 和所有空格，容忍用户少打连接符
+        // [改动] 中→英拼写判定宽松化：忽略大小写、空格和全部标点（句点/撇号/问号/逗号等），
+        // 只比字母数字序列。如 "I'm sure."：imsure / i m sure / i'm sure. / I'M SURE 均算对。
         function normalizeForCompare(text) {
-            return text.toLowerCase()
-                .replace(/…/g, '')
-                .replace(/['']/g, "'")
-                .replace(/[""]/g, '"')
-                .replace(/—/g, '')
-                .replace(/-/g, '')
-                .replace(/\s+/g, '')
-                .trim();
+            return text.toLowerCase().replace(/[^a-z0-9]/g, '');
         }
 
         // 掌握判定（两档）：最近三次（不足三次则看全部）每次答错次数均为 0 → 已掌握
