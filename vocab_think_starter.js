@@ -532,8 +532,8 @@ wordBank["Think Starter"] = {
         { en: "information", cn: "信息；资料", phonetic: "/ˌɪnfəˈmeɪʃn/" },
         { en: "be good at", cn: "擅长于；善于", phonetic: "/ˌbi ˈɡʊd æt/" },
         { en: "It's not a big deal.", cn: "这没什么大不了的", phonetic: "/ɪts nɒt ə ˌbɪɡ ˈdiːl/" },
-        { en: "I'm sure", cn: "我确定；我肯定", phonetic: "/ˌaɪm ˈʃʊə(r)/" },
-        { en: "Now what do we do?", cn: "现在我们怎么办？", phonetic: "/ˌnaʊ ˈwɒt duː wi ˈduː/" },
+        { en: "I'm sure.", cn: "我确定；我肯定", phonetic: "/ˌaɪm ˈʃʊə(r)/" },
+        { en: "Now what do we do?", cn: "现在我们怎么做？", phonetic: "/ˌnaʊ ˈwɒt duː wi ˈduː/" },
         // ---- 只认读 ----
         { en: "stuff", cn: "东西；物品", phonetic: "/stʌf/", spell: false },
         { en: "geography", cn: "地理", phonetic: "/dʒiˈɒɡrəfi/", spell: false },
