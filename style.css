@@ -1096,3 +1096,42 @@
         }
 
         .detail-close:active { transform: scale(0.96); }
+
+        /* ===== 发音交互反馈 =====
+           .speak-pulse  点击单词时的脉冲（让用户立刻知道"点到了"）
+           .speak-hint   发音加载/失败的轻提示（替代原来的静默失败） */
+        .speak-pulse {
+            animation: speakPulse 0.6s ease;
+            border-radius: 8px;
+        }
+
+        @keyframes speakPulse {
+            0%   { transform: scale(1);    color: inherit; }
+            30%  { transform: scale(1.07); color: var(--accent); }
+            60%  { transform: scale(1.03); color: var(--accent); }
+            100% { transform: scale(1);    color: inherit; }
+        }
+
+        .speak-hint {
+            position: fixed;
+            left: 50%;
+            top: 84px;                       /* 运行时由 JS 按 header/progress 实际高度校正 */
+            transform: translateX(-50%) translateY(-8px);
+            background: var(--text-primary);
+            color: #fff;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            padding: 9px 18px;
+            border-radius: 20px;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 999;
+            box-shadow: 0 4px 18px var(--shadow);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .speak-hint-show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }

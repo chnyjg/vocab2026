@@ -812,10 +812,325 @@
             return true;
         }
 
-        function speakEnglish(text) {
-            var cleanText = text.replace(/…/g, ' ').replace(/\s+/g, ' ').trim();
-            var audio = new Audio('https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(cleanText) + '&type=2');
-            audio.play().catch(function() {});
+        // =============================================
+        //  发音管理：单实例互斥 + 缓存 + 离线 TTS 兜底 + 后台预载
+        // ---------------------------------------------------------------
+        //  原实现的问题（对应用户反馈"点了半天不出声，连点又连响好几次"）：
+        //   1. 每次点击都 new Audio(url)，各自独立下载、各自播放，彼此毫无关联
+        //      → 连点 N 次就有 N 个音频接连/叠加响；
+        //   2. 首次点击要走 DNS + TLS + 下载 + 解码，期间界面零反馈；
+        //   3. play().catch(function(){}) 静默吞掉所有失败 → 点了完全没声也无提示。
+        //  现在的策略：
+        //   · 命中缓存    → 立即播，零延迟；
+        //   · 未命中      → 立刻用系统 TTS 离线出声（不等网络），
+        //                   同时后台把有道真人音频拉下来，下次点击即用真人音；
+        //   · TTS 不可用  → 提示"加载中"，真人音就绪后自动补播；
+        //   · 加载失败    → 明确提示，不再静默。
+        // =============================================
+        var speakCache = {};            // key -> { el, state, text, key, pendingPlay, counted, timer }
+        var speakCacheOrder = [];       // 缓存插入顺序（用于淘汰）
+        var currentAudio = null;        // 正在播放的有道音频
+        var currentAudioKey = null;
+        var currentTtsKey = null;       // 正在发声的 TTS 单词
+        var ttsUnlockTimer = null;      // 兜底解锁：防止 onend 丢失导致该词再也点不动
+        var speakHintTimer = null;
+        var audioHost = null;
+        var preloadQueue = [];
+        var preloadRunning = 0;
+        var preloadScheduled = false;
+        var PRELOAD_MAX_CONC = 4;       // 预载并发数
+        var PRELOAD_MAX_TOTAL = 40;     // 单次会话最多预载词数
+        var SPEAK_CACHE_LIMIT = 300;    // 缓存条目上限（超出淘汰最早的）
+
+        function speakKey(text) {
+            return String(text).toLowerCase().replace(/…/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function youdaoVoiceUrl(text) {
+            return 'https://dict.youdao.com/dictvoice?audio=' + encodeURIComponent(text) + '&type=2';
+        }
+
+        // 音频容器：放一个不可见但已渲染的节点，移动端对脱离 DOM 的 audio 预载不可靠
+        function getAudioHost() {
+            if (!audioHost) {
+                audioHost = document.createElement('div');
+                audioHost.setAttribute('aria-hidden', 'true');
+                audioHost.style.cssText = 'position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;';
+                document.body.appendChild(audioHost);
+            }
+            return audioHost;
+        }
+
+        // 选英式发音（英式女声 → 英式 → 任意英语）
+        function pickEnglishVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            var voices = window.speechSynthesis.getVoices() || [];
+            var i, v;
+            for (i = 0; i < voices.length; i++) {
+                v = voices[i];
+                if (/en[-_]GB/i.test(v.lang) && /female|samantha|karen|serena|moira|google uk/i.test(v.name)) return v;
+            }
+            for (i = 0; i < voices.length; i++) {
+                if (/en[-_]GB/i.test(voices[i].lang)) return voices[i];
+            }
+            for (i = 0; i < voices.length; i++) {
+                if (/^en/i.test(voices[i].lang)) return voices[i];
+            }
+            return null;
+        }
+
+        // 有没有可用的英语 TTS 音（getVoices 尚未就绪时先当作有）
+        function hasEnglishTTSVoice() {
+            if (!('speechSynthesis' in window)) return false;
+            var voices = window.speechSynthesis.getVoices() || [];
+            if (!voices.length) return true;
+            for (var i = 0; i < voices.length; i++) {
+                if (/^en/i.test(voices[i].lang)) return true;
+            }
+            return false;
+        }
+
+        // 离线 TTS 兜底：零网络延迟，保证"点了就有声"
+        // onResult(true)  = TTS 确实出声了；onResult(false) = 发不出来（由调用方转用真人音）
+        function speakByTTS(text, onResult) {
+            if (!('speechSynthesis' in window)) return false;
+            var key = speakKey(text);
+            try {
+                var u = new SpeechSynthesisUtterance(text);
+                var v = pickEnglishVoice();
+                if (v) u.voice = v;
+                u.lang = 'en-GB';
+                u.rate = 0.85;      // 慢一点，方便孩子跟读
+                u.pitch = 1;
+                u.volume = 1;
+                u.onend = function () { if (currentTtsKey === key) currentTtsKey = null; };
+                u.onerror = function () { if (currentTtsKey === key) currentTtsKey = null; };
+                currentTtsKey = key;
+                // 兜底解锁：个别浏览器 onend/onerror 会丢，锁太久该词就点不动了
+                if (ttsUnlockTimer) clearTimeout(ttsUnlockTimer);
+                ttsUnlockTimer = setTimeout(function () {
+                    if (currentTtsKey === key) currentTtsKey = null;
+                }, Math.max(3000, String(text).length * 500));
+                // Chrome：cancel() 之后同一 tick 内 speak() 可能被丢弃，延后一帧再发
+                setTimeout(function () {
+                    if (currentTtsKey !== key) return;   // 已被新的点击取代
+                    try {
+                        window.speechSynthesis.speak(u);
+                        if (onResult) onResult(true);
+                    } catch (e) {
+                        currentTtsKey = null;
+                        if (onResult) onResult(false);
+                    }
+                }, 50);
+                return true;
+            } catch (e) {
+                currentTtsKey = null;
+                return false;      // 构造失败：交给调用方兜底
+            }
+        }
+
+        // 停掉一切正在发的声音（互斥核心）
+        function stopAllSpeech() {
+            if (currentAudio) {
+                try { currentAudio.pause(); } catch (e) {}
+                try { currentAudio.currentTime = 0; } catch (e) {}
+                currentAudio = null;
+                currentAudioKey = null;
+            }
+            if (currentTtsKey && 'speechSynthesis' in window) {
+                try { window.speechSynthesis.cancel(); } catch (e) {}
+            }
+            currentTtsKey = null;
+        }
+
+        // 播放已就绪的有道真人音
+        function playEntry(e) {
+            stopAllSpeech();
+            try { e.el.currentTime = 0; } catch (ex) {}
+            currentAudio = e.el;
+            currentAudioKey = e.key;
+            var p = null;
+            try { p = e.el.play(); } catch (ex) { p = null; }
+            if (p && typeof p.catch === 'function') {
+                p.catch(function () {
+                    if (currentAudioKey === e.key) { currentAudio = null; currentAudioKey = null; }
+                    if (!speakByTTS(e.text)) showSpeakHint('点击单词即可发音');
+                });
+            }
+        }
+
+        // 取（必要时建立）音频条目并开始加载
+        function ensureAudioEntry(text, key) {
+            var e = speakCache[key];
+            if (e) return e;
+            var el = new Audio();
+            el.preload = 'auto';
+            el.src = youdaoVoiceUrl(text);
+            e = { el: el, state: 'loading', text: text, key: key, pendingPlay: false, counted: false, timer: null };
+            speakCache[key] = e;
+            speakCacheOrder.push(key);
+            evictSpeakCache();
+
+            var finish = function (state) {
+                if (e.state !== 'loading') return;
+                e.state = state;
+                if (e.timer) { clearTimeout(e.timer); e.timer = null; }
+                if (e.counted) { e.counted = false; preloadRunning--; }
+                if (state === 'ready') {
+                    if (e.pendingPlay) {
+                        e.pendingPlay = false;
+                        // TTS 正在念同一个词就别再叠真人音
+                        if (currentTtsKey !== e.key) playEntry(e);
+                    }
+                } else if (e.pendingPlay) {
+                    e.pendingPlay = false;
+                    // 只有连 TTS 兜底都没有时才提示，避免明明有声音却弹报错
+                    if (currentTtsKey !== e.key) showSpeakHint('发音加载失败，请检查网络');
+                }
+                pumpPreload();
+            };
+            el.addEventListener('canplay', function () { finish('ready'); });
+            el.addEventListener('loadeddata', function () { finish('ready'); });
+            el.addEventListener('error', function () { finish('error'); });
+            e.timer = setTimeout(function () { finish('error'); }, 15000);
+            try { el.load(); } catch (ex) {}
+            getAudioHost().appendChild(el);
+            return e;
+        }
+
+        // 缓存条目上限控制（超出淘汰最早的）
+        function evictSpeakCache() {
+            while (speakCacheOrder.length > SPEAK_CACHE_LIMIT) {
+                var old = speakCacheOrder.shift();
+                var oe = speakCache[old];
+                if (oe) {
+                    if (oe.el && oe.el.parentNode) oe.el.parentNode.removeChild(oe.el);
+                    try { oe.el.src = ''; } catch (ex) {}
+                }
+                delete speakCache[old];
+            }
+        }
+
+        // 对外接口：点击单词发音
+        function speakEnglish(text, el) {
+            var cleanText = String(text).replace(/…/g, ' ').replace(/\s+/g, ' ').trim();
+            if (!cleanText) return;
+            var key = speakKey(cleanText);
+
+            pulseWord(el);   // 立刻给视觉反馈，让用户知道点到了
+
+            // 同一个词正在播 → 不打断（狂点时避免声音被切碎）
+            if (currentAudioKey === key && currentAudio && !currentAudio.paused && !currentAudio.ended) return;
+            if (currentTtsKey === key) return;
+
+            stopAllSpeech();
+
+            var entry = ensureAudioEntry(cleanText, key);
+            if (entry.state === 'ready') { playEntry(entry); return; }
+            if (entry.state === 'error') {
+                if (!hasEnglishTTSVoice()) { showSpeakHint('发音加载失败，请检查网络'); return; }
+                var spoke = speakByTTS(cleanText, function (ok) {
+                    if (!ok) showSpeakHint('发音加载失败，请检查网络');
+                });
+                if (!spoke) showSpeakHint('发音加载失败，请检查网络');
+                return;
+            }
+            // 还没就绪：先用离线 TTS 立刻出声（不等网络），真人音在后台继续下载
+            entry.pendingPlay = true;       // 先挂上：TTS 万一失败，靠真人音补播
+            var ttsScheduled = false;
+            if (hasEnglishTTSVoice()) {
+                ttsScheduled = speakByTTS(cleanText, function (ok) {
+                    if (ok) { entry.pendingPlay = false; return; }   // TTS 出声了，不再补播
+                    // TTS 发不出来 → 靠真人音
+                    entry.pendingPlay = true;
+                    if (entry.state === 'ready') { entry.pendingPlay = false; playEntry(entry); }
+                    else if (entry.state === 'error') showSpeakHint('发音加载失败，请检查网络');
+                    else showSpeakHint('发音加载中…');
+                });
+            }
+            if (!ttsScheduled) {
+                entry.pendingPlay = true;
+                showSpeakHint('发音加载中…');
+            }
+        }
+
+        // 点击单词时的脉冲动效
+        function pulseWord(el) {
+            if (!el || !el.classList) return;
+            if (el._speakPulseTimer) clearTimeout(el._speakPulseTimer);   // 连点时别让旧的定时器提前收尾
+            el.classList.remove('speak-pulse');
+            void el.offsetWidth;             // 强制重排，让动画可以重复触发
+            el.classList.add('speak-pulse');
+            el._speakPulseTimer = setTimeout(function () { el.classList.remove('speak-pulse'); }, 650);
+        }
+
+        // 轻量提示（替代静默失败）——贴在 header 正下方，不会压住卡片上的按钮
+        function showSpeakHint(msg) {
+            var el = document.getElementById('speakHint');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'speakHint';
+                el.className = 'speak-hint';
+                document.body.appendChild(el);
+            }
+            el.textContent = msg;
+            // 按 header / progressBar 实际高度定位，避免盖住卡片操作按钮
+            var top = 0;
+            var hdr = document.querySelector ? document.querySelector('.header') : null;
+            var pb = document.getElementById('progressBar');
+            if (hdr) top += hdr.offsetHeight || 0;
+            if (pb && pb.style.display !== 'none') top += pb.offsetHeight || 0;
+            el.style.top = (top + 10) + 'px';
+            el.classList.add('speak-hint-show');
+            if (speakHintTimer) clearTimeout(speakHintTimer);
+            speakHintTimer = setTimeout(function () {
+                el.classList.remove('speak-hint-show');
+            }, 2000);
+        }
+
+        // 后台预载当前会话单词的发音（点击即零延迟）
+        function schedulePreload(words) {
+            if (!words || !words.length) return;
+            var seen = {};
+            var list = [];
+            for (var i = 0; i < words.length && list.length < PRELOAD_MAX_TOTAL; i++) {
+                var raw = words[i] && words[i].en;
+                if (!raw) continue;
+                var key = speakKey(raw);
+                if (seen[key]) continue;
+                seen[key] = 1;
+                list.push(raw);
+            }
+            // 第一个词立即开始下载（用户多半马上要点它），其余等空闲
+            if (list.length) {
+                var first = list.shift();
+                var fe = ensureAudioEntry(first, speakKey(first));
+                if (fe.state === 'loading' && !fe.counted) { fe.counted = true; preloadRunning++; }
+            }
+            for (var j = 0; j < list.length; j++) {
+                if (preloadQueue.length + preloadRunning >= PRELOAD_MAX_TOTAL) break;
+                preloadQueue.push(list[j]);
+            }
+            pumpPreload();
+        }
+
+        function pumpPreload() {
+            if (preloadScheduled) return;
+            if (!preloadQueue.length) return;
+            preloadScheduled = true;
+            var run = function () {
+                preloadScheduled = false;
+                while (preloadRunning < PRELOAD_MAX_CONC && preloadQueue.length) {
+                    var text = preloadQueue.shift();
+                    var key = speakKey(text);
+                    if (speakCache[key]) continue;
+                    var e = ensureAudioEntry(text, key);
+                    if (e.state === 'loading' && !e.counted) { e.counted = true; preloadRunning++; }
+                }
+            };
+            // 空闲时再跑，别跟用户点击抢带宽
+            if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 2000 });
+            else setTimeout(run, 300);
         }
 
         // =============================================
@@ -1403,6 +1718,8 @@
             saveProgress();
             updateStats();
             renderCard();
+
+            schedulePreload(allWords);   // 后台预载本场发音，点击即响
         }
 
         // =============================================
@@ -1463,7 +1780,7 @@
             html += '  <div class="score-tag ' + scoreClass + '">' + score + '</div>';
 
             if (currentPhase === "en2cn") {
-                html += '  <div class="english" onclick="speakEnglish(\'' + escapeStr(word.en) + '\')" style="cursor:pointer;" title="点击发音">' + normalizeForDisplay(word.en) + '</div>';
+                html += '  <div class="english" onclick="speakEnglish(\'' + escapeStr(word.en) + '\', this)" style="cursor:pointer;" title="点击发音">' + normalizeForDisplay(word.en) + '</div>';
                 html += '  <div class="phonetic">' + (word.phonetic || '') + '</div>';
             } else {
                 html += '  <div class="cn-text">' + word.cn + '</div>';
@@ -1536,7 +1853,7 @@
                 el.textContent = word.cn;
             } else {
                 el.innerHTML = '<div style="font-family:Inter,sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:4px;cursor:pointer;"'
-                    + ' onclick="speakEnglish(\'' + escapeStr(word.en) + '\')" title="点击发音">'
+                    + ' onclick="speakEnglish(\'' + escapeStr(word.en) + '\', this)" title="点击发音">'
                     + normalizeForDisplay(word.en) + '</div>'
                     + '<div style="font-family:Inter,sans-serif;font-size:0.85rem;color:var(--text-muted);">'
                     + (word.phonetic || '') + '</div>';
