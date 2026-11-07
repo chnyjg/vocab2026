@@ -555,6 +555,24 @@ wordBank["Think Starter"] = {
         { en: "April", cn: "四月", phonetic: "/ˈeɪprəl/", spell: false },
         { en: "May", cn: "五月", phonetic: "/meɪ/", spell: false },
         { en: "June", cn: "六月", phonetic: "/dʒuːn/", spell: false },
+    ],
+
+    "Unit 8 Lesson 1": [
+        // ---- 需掌握 ----
+        { en: "concert", cn: "音乐会", phonetic: "/ˈkɒnsət/" },
+        { en: "light", cn: "灯光", phonetic: "/laɪt/" },
+        { en: "singer", cn: "歌手", phonetic: "/ˈsɪŋə(r)/" },
+        { en: "stage", cn: "舞台", phonetic: "/steɪdʒ/" },
+        { en: "leave", cn: "离开；留下", phonetic: "/liːv/" },
+        { en: "way", cn: "道路；方式", phonetic: "/weɪ/" },
+        { en: "in the middle of", cn: "在……中间", phonetic: "/ɪn ðə ˈmɪdl əv/" },
+        { en: "cheer", cn: "欢呼", phonetic: "/tʃɪə(r)/" },
+        { en: "platform", cn: "平台", phonetic: "/ˈplætfɔːm/" },
+        { en: "midnight", cn: "午夜", phonetic: "/ˈmɪdnaɪt/" },
+        { en: "over", cn: "结束的；在……上方", phonetic: "/ˈəʊvə(r)/" },
+        // ---- 只认读 ----
+        { en: "completely", cn: "完全地，彻底地", phonetic: "/kəmˈpliːtli/", spell: false },
+        { en: "exactly", cn: "恰好，正是；精确地", phonetic: "/ɪɡˈzæktli/", spell: false },
     ]
 
 };
