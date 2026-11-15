@@ -573,6 +573,33 @@ wordBank["Think Starter"] = {
         // ---- 只认读 ----
         { en: "completely", cn: "完全地，彻底地", phonetic: "/kəmˈpliːtli/", spell: false },
         { en: "exactly", cn: "恰好，正是；精确地", phonetic: "/ɪɡˈzæktli/", spell: false },
+    ],
+
+    "Unit 8 Lesson 2": [
+        // ---- 需掌握 ----
+        { en: "clothes", cn: "衣服；服装", phonetic: "/kləʊðz/" },
+        { en: "wear", cn: "穿；戴", phonetic: "/weə(r)/" },
+        { en: "show", cn: "演出；展示", phonetic: "/ʃəʊ/" },
+        { en: "coat", cn: "大衣；外套", phonetic: "/kəʊt/" },
+        { en: "dress", cn: "连衣裙；衣服", phonetic: "/dres/" },
+        { en: "shirt", cn: "衬衫", phonetic: "/ʃɜːt/" },
+        { en: "socks", cn: "袜子", phonetic: "/sɒks/" },
+        // ---- 只认读 ----
+        { en: "local", cn: "当地的；本地的", phonetic: "/ˈləʊkl/", spell: false },
+        { en: "strange", cn: "奇怪的；陌生的", phonetic: "/streɪndʒ/", spell: false },
+        { en: "hate", cn: "讨厌；憎恨", phonetic: "/heɪt/", spell: false },
+        { en: "myself", cn: "我自己", phonetic: "/maɪˈself/", spell: false },
+    ],
+
+    "Unit 8 Lesson 3": [
+        // ---- 需掌握 ----
+        // 注：本课截图在 different 处截断，后续词待补
+        { en: "band", cn: "乐队", phonetic: "/bænd/" },
+        { en: "fantastic", cn: "极好的；了不起的", phonetic: "/fænˈtæstɪk/" },
+        { en: "celebrate", cn: "庆祝", phonetic: "/ˈselɪbreɪt/" },
+        { en: "national", cn: "国家的；全国的", phonetic: "/ˈnæʃnəl/" },
+        { en: "interesting", cn: "有趣的", phonetic: "/ˈɪntrəstɪŋ/" },
+        { en: "different", cn: "不同的", phonetic: "/ˈdɪfrənt/" },
     ]
 
 };
